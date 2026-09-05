@@ -1,0 +1,45 @@
+# ──────────────────────────────────────────────
+# 🐺 SEAWOLF AGENT — Skin personalizada
+# Reemplaza la skin "nous" por defecto
+# Basada en la marca oficial Seawolf Studio
+# ──────────────────────────────────────────────
+
+name: "Seawolf Agent"
+display_name: "🐺 Seawolf Agent"
+description: "Agente de IA autónomo — Seawolf Studio"
+
+# Colores base de la marca (extraídos del logo oficial)
+colors:
+  primary: "#121E1E"      # Teal marino profundo (fondo logo)
+  secondary: "#1A2E2E"    # Teal oscuro secundario
+  accent: "#4CE8E7"       # Cian-teal brillante (color del lobo)
+  gold: "#48E8D8"         # Teal verdoso claro
+  surface: "#121E1E"      # Fondo oscuro consistente
+  text: "#E8F0F0"         # Texto claro con tono teal
+  muted: "#8A9E9E"        # Texto secundario
+  error: "#C62828"        # Rojo
+  success: "#3D8B40"      # Verde
+  border: "#1A3030"       # Bordes teal oscuro
+
+# Logo ASCII arte (estilizado)
+logo: |
+  ⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣤⣶⣶⣶⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀
+  ⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀
+  ⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀
+  ⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+  ⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷
+  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+  ⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟
+  ⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠀
+  ⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀
+  ⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠛⠻⠿⠿⠛⠛⠋⠁⠀⠀
+
+# Mensajes personalizados
+messages:
+  welcome: "🐺 Bienvenido a Seawolf Agent. ¿En qué puedo ayudarle, Monarca?"
+  ready: "🐺 Seawolf Agent listo. Órdenes, Monarca."
+  error: "🐺 Seawolf Agent reporta: fallo en la operación."
+  thinking: "🐺 Procesando..."
+  done: "🐺 Misión cumplida."

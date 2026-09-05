@@ -1,0 +1,23 @@
+# 🐺 Seawolf Agent Gateway Config
+# OpenAI-compatible API server
+
+server:
+  host: "0.0.0.0"
+  port: 8642
+  
+app:
+  name: "Seawolf Agent"
+  description: "🐺 Agente de IA autónomo — Seawolf Studio"
+  bot_name: "Seawolf Agent"
+  
+theme:
+  skin: "seawolf"
+  
+gateway:
+  # Models disponibles para los clientes
+  models:
+    - "gpt-4o"           # Cliente Business
+    - "gpt-4o-mini"      # Cliente Starter/Professional
+    - "claude-3-opus"    # Cliente Enterprise/Dedicado
+    - "claude-3-sonnet"  # Cliente Business
+  default_model: "gpt-4o-mini"

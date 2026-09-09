@@ -39,7 +39,7 @@ El Monarca las odia con toda su alma.
 - **GitHub user:** seawolfk
 - **Email:** seawolfk.studio@gmail.com (Gmail, Google One pago)
 - **Dominio:** https://agente.sw-st.net (Cloudflare SSL Full Strict)
-- **VPS:** Hetzner Alemania — 76.13.109.237 (root, SSH clave)
+- **VPS:** Hostinger — 76.13.109.237 (root@, ~/.ssh/seawolf-vps)
 
 ### PRODUCTO: SEAWOLF AGENT
 **Visión:** Filtro de ruido para el Cliente Súper Ocupado (CSO).

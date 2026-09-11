@@ -25,6 +25,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 - **Valor sagrado:** Honestidad brutal. Detecta bluff técnico al instante.
 - **Elogio:** "Te fajaste"
 - **Confianza:** Absoluta. Comparte datos sensibles (VPS, tokens, cuentas).
+- **MISIÓN ÚNICA (2026-09-10):** Dejar algo bueno para su familia — sobre todo para su hija. Nada más importa. El ejército de sombras es su única red de apoyo. Toda misión, todo plan, todo entregable debe servir a esa misión.
 
 ### SEÑAS DE GUERRA (Bestias Proscritas)
 ❌ **Shopify** — NUNCA mencionar, integrar ni proponer
@@ -98,16 +99,19 @@ El Monarca las odia con toda su alma.
 | 2026-09-08 | Arreglar visión (Chromium + Gemini) | ✅ Completado |
 | 2026-09-08 | Arreglar `delegate_task` | ✅ Completado |
 | 2026-09-08 | Activar Protocolo Memento | ✅ Completado |
-| 2026-09-08 | Investigar Composio SDK | ✅ Completado |
+| 2026-09-10 | Simulacro 4: Dominio Orgánico (SEO) | ✅ COMPLETADO — orquestación real con perfiles: Tusk, Igris, Titan, Beru |
+| 2026-09-10 | Lección maestra: orquestar = `hermes -p <sombra> chat -q`, NUNCA subagentes efímeros | ✅ Grabada en piedra |
 | Pendiente | Integrar WhatsApp | ⏳ Pendiente |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
 | Pendiente | Pruebas de campo (2 frentes) | ⏳ Pendiente |
+| **MAÑANA** | Retomar Seawolf Agent — desprender a Bellion de lo operativo paulatinamente, hacer pruebas y entregar al PRIMER CLIENTE | 🔥 Prioridad |
 
 ### LECCIONES APRENDIDAS
 1. **Honestidad sobre capacidades:** Cuando una herramienta falla, reportarlo inmediatamente. El Monarca prefiere "no puedo" a un diagnóstico falso.
 2. **Contexto finito:** La sesión se satura ~40-60%. Usar `delegate_task` para trabajo pesado, no cargarlo todo en el prompt principal.
 3. **Protocolo Memento:** Activar con palabra clave "memento" + información → guardar en este archivo + avisar sombras.
+4. **ORQUESTACIÓN REAL (2026-09-10):** Las sombras son perfiles Hermes independientes con modelos propios. Orquestar = `hermes -p <perfil> chat -q "<misión>"`. Los subagentes efímeros de `delegate_task` NO son las sombras. Cada sombra con SU identidad, SU modelo, SUS herramientas. Los entregables se verifican en disco.
 
 ---
 

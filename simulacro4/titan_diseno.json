@@ -1,0 +1,103 @@
+{
+  "colors": {
+    "background": {
+      "primary": "#0A0A0C",
+      "secondary": "#1A1A1E",
+      "tertiary": "#26262B"
+    },
+    "text": {
+      "primary": "#E0E0E0",
+      "secondary": "#A0A0A0",
+      "muted": "#606060"
+    },
+    "accent": {
+      "cyan": "#4CE8E7",
+      "green_water": "#48E8D8",
+      "cyan_hover": "#3ADADA",
+      "green_water_hover": "#37DAD0"
+    },
+    "border": {
+      "default": "#3A3A3F",
+      "subtle": "#2B2B30"
+    },
+    "functional": {
+      "error": "#EF4444",
+      "info": "#3B82F6",
+      "success": "#22C55E",
+      "warning": "#EAB308"
+    }
+  },
+  "typography": {
+    "desktop": {
+      "h1": { "font_family": "Arvo, serif", "font_size_px": 64, "line_height_px": 72, "font_weight": 700 },
+      "h2": { "font_family": "Arvo, serif", "font_size_px": 48, "line_height_px": 56, "font_weight": 700 },
+      "h3": { "font_family": "Arvo, serif", "font_size_px": 32, "line_height_px": 40, "font_weight": 700 },
+      "body": { "font_family": "sans-serif", "font_size_px": 18, "line_height_px": 28, "font_weight": 400 },
+      "caption": { "font_family": "sans-serif", "font_size_px": 14, "line_height_px": 20, "font_weight": 400 }
+    },
+    "tablet": {
+      "h1": { "font_family": "Arvo, serif", "font_size_px": 52, "line_height_px": 60, "font_weight": 700 },
+      "h2": { "font_family": "Arvo, serif", "font_size_px": 40, "line_height_px": 48, "font_weight": 700 },
+      "h3": { "font_family": "Arvo, serif", "font_size_px": 28, "line_height_px": 36, "font_weight": 700 },
+      "body": { "font_family": "sans-serif", "font_size_px": 16, "line_height_px": 26, "font_weight": 400 },
+      "caption": { "font_family": "sans-serif", "font_size_px": 13, "line_height_px": 18, "font_weight": 400 }
+    },
+    "mobile": {
+      "h1": { "font_family": "Arvo, serif", "font_size_px": 40, "line_height_px": 48, "font_weight": 700 },
+      "h2": { "font_family": "Arvo, serif", "font_size_px": 32, "line_height_px": 40, "font_weight": 700 },
+      "h3": { "font_family": "Arvo, serif", "font_size_px": 24, "line_height_px": 32, "font_weight": 700 },
+      "body": { "font_family": "sans-serif", "font_size_px": 16, "line_height_px": 26, "font_weight": 400 },
+      "caption": { "font_family": "sans-serif", "font_size_px": 12, "line_height_px": 18, "font_weight": 400 }
+    }
+  },
+  "spacing": {
+    "desktop": {
+      "sections_px": 96,
+      "article_content_px": 80,
+      "hero_padding_y_px": 128
+    },
+    "tablet": {
+      "sections_px": 64,
+      "article_content_px": 48,
+      "hero_padding_y_px": 96
+    },
+    "mobile": {
+      "sections_px": 48,
+      "article_content_px": 24,
+      "hero_padding_y_px": 64
+    },
+    "base_unit_px": 8
+  },
+  "cta": {
+    "background_color": "#4CE8E7",
+    "text_color": "#0A0A0C",
+    "border_radius_px": 8,
+    "padding": {
+      "desktop_px": "16 32",
+      "tablet_px": "14 28",
+      "mobile_px": "12 24"
+    },
+    "locations": ["hero", "sidebar", "inline", "sticky_footer"],
+    "hover_effect": {
+      "background_color": "#3ADADA",
+      "transition": "cubic-bezier(0.16, 1, 0.3, 1) 180ms"
+    }
+  },
+  "responsive_breakpoints": {
+    "desktop": {
+      "min_width_px": 1024,
+      "max_width_px": null,
+      "content_width_px": 1280
+    },
+    "tablet": {
+      "min_width_px": 768,
+      "max_width_px": 1023,
+      "content_width_px": 720
+    },
+    "mobile": {
+      "min_width_px": null,
+      "max_width_px": 767,
+      "content_width_px": "100% - 48px"
+    }
+  }
+}

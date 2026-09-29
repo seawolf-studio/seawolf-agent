@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-09-08*
+*Última actualización: 2026-09-29*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -68,13 +68,27 @@ El Monarca las odia con toda su alma.
 4. Español nativo
 5. Setup 1-click
 
+### PRODUCTO SECUNDARIO: TIENDA E-COMMERCE PROPIA (Dropi Dropshipping)
+**Visión:** Tiendas propias desde cero (sin parecerse a ninguna existente), alimentadas por catálogo Dropi vía puente WordPress.
+- **Stack:** Astro 4 (SSG) + islas React, dark mode, carrito, checkout contraentrega.
+- **Multi-tienda:** 1 base de código + 4 configs (`stores/tienda-{rosa,azul,verde,violeta}.json`), **1 build por tienda**. Fase actual: solo se itera la **tienda rosa**; las otras 3 se replican después.
+- **Hosting:** Hostinger **compartido** (NO VPS) — hasta 50 sitios. Sitio puente: `hotpink-nightingale-238140.hostingersite.com`.
+- **Puente WordPress:** plugin propio `dropi-bridge-v3` (clave `sw7-…`). Acciones: `test`, `meta_export`, `product_images`, `media_serve`, `media_zip`, `order_create`, `order_status`.
+- **Fuente de verdad de pedidos:** meta `_dropi_product` de WordPress (246/246) → `id`, `user_id`, `variations[].id`, `photos[].urlS3`, `warehouse_product[].stock`. **No reconstruir.**
+- **Automatización de pedidos:** checkout → `pedidos.php` → cron Hostinger (5 min) → `procesar-pedidos.php` (mapea `sku → dropi_id`) → POST puente `order_create` → aviso Telegram. Idempotente, máx 3 intentos, `$MODO_PRUEBA` para simular.
+- **CDN imágenes Dropi:** `https://d39ru7awumhhs2.cloudfront.net/`
+- **Estado:** ZIP de despliegue listo (`C:\Users\Admin\Desktop\seawolf-tienda-hostinger.zip`, 14,2 MB, 200 productos, 199 con foto real + ID Dropi). Pipeline autónomo (`mantenimiento\*.bat`) probado. Envío real a Dropi **aún no probado** (a propósito).
+- **Futuro anotado:** multi-tienda (3 tiendas más) y centro comercial virtual.
+
 ### INFRAESTRUCTURA TÉCNICA
 - **Frontend:** WebUI propia (login personalizado, logo lobo, 100% español)
 - **Backend:** Hermes Agent (fork MIT → seawolf-agent)
 - **Modelo orquestador:** bellion-orchestrator
-- **Modelo de visión:** google/gemini-2.5-flash (vía OpenRouter)
-- **Herramientas:** Composio SDK (Python, API key ak_ prefijo)
-- **Canal principal:** Telegram (Bot: seawolf_sw_bot)
+- **Modelo de visión:** google/gemini-2.5-flash (vía OpenRouter) — `auxiliary.vision.provider=openrouter` en config.yaml
+- **Chromium en Windows:** `AGENT_BROWSER_ARGS='--no-sandbox,--disable-dev-shm-usage'` (setx en variable de entorno del sistema)
+- **Herramientas:** Composio SDK (Python, API key `ak_` prefijo) — CLI Composio NO funciona en Windows, usar SDK Python o npx
+- **Gmail:** seawolfk.studio@gmail.com (OAuth autorizado vía Composio SDK)
+- **Canal principal:** Telegram (Bot: seawolf_sw_bot) — respuestas de audio requeridas (Monarca no puede revisar teléfono)
 - **Multi-tenant:** Perfiles separados por cliente en Hermes
 
 ### RED DE SOMBRAS (Agentes)
@@ -90,7 +104,7 @@ El Monarca las odia con toda su alma.
 - **Modelo:** Suscripción mensual (MRR)
 - **Margen estimado:** 83-91%
 - **Costo API:** 1-10% del ingreso
-- **VPS base:** Hetzner CPX21 (€8/mes)
+- **VPS base:** Hostinger — 76.13.109.237 (root@, ~/.ssh/seawolf-vps)
 - **Target:** 1 cliente → 5 → 20+ → Multi-vertical
 
 ### HISTORIAL DE ÓRDENES CRÍTICAS
@@ -101,6 +115,7 @@ El Monarca las odia con toda su alma.
 | 2026-09-08 | Activar Protocolo Memento | ✅ Completado |
 | 2026-09-10 | Simulacro 4: Dominio Orgánico (SEO) | ✅ COMPLETADO — orquestación real con perfiles: Tusk, Igris, Titan, Beru |
 | 2026-09-10 | Lección maestra: orquestar = `hermes -p <sombra> chat -q`, NUNCA subagentes efímeros | ✅ Grabada en piedra |
+| 2026-09-16→28 | Tienda e-commerce propia (Dropi): catálogo total, Astro, puente v3, automatización de pedidos, precios | ✅ Entregada — ZIP listo, pipeline autónomo probado |
 | Pendiente | Integrar WhatsApp | ⏳ Pendiente |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
@@ -112,6 +127,10 @@ El Monarca las odia con toda su alma.
 2. **Contexto finito:** La sesión se satura ~40-60%. Usar `delegate_task` para trabajo pesado, no cargarlo todo en el prompt principal.
 3. **Protocolo Memento:** Activar con palabra clave "memento" + información → guardar en este archivo + avisar sombras.
 4. **ORQUESTACIÓN REAL (2026-09-10):** Las sombras son perfiles Hermes independientes con modelos propios. Orquestar = `hermes -p <perfil> chat -q "<misión>"`. Los subagentes efímeros de `delegate_task` NO son las sombras. Cada sombra con SU identidad, SU modelo, SUS herramientas. Los entregables se verifican en disco.
+5. **Dropi/token atado al origen (2026-09-28):** el token de Dropi solo funciona desde su origen autorizado (WordPress); desde otra IP → 401. Toda automatización Dropi se ejecuta vía el puente, no directo.
+6. **Nunca dar por buena una descarga sin md5 + bytes mágicos (2026-09-28):** el hosting sirve placeholders idénticos.
+7. **Margen ≠ recargo (2026-09-28):** `margen_sobre_costo_pct` engaña; usar `margen_sobre_precio_pct` = costo ÷ (1−pct). En dropshipping el envío decide el negocio. Simular impacto antes de cambiar precios en masa.
+8. **Nunca almacenar ni teclear contraseñas:** se usa la bóveda cifrada o se trabaja por plugin/HTTP (el plugin puente evita credenciales de sesión).
 
 ---
 
@@ -131,6 +150,11 @@ Un cron diario (6:00 AM) ejecuta:
 1. Verificar integridad del archivo
 2. Registrar fecha de última actualización
 3. Reportar al Monarca si hay información crítica faltante
+
+### REGISTRO DE MANTENIMIENTO (cron diario)
+| Fecha | Integridad | Cambios aplicados |
+|:------|:-----------|:------------------|
+| 2026-09-29 | ✅ OK | Fecha revisada. Registrado PRODUCTO SECUNDARIO (tienda Dropi), infra Composio/Chromium/Telegram, 4 lecciones nuevas, hito de tienda en historial. |
 
 ---
 

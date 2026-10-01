@@ -68,6 +68,16 @@ El Monarca las odia con toda su alma.
 4. Español nativo
 5. Setup 1-click
 
+### PROYECTO: SEAWOLF NEREUS (Agente personal del Monarca)
+**Visión:** Agente personal de Seawolf, construido sobre **CopilotKit/openmuse** (MIT) en el VPS.
+- **Ubicación:** VPS Hostinger `/opt/nereus` · **Node 24** · puerto **8788**.
+- **Memoria/persistencia:** propia — `StoreAgentRunner` (SSE) + **Postgres + pgvector** en Docker (puerto 5433).
+- **Gateway LLM:** OpenRouter (`MODEL=openrouter/<vendor>/<model>`, vía `openaiCompatibleText`). Sin servicios cerrados propietarios.
+- **Fase 0-2:** ✅ Clone + build + 276/276 tests verdes · persistencia propia · gateway OpenRouter operativo.
+- **Fase 3 (VOZ, parcial 2026-10-01):** **VoiceBox v0.5.0** (motor Qwen3-TTS + Kokoro + Whisper) desplegado en Docker. Modelo **Qwen3-TTS-12Hz-1.7B-Base** (4.3 GB). API+UI+MCP en `http://100.114.5.98:17600` (**solo Tailscale**). Latencia medida en CPU: **caliente 4.1 s** para ~6.7 s de audio (≈0.6×). Sirve para notas de voz, **NO** para conversación fluida en vivo → voz en vivo requeriría nodo GPU o TTS en cliente.
+- **Pendiente Fase 3:** archivo de voz del Monarca (clonación voz de marca masculina) · voz femenina oficial · flujo legal de consentimiento · Pipecat (barge-in) · decisión GPU.
+- **Refs:** `intel/fase-{0,1,2,3}-nereus-*.md` y `diario-de-sombras/sesion-openmuse-a-nereus-20260930.md`.
+
 ### PRODUCTO SECUNDARIO: TIENDA E-COMMERCE PROPIA (Dropi Dropshipping)
 **Visión:** Tiendas propias desde cero (sin parecerse a ninguna existente), alimentadas por catálogo Dropi vía puente WordPress.
 - **Stack:** Astro 4 (SSG) + islas React, dark mode, carrito, checkout contraentrega.
@@ -116,6 +126,7 @@ El Monarca las odia con toda su alma.
 | 2026-09-10 | Simulacro 4: Dominio Orgánico (SEO) | ✅ COMPLETADO — orquestación real con perfiles: Tusk, Igris, Titan, Beru |
 | 2026-09-10 | Lección maestra: orquestar = `hermes -p <sombra> chat -q`, NUNCA subagentes efímeros | ✅ Grabada en piedra |
 | 2026-09-16→28 | Tienda e-commerce propia (Dropi): catálogo total, Astro, puente v3, automatización de pedidos, precios | ✅ Entregada — ZIP listo, pipeline autónomo probado |
+| 2026-09-30→10-01 | **Proyecto NEREUS** (agente personal): clone+build (276 tests), persistencia Postgres/pgvector, gateway OpenRouter, Fase 3 Voz (VoiceBox + Qwen3-TTS, latencia medida) | ✅ Fases 0-2 OK · Fase 3 parcial — falta voz del Monarca |
 | Pendiente | Integrar WhatsApp | ⏳ Pendiente |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
@@ -154,7 +165,7 @@ Un cron diario (6:00 AM) ejecuta:
 ### REGISTRO DE MANTENIMIENTO (cron diario)
 | Fecha | Integridad | Cambios aplicados |
 |:------|:-----------|:------------------|
-| 2026-10-01 | ✅ OK | Fecha revisada. Verificación de integridad completa. Sin información crítica faltante detectada. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
+| 2026-10-01 | ✅ OK | Fecha revisada. **Información crítica faltante registrada: Proyecto NEREUS** (sección nueva + fila en historial). NEREUS no figuraba en el protocolo pese a 4 fases ejecutadas. Resto de datos (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
 | 2026-09-30 | ✅ OK | Fecha revisada. Verificación de integridad completa. Sin información crítica faltante detectada. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
 | 2026-09-29 | ✅ OK | Fecha revisada. Registrado PRODUCTO SECUNDARIO (tienda Dropi), infra Composio/Chromium/Telegram, 4 lecciones nuevas, hito de tienda en historial. |
 

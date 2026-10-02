@@ -1,0 +1,12 @@
+[Unit]
+Description=Seawolf docker port hardening (restrict 8000/9443/8085 to loopback+tailnet)
+After=docker.service network-online.target
+Wants=docker.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/seawolf-fw.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

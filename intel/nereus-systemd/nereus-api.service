@@ -1,0 +1,17 @@
+[Unit]
+Description=NEREUS API (Seawolf personal agent server)
+After=network-online.target docker.service nereus-voice-gateway.service
+Wants=network-online.target docker.service nereus-voice-gateway.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/nereus/openmuse
+Environment=PATH=/opt/node24/bin:/usr/local/bin:/usr/bin:/bin
+Environment=COREPACK_HOME=/opt/nereus/.corepack
+ExecStart=/opt/node24/bin/node dist/apps/server/src/index.js
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target

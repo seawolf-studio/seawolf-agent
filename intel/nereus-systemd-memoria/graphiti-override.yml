@@ -1,0 +1,10 @@
+services:
+  neo4j:
+    ports: !override
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    restart: unless-stopped
+  graphiti-mcp:
+    ports: !override
+      - "127.0.0.1:8100:8000"
+    restart: unless-stopped

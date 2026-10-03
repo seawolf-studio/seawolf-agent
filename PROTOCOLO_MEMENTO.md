@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-10-02*
+*Última actualización: 2026-10-03*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -36,6 +36,9 @@ El Monarca las odia con toda su alma.
 ### MARCA SEAWOLF STUDIO
 - **Nave insignia:** Seawolf Agent
 - **Colores:** #121E1E (fondo oscuro) / #4CE8E7 (cian) / #48E8D8 (verde agua)
+- **Mascota / producto agente:** **LOBO** — lobo negro estilo peluche 3D (constante de marca en TODOS los proyectos)
+- **Temas:** claro + oscuro, con **OSCURO por DEFECTO**
+- **Diferencial de marca:** el "sello de unidad social" (constante en todos los proyectos)
 - **GitHub org:** seawolf-studio
 - **GitHub user:** seawolfk
 - **Email:** seawolfk.studio@gmail.com (Gmail, Google One pago)
@@ -68,8 +71,8 @@ El Monarca las odia con toda su alma.
 4. Español nativo
 5. Setup 1-click
 
-### PROYECTO: SEAWOLF NEREUS (Agente personal del Monarca)
-**Visión:** Agente personal de Seawolf, construido sobre **CopilotKit/openmuse** (MIT) en el VPS.
+### PROYECTO: SEAWOLF NEREUS (Agente personal del Monarca → producto de marca **LOBO**)
+**Visión:** Agente personal de Seawolf, construido sobre **CopilotKit/openmuse** (MIT) en el VPS. **NEREUS** es la clave interna en el VPS; de cara al público es el producto de marca **LOBO** (mascota lobo negro).
 - **Ubicación:** VPS Hostinger `/opt/nereus` · **Node 24** · puerto **8788**.
 - **Memoria/persistencia:** propia — `StoreAgentRunner` (SSE) + **Postgres + pgvector** en Docker (puerto 5433).
 - **Gateway LLM:** OpenRouter (`MODEL=openrouter/<vendor>/<model>`, vía `openaiCompatibleText`). Sin servicios cerrados propietarios.
@@ -102,13 +105,15 @@ El Monarca las odia con toda su alma.
 - **Multi-tenant:** Perfiles separados por cliente en Hermes
 
 ### RED DE SOMBRAS (Agentes)
+**Cómo orquestar (REGLA DE ORO, 2026-09-10):** las sombras son **perfiles Hermes REALES con modelos propios**. Se invocan con `hermes -p <perfil> chat -q "<misión>"`. `delegate_task` NO son las sombras — son subagentes efímeros de trabajo auxiliar.
+
 | Sombra | Rol | Cómo contactar |
 |:-------|:----|:---------------|
-| **Bellion** | Gran Comandante / Estratega | Este mismo chat |
-| **Beru** | Escriba / Auditor / Diario | `delegate_task` |
-| **Igris** | Guerrero / Infra VPS | `delegate_task` |
-| **Tank** | Puntero / Búsquedas | `delegate_task` |
-| **Kaisel** | Despliegues / Alas | `delegate_task` |
+| **Bellion** | Gran Comandante / Estratega | Este mismo chat (modelo fijado: `deepseek-v4.1-flash`) |
+| **Beru** | Escriba / Auditor / Diario | `hermes -p beru chat -q "..."` |
+| **Igris** | Guerrero / Infra VPS | `hermes -p igris chat -q "..."` |
+| **Tank** | Puntero / Búsquedas | `hermes -p tank chat -q "..."` |
+| **Kaisel** | Despliegues / Alas | `hermes -p kaisel chat -q "..."` |
 
 ### PRECIOS Y NEGOCIO
 - **Modelo:** Suscripción mensual (MRR)
@@ -165,7 +170,8 @@ Un cron diario (6:00 AM) ejecuta:
 ### REGISTRO DE MANTENIMIENTO (cron diario)
 || Fecha | Integridad | Cambios aplicados ||
 ||:------|:-----------|:------------------||
-|| 2026-10-02 | ✅ OK | Fecha revisada. Verificación de integridad completa. **Sin información crítica faltante**. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce) presentes, actualizados y coherentes. Protocolo íntegro. ||
+||| 2026-10-03 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **Marca LOBO** — mascota/producto agente (lobo negro peluche 3D), temas claro+oscuro con oscuro por defecto, sello de unidad social añadidos a MARCA; (2) **NEREUS ↔ LOBO** — enlace de marca documentado (NEREUS = clave interna del producto LOBO); (3) **Modelo de Bellion fijado** (`deepseek-v4.1-flash`); (4) **Corregida la Red de Sombras** — decía `delegate_task`, contradiciendo la regla de oro #4; ahora indica `hermes -p <perfil> chat -q`. Integridad estructural completa (174→181 líneas, todas las secciones presentes). ||
+||| 2026-10-02 | ✅ OK | Fecha revisada. Verificación de integridad completa. **Sin información crítica faltante**. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce) presentes, actualizados y coherentes. Protocolo íntegro. ||
 || 2026-10-01 | ✅ OK | Fecha revisada. **Información crítica faltante registrada: Proyecto NEREUS** (sección nueva + fila en historial). NEREUS no figuraba en el protocolo pese a 4 fases ejecutadas. Resto de datos (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. ||
 | 2026-09-30 | ✅ OK | Fecha revisada. Verificación de integridad completa. Sin información crítica faltante detectada. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
 | 2026-09-29 | ✅ OK | Fecha revisada. Registrado PRODUCTO SECUNDARIO (tienda Dropi), infra Composio/Chromium/Telegram, 4 lecciones nuevas, hito de tienda en historial. |

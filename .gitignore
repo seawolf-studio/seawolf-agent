@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# Secretos locales
+.env
+*.key
+*.pem
+
+# Archivos temporales
+*.log
+.DS_Store

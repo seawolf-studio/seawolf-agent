@@ -52,10 +52,10 @@ echo "SKIN=seawolf" >> ~/.hermes/.env
 cat > /etc/nginx/sites-available/seawolf << 'EOF'
 server {
     listen 80;
-    server_name seawolf-agent.tu-dominio.com;
+    server_name agente.sw-st.net;
 
     location / {
-        proxy_pass http://127.0.0.1:8642;
+        proxy_pass http://127.0.0.1:8787;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -69,16 +69,16 @@ ln -s /etc/nginx/sites-available/seawolf /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 
 # SSL con Certbot
-certbot --nginx -d seawolf-agent.tu-dominio.com
+certbot --nginx -d agente.sw-st.net
 ```
 
 ## 6. INICIAR SERVICIOS
 ```bash
 # Iniciar WebUI
-cd /opt/seawolf/webui
-nohup python server.py --port 8642 > /var/log/seawolf-webui.log 2>&1 &
+cd /opt/seawolf-webui
+nohup python server.py --port 8787 > /var/log/seawolf-webui.log 2>&1 &
 echo $! > /var/run/seawolf-webui.pid
 
 # Verificar que corre
-curl http://127.0.0.1:8642
+curl http://127.0.0.1:8787
 ```

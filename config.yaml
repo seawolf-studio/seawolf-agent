@@ -1,23 +1,27 @@
-# 🐺 Seawolf Agent Gateway Config
-# OpenAI-compatible API server
+# 🐺 Seawolf Agent — Configuración de referencia del producto
+#
+# NOTA (2026-10-04): el antiguo "gateway OpenAI-compatible en el puerto 8642"
+# se RETIRÓ. Nunca estuvo escuchando en el VPS (puerto fantasma) y su lista de
+# modelos (gpt-4o / claude) no correspondía al stack real.
+#
+# El sistema REAL de Seawolf Agent corre así:
+#   - WebUI propia: /opt/seawolf-webui/server.py  -> puerto 8787 (nginx + Cloudflare)
+#     Servicio systemd: seawolf-webui.service
+#   - Agente (motor): Hermes Agent + Hermes WebUI
+#   - Proveedor de modelos: OpenRouter (definido en ~/.hermes/config.yaml del host)
 
-server:
-  host: "0.0.0.0"
-  port: 8642
-  
 app:
   name: "Seawolf Agent"
-  description: "🐺 Agente de IA autónomo — Seawolf Studio"
+  description: "🐺 Agente de IA para el Cliente Súper Ocupado — Seawolf Studio"
   bot_name: "Seawolf Agent"
-  
+
+webui:
+  host: "127.0.0.1"
+  port: 8787            # /opt/seawolf-webui/server.py (tras nginx/Cloudflare)
+
+agent:
+  backend: "hermes"
+  provider: "openrouter"
+
 theme:
-  skin: "seawolf"
-  
-gateway:
-  # Models disponibles para los clientes
-  models:
-    - "gpt-4o"           # Cliente Business
-    - "gpt-4o-mini"      # Cliente Starter/Professional
-    - "claude-3-opus"    # Cliente Enterprise/Dedicado
-    - "claude-3-sonnet"  # Cliente Business
-  default_model: "gpt-4o-mini"
+  skin: "seawolf"       # modo oscuro por defecto (constante de marca)

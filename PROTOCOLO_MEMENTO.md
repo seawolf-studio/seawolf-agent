@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-10-04*
+*Última actualización: 2026-10-05*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -76,10 +76,12 @@ El Monarca las odia con toda su alma.
 - **Ubicación:** VPS Hostinger `/opt/nereus` · **Node 24** · puerto **8788**.
 - **Memoria/persistencia:** propia — `StoreAgentRunner` (SSE) + **Postgres + pgvector** en Docker (puerto 5433).
 - **Gateway LLM:** OpenRouter (`MODEL=openrouter/<vendor>/<model>`, vía `openaiCompatibleText`). Sin servicios cerrados propietarios.
-- **Fase 0-2:** ✅ Clone + build + 276/276 tests verdes · persistencia propia · gateway OpenRouter operativo.
-- **Fase 3 (VOZ, parcial 2026-10-01):** **VoiceBox v0.5.0** (motor Qwen3-TTS + Kokoro + Whisper) desplegado en Docker. Modelo **Qwen3-TTS-12Hz-1.7B-Base** (4.3 GB). API+UI+MCP en `http://100.114.5.98:17600` (**solo Tailscale**). Latencia medida en CPU: **caliente 4.1 s** para ~6.7 s de audio (≈0.6×). Sirve para notas de voz, **NO** para conversación fluida en vivo → voz en vivo requeriría nodo GPU o TTS en cliente.
-- **Pendiente Fase 3:** archivo de voz del Monarca (clonación voz de marca masculina) · voz femenina oficial · flujo legal de consentimiento · Pipecat (barge-in) · decisión GPU.
-- **Refs:** `intel/fase-{0,1,2,3}-nereus-*.md` y `diario-de-sombras/sesion-openmuse-a-nereus-20260930.md`.
+- **Fase 0-2:** ✅ Clone + build + 276/276 tests verdes · persistencia propia (Postgres + pgvector) · gateway OpenRouter operativo.
+- **Fase 3 (VOZ) — ✅ integrada (10-01→10-02):** **VoiceBox v0.5.0** (Qwen3-TTS + Kokoro + Whisper) en Docker. **Voz de marca masculina CLONADA** (perfil "NEREUS", motor `qwen`, 3 muestras del Monarca; presets ES `em_alex` masc. / `ef_dora` fem.). Clonación **en vivo inviable en CPU** (Qwen 1.7B = OOM >6 GB; 0.6B ≈162 s / 7.2 s audio) → sin GPU solo sirve para notas/lotes. **Streaming por frases** (`voice-gateway.py`, `127.0.0.1:8799`): TTFA **0.75 s** (≈8× menos espera), conversación fluida **sin GPU** con Kokoro (Apache-2.0). Clon = **premium opcional** futuro.
+- **Fase 4 (MEMORIA) — ✅ cerrada y persistente (10-02):** **Mem0** (semántica, integrada en el agente, probada: recall score 0,65) + **Graphiti** (temporal, **Neo4j 5.26**, MCP `127.0.0.1:8100`; FalkorDB descartado por incompatibilidad de versión). Todo bajo **systemd** (`nereus-mem0.service`, `nereus-graphiti.service`, `restart: unless-stopped`; puertos solo localhost). Coste IA: gratis/céntimos.
+- **Pendiente:** cablear Graphiti en el flujo de NEREUS · conectores · multi-tenant · onboarding · cobro · pruebas integrales · decisión nodo de voz (GPU vs TTS en cliente).
+- **Refs:** `intel/fase-{0,1,2,3}-nereus-*.md`, `intel/nereus-{memoria-fase4,memoria-systemd,streaming-por-frases,voz-clonada,graphiti-modelos}-*.md`, `diario-de-sombras/sesion-openmuse-a-nereus-20260930.md`.
+- **Systemd NEREUS en VPS:** `nereus-api` · `nereus-mem0` · `nereus-graphiti` · `nereus-voice-gateway` (detenido, migra a PC) · `seawolf-fw` (endurecido de puertos Docker).
 
 ### PRODUCTO SECUNDARIO: TIENDA E-COMMERCE PROPIA (Dropi Dropshipping)
 **Visión:** Tiendas propias desde cero (sin parecerse a ninguna existente), alimentadas por catálogo Dropi vía puente WordPress.
@@ -93,6 +95,13 @@ El Monarca las odia con toda su alma.
 - **Estado:** ZIP de despliegue listo (`C:\Users\Admin\Desktop\seawolf-tienda-hostinger.zip`, 14,2 MB, 200 productos, 199 con foto real + ID Dropi). Pipeline autónomo (`mantenimiento\*.bat`) probado. Envío real a Dropi **aún no probado** (a propósito).
 - **Futuro anotado:** multi-tienda (3 tiendas más) y centro comercial virtual.
 
+### CANAL: WHATSAPP (WAHA) — plato fuerte de Seawolf Agent
+**Ruta (decisión vigente 2026-10-04):** no oficial — Baileys → **WAHA Core** → WAHA Plus. El Monarca rechaza la burocracia de Meta. **Riesgo honesto:** viola ToS de WhatsApp → baneo; mitigación = número dedicado, calentamiento y límites.
+- **Montado y probado en el VPS (2026-10-04):** contenedor `waha` (`devlikeapro/waha:latest`, WEBJS Core, `127.0.0.1:3000`, API key en `/root/.waha.env` chmod 600); sesión `seawolf` en `SCAN_QR_CODE`; QR fresco con `/opt/waha/qr.sh` (`GET /api/seawolf/auth/qr?format=image`); receptor `/opt/waha/sink.py` (`waha-sink.service`, log `/opt/waha/messages.log`); webhook `http://172.16.0.1:3010/webhook` (gateway Docker, privado) → **captura `session.status` probada** ✅.
+- **Trampas cazadas:** un contenedor NO alcanza `127.0.0.1` del host → el sink va al gateway Docker `172.16.0.1:3010`; el backlog de webhooks fallidos sigue reintentando → mirar la URL **dentro** del error; `PUT /api/sessions/<name>` **reinicia** la sesión (nuevo QR).
+- **Falta:** que el Monarca escanee el QR con el número prepago → probar captura real → construir el **Filtro** (clasificador 🟢🟡🟠🔥).
+- **Skill:** `seawolf-whatsapp-waha`.
+
 ### INFRAESTRUCTURA TÉCNICA
 - **Frontend:** WebUI propia (login personalizado, logo lobo, 100% español)
 - **Backend:** Hermes Agent (fork MIT → seawolf-agent)
@@ -101,7 +110,9 @@ El Monarca las odia con toda su alma.
 - **Chromium en Windows:** `AGENT_BROWSER_ARGS='--no-sandbox,--disable-dev-shm-usage'` (setx en variable de entorno del sistema)
 - **Herramientas:** Composio SDK (Python, API key `ak_` prefijo) — CLI Composio NO funciona en Windows, usar SDK Python o npx
 - **Gmail:** seawolfk.studio@gmail.com (OAuth autorizado vía Composio SDK)
-- **Canal principal:** Telegram (Bot: seawolf_sw_bot) — respuestas de audio requeridas (Monarca no puede revisar teléfono)
+- **Canal principal:** **WhatsApp (vía WAHA).** ⚠️ **Telegram APAGADO el 2026-10-04** por bucle de token: vivía en 2 configs (`/opt/data/config.yaml` → `gateway.platforms.telegram` y `/opt/data/profiles/bellion/config.yaml`). Fix = `enabled: false` **+ neutralizar el token** en ambos (solo `enabled:false` NO bastaba; hay configs **por sombra** en `/opt/data/profiles/*/config.yaml`). Se rehará como "sala de guerra" con cada sombra aparte. (Monarca no puede revisar el teléfono → respuestas de audio.)
+- **WebUI (rebranding desplegado 2026-10-04):** favicons del lobo (regenerados desde el SVG; antes eran el caduceo de Hermes), titlebar → "Seawolf Agent", **571 cadenas i18n** "Hermes"→"Seawolf" (protegiendo comandos/rutas/claves internas). Repo `seawolf-agent-webui` commit `48d0d161` (push + pull en VPS). En vivo: `https://agente.sw-st.net` → 200, título "Seawolf Agent".
+- **Puertos VPS (reconocimiento 2026-10-04):** 8787 = WebUI Seawolf Agent · 8085→9119 = docker `hermes-agent-core` = **Ejército de Sombras (12 gateways s6)** — ⚠️ expuesto en `0.0.0.0`, llevar al tailnet · 8000/9443 = Portainer — ⚠️ público, mover a Tailscale (`https://100.114.5.98:9443`) · **8642 declarado pero fantasma → CERRADO** (limpiado de `config.yaml`/`DEPLOY.md`).
 - **Multi-tenant:** Perfiles separados por cliente en Hermes
 
 ### RED DE SOMBRAS (Agentes)
@@ -131,8 +142,9 @@ El Monarca las odia con toda su alma.
 | 2026-09-10 | Simulacro 4: Dominio Orgánico (SEO) | ✅ COMPLETADO — orquestación real con perfiles: Tusk, Igris, Titan, Beru |
 | 2026-09-10 | Lección maestra: orquestar = `hermes -p <sombra> chat -q`, NUNCA subagentes efímeros | ✅ Grabada en piedra |
 | 2026-09-16→28 | Tienda e-commerce propia (Dropi): catálogo total, Astro, puente v3, automatización de pedidos, precios | ✅ Entregada — ZIP listo, pipeline autónomo probado |
-| 2026-09-30→10-01 | **Proyecto NEREUS** (agente personal): clone+build (276 tests), persistencia Postgres/pgvector, gateway OpenRouter, Fase 3 Voz (VoiceBox + Qwen3-TTS, latencia medida) | ✅ Fases 0-2 OK · Fase 3 parcial — falta voz del Monarca |
-| Pendiente | Integrar WhatsApp | ⏳ Pendiente |
+| 2026-09-30→10-02 | **Proyecto NEREUS** (agente personal → marca LOBO): clone+build (276 tests), persistencia Postgres/pgvector, gateway OpenRouter, Fase 3 Voz (VoiceBox + clon de voz + streaming por frases TTFA 0,75 s), Fase 4 Memoria (Mem0 + Graphiti/Neo4j bajo systemd) | ✅ Fases 0-4 OK — pendiente conectar Graphiti al flujo, pruebas integrales y decisión nodo de voz |
+| 2026-10-04 | **Saneamiento VPS + Rebranding + Tubo de WhatsApp:** reconocimiento de puertos, Telegram apagado, 8642 cerrado, rebranding WebUI (favicons lobo + i18n) desplegado, WAHA montado y probado (`session.status` capturado) | ✅ Tubo listo — falta que el Monarca escanee el QR con el prepago |
+| Pendiente | Integrar WhatsApp (escanear QR → captura real → construir el **Filtro** 🟢🟡🟠🔥) | ⏳ Pendiente |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
 | Pendiente | Pruebas de campo (2 frentes) | ⏳ Pendiente |
@@ -168,12 +180,13 @@ Un cron diario (6:00 AM) ejecuta:
 3. Reportar al Monarca si hay información crítica faltante
 
 ### REGISTRO DE MANTENIMIENTO (cron diario)
-||| Fecha | Integridad | Cambios aplicados ||
-|||:------|:-----------|:------------------||
-|||| 2026-10-04 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO) presentes, actualizados y coherentes. Protocolo íntegro. ||
-|||| 2026-10-03 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **Marca LOBO** — mascota/producto agente (lobo negro peluche 3D), temas claro+oscuro con oscuro por defecto, sello de unidad social añadidos a MARCA; (2) **NEREUS ↔ LOBO** — enlace de marca documentado (NEREUS = clave interna del producto LOBO); (3) **Modelo de Bellion fijado** (`deepseek-v4.1-flash`); (4) **Corregida la Red de Sombras** — decía `delegate_task`, contradiciendo la regla de oro #4; ahora indica `hermes -p <perfil> chat -q`. Integridad estructural completa (174→181 líneas, todas las secciones presentes). ||
-||| 2026-10-02 | ✅ OK | Fecha revisada. Verificación de integridad completa. **Sin información crítica faltante**. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce) presentes, actualizados y coherentes. Protocolo íntegro. ||
-|| 2026-10-01 | ✅ OK | Fecha revisada. **Información crítica faltante registrada: Proyecto NEREUS** (sección nueva + fila en historial). NEREUS no figuraba en el protocolo pese a 4 fases ejecutadas. Resto de datos (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. ||
+| Fecha | Integridad | Cambios aplicados |
+|:------|:-----------|:------------------|
+| 2026-10-05 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **NEREUS Fase 3 completada** (voz clonada + streaming por frases TTFA 0,75 s) y **Fase 4** (Mem0 + Graphiti/Neo4j bajo systemd) — la sección estaba congelada en "Fase 3 parcial"; (2) **Canal WhatsApp (WAHA)** — sección nueva: tubo montado y probado, ruta no oficial, trampas y pendiente del QR; (3) **Telegram apagado** (corregido el "Canal principal" obsoleto); (4) **Rebranding WebUI desplegado** (favicons lobo, i18n, commit 48d0d161); (5) **Puertos VPS** y cierre del 8642 fantasma; (6) Historial actualizado. Además **corregida corrupción de la tabla de mantenimiento** (filas con `||` de más). |
+| 2026-10-04 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-03 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **Marca LOBO** — mascota/producto agente (lobo negro peluche 3D), temas claro+oscuro con oscuro por defecto, sello de unidad social añadidos a MARCA; (2) **NEREUS ↔ LOBO** — enlace de marca documentado (NEREUS = clave interna del producto LOBO); (3) **Modelo de Bellion fijado** (`deepseek-v4.1-flash`); (4) **Corregida la Red de Sombras** — decía `delegate_task`, contradiciendo la regla de oro #4; ahora indica `hermes -p <perfil> chat -q`. Integridad estructural completa (174→181 líneas, todas las secciones presentes). |
+| 2026-10-02 | ✅ OK | Fecha revisada. Verificación de integridad completa. **Sin información crítica faltante**. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-01 | ✅ OK | Fecha revisada. **Información crítica faltante registrada: Proyecto NEREUS** (sección nueva + fila en historial). NEREUS no figuraba en el protocolo pese a 4 fases ejecutadas. Resto de datos (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
 | 2026-09-30 | ✅ OK | Fecha revisada. Verificación de integridad completa. Sin información crítica faltante detectada. Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura) presentes y actualizados. |
 | 2026-09-29 | ✅ OK | Fecha revisada. Registrado PRODUCTO SECUNDARIO (tienda Dropi), infra Composio/Chromium/Telegram, 4 lecciones nuevas, hito de tienda en historial. |
 

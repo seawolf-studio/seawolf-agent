@@ -1,4 +1,10 @@
 # PRUEBA DE COMBATE — EJERCITO DE SOMBRAS
+
+> ⚠️ **SUPERSEDIDA — NO USAR COMO ESTADO ACTUAL.** Este intento dio 1 PASA / 9 FALLA porque los procesos
+> `hermes -p` no llegaron a arrancar (`rc=0xC0000142`, 0.0 s) al lanzarse en bucle desde Python en Windows
+> mientras yo editaba los `.env` de los perfiles. El resultado definitivo es **10/10 PASA**:
+> ver `intel/prueba-combate-ejercito-v2-20261007.md`.
+
 **Fecha:** 20261007-172907 · **Ejecutada por:** Bellion (via hermes -p por perfil)
 **Criterio:** PASA = responde Y deja el archivo (usa herramientas).
 

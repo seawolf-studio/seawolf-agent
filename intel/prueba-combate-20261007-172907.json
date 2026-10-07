@@ -1,0 +1,92 @@
+{
+  "igris": {
+    "rc": 0,
+    "seg": 46.0,
+    "archivo": true,
+    "responde": true,
+    "session": "Session:        20261007_172914_45fa7f",
+    "veredicto": "PASA",
+    "cola": "├─▶ The build backend returned an error\n        ╰─▶ Call to `setuptools.build_meta.build_editable` failed (exit code:\n            0xc0000142)\n      hint: Build failures usually indicate a problem with the package or the build environment\n\u001b[33m⚠ Config issues detected in config.yaml:\u001b[0m\n  \u001b[31m✗\u001b[0m timezone '(GMT-5)' is not a valid IANA zone name\n  \u001b[2mRun 'hermes doctor' for fix suggestions.\u001b[0m"
+  },
+  "tank": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "greed": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "iron": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "tusk": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "kamish": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "kaisel": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "titan": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "jima": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  },
+  "beru": {
+    "rc": 3221225794,
+    "seg": 0.0,
+    "archivo": false,
+    "responde": false,
+    "session": "",
+    "veredicto": "FALLA",
+    "cola": ""
+  }
+}

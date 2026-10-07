@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-10-06*
+*Última actualización: 2026-10-07*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -96,10 +96,13 @@ El Monarca las odia con toda su alma.
 - **Futuro anotado:** multi-tienda (3 tiendas más) y centro comercial virtual.
 
 ### CANAL: WHATSAPP (WAHA) — plato fuerte de Seawolf Agent
-**Ruta (decisión vigente 2026-10-04):** no oficial — Baileys → **WAHA Core** → WAHA Plus. El Monarca rechaza la burocracia de Meta. **Riesgo honesto:** viola ToS de WhatsApp → baneo; mitigación = número dedicado, calentamiento y límites.
-- **Montado y probado en el VPS (2026-10-04):** contenedor `waha` (`devlikeapro/waha:latest`, WEBJS Core, `127.0.0.1:3000`, API key en `/root/.waha.env` chmod 600); sesión `seawolf` en `SCAN_QR_CODE`; QR fresco con `/opt/waha/qr.sh` (`GET /api/seawolf/auth/qr?format=image`); receptor `/opt/waha/sink.py` (`waha-sink.service`, log `/opt/waha/messages.log`); webhook `http://172.16.0.1:3010/webhook` (gateway Docker, privado) → **captura `session.status` probada** ✅.
+**Ruta (decisión vigente):** no oficial — Baileys → **WAHA Core** → WAHA Plus. El Monarca rechaza la burocracia de Meta. **Riesgo honesto:** viola ToS de WhatsApp → baneo; mitigación = número dedicado, calentamiento y límites; perfil bajo por diseño (nunca masivo, nunca robótico, destinatario único).
+- **Montado, VINCULADO y con Filtro (Capa 1) — 2026-10-06:** contenedor `waha` (`devlikeapro/waha:latest`, **motor GOWS** — obligatorio por el **passkey** de WhatsApp; WEBJS/NOWEB fallan con `Cmd.refreshQR is not a function`; GOWS gratis desde WAHA 2026.6.1; `127.0.0.1:3000`, API key en `/root/.waha.env` chmod 600); **sesión `seawolf` = `WORKING`**, número **+57 300 206 7487** vinculado (perfil "Seawolf Agent"). Receptor `/opt/waha/sink.py` (`waha-sink.service`, log `/opt/waha/messages.log`); webhook `http://172.16.0.1:3010/webhook` (gateway Docker, privado).
+- **Filtro (Capa 1) CONSTRUIDO:** `/opt/waha/filtro.py` (unit `seawolf-filtro.service`, puerto **3011**). Criterio del Monarca: 🔥 rojo = perturba seguridad o exige atención inmediata · 🟠 naranja = **mitigable ahora, arreglo después** (la acción empieza por la mitigación) · 🟡 consulta · 🟢 informativo. Voz → transcribe con **Groq `whisper-large-v3-turbo`**; imagen → describe con `google/gemini-2.5-flash` (OpenRouter); clasifica con `google/gemini-2.5-flash` (JSON). Entrega 🟠🔥 a la **Línea 1** del cliente vía WAHA `sendText`. Log en `/opt/waha/filtro.log`.
 - **Trampas cazadas:** un contenedor NO alcanza `127.0.0.1` del host → el sink va al gateway Docker `172.16.0.1:3010`; el backlog de webhooks fallidos sigue reintentando → mirar la URL **dentro** del error; `PUT /api/sessions/<name>` **reinicia** la sesión (nuevo QR).
-- **Falta:** que el Monarca escanee el QR con el número prepago → probar captura real → construir el **Filtro** (clasificador 🟢🟡🟠🔥).
+- **MODELO DE 2 LÍNEAS (CONFIRMADO):** **Línea 1** = número **personal** del cliente (ya existe), recibe SOLO lo filtrado, **intocable**. **Línea 2** = línea **dedicada** donde VIVE el agente (eSIM/SIM aparte); el cliente migra ahí sus contactos de trabajo y el agente observa/clasifica/filtra. Aviso **L2 (bot) → L1 (personal)** = notificación natural; no hace falta 3ª línea. Privacidad = arma de venta (el agente solo lee L2).
+- **Canal Bellion → Monarca:** helper `/opt/waha/avisar.sh "mensaje"` (L2 → +57 312 533 0127). Probado ✅.
+- **Falta:** construir la **Capa 2** (automatización/delegación); ver diseño en `intel/capa2-system-prompt-draft-20261006.md`.
 - **Skill:** `seawolf-whatsapp-waha`.
 
 ### INFRAESTRUCTURA TÉCNICA
@@ -143,8 +146,9 @@ El Monarca las odia con toda su alma.
 | 2026-09-10 | Lección maestra: orquestar = `hermes -p <sombra> chat -q`, NUNCA subagentes efímeros | ✅ Grabada en piedra |
 | 2026-09-16→28 | Tienda e-commerce propia (Dropi): catálogo total, Astro, puente v3, automatización de pedidos, precios | ✅ Entregada — ZIP listo, pipeline autónomo probado |
 | 2026-09-30→10-02 | **Proyecto NEREUS** (agente personal → marca LOBO): clone+build (276 tests), persistencia Postgres/pgvector, gateway OpenRouter, Fase 3 Voz (VoiceBox + clon de voz + streaming por frases TTFA 0,75 s), Fase 4 Memoria (Mem0 + Graphiti/Neo4j bajo systemd) | ✅ Fases 0-4 OK — pendiente conectar Graphiti al flujo, pruebas integrales y decisión nodo de voz |
-| 2026-10-04 | **Saneamiento VPS + Rebranding + Tubo de WhatsApp:** reconocimiento de puertos, Telegram apagado, 8642 cerrado, rebranding WebUI (favicons lobo + i18n) desplegado, WAHA montado y probado (`session.status` capturado) | ✅ Tubo listo — falta que el Monarca escanee el QR con el prepago |
-| Pendiente | Integrar WhatsApp (escanear QR → captura real → construir el **Filtro** 🟢🟡🟠🔥) | ⏳ Pendiente |
+| 2026-10-04 | **Saneamiento VPS + Rebranding + Tubo de WhatsApp:** reconocimiento de puertos, Telegram apagado, 8642 cerrado, rebranding WebUI (favicons lobo + i18n) desplegado, WAHA montado y probado (`session.status` capturado) | ✅ Tubo listo |
+| 2026-10-06 | **Filtro WhatsApp (Capa 1) + modelo de negocio 2 líneas:** WAHA migrado a motor **GOWS** (passkey), sesión `seawolf` vinculada (`WORKING`, +57 300 206 7487), **Filtro Capa 1** construido (🔥🟠🟡🟢 + voz Groq + imagen Gemini), canal Bellion→Monarca (`avisar.sh`), pipeline de 100 repos IA, **diseño de la Capa 2** | ✅ Capa 1 operativa — **Capa 2 pendiente de construir** |
+| Pendiente | Construir **Capa 2** (automatización/delegación: motor de respuestas con cola/pausas/presencia, compuerta de aprobación, onboarding configurable, límites + auditoría) — diseño en `intel/capa2-system-prompt-draft-20261006.md` | ⏳ Pendiente |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
 | Pendiente | Pruebas de campo (2 frentes) | ⏳ Pendiente |
@@ -182,7 +186,7 @@ Un cron diario (6:00 AM) ejecuta:
 ### REGISTRO DE MANTENIMIENTO (cron diario)
 | Fecha | Integridad | Cambios aplicados |
 |:------|:-----------|:------------------|
-| 2026-10-06 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-07 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesión 2026-10-06: Filtro WhatsApp Capa 1):** (1) **Canal WhatsApp/WAHA** actualizado — migrado a motor **GOWS** (passkey obligatorio; WEBJS/NOWEB fallan), sesión `seawolf` **`WORKING`** con número **+57 300 206 7487** (ya no "falta escanear el QR"); (2) **Filtro (Capa 1) CONSTRUIDO** (`/opt/waha/filtro.py`, `seawolf-filtro.service`, puerto 3011) con criterio del Monarca 🔥🟠🟡🟢, voz vía Groq `whisper-large-v3-turbo`, imagen y clasificación con `gemini-2.5-flash`, entrega a Línea 1; (3) **Modelo de negocio de 2 líneas** documentado (L1 personal intocable / L2 dedicada con el agente); (4) **Canal Bellion→Monarca** (`/opt/waha/avisar.sh`); (5) **Capa 2** — diseño en `intel/capa2-system-prompt-draft-20261006.md` registrado como pendiente; (6) Historial actualizado (fila 2026-10-06 + pendiente Capa 2). Integridad estructural OK. |
 | 2026-10-05 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **NEREUS Fase 3 completada** (voz clonada + streaming por frases TTFA 0,75 s) y **Fase 4** (Mem0 + Graphiti/Neo4j bajo systemd) — la sección estaba congelada en "Fase 3 parcial"; (2) **Canal WhatsApp (WAHA)** — sección nueva: tubo montado y probado, ruta no oficial, trampas y pendiente del QR; (3) **Telegram apagado** (corregido el "Canal principal" obsoleto); (4) **Rebranding WebUI desplegado** (favicons lobo, i18n, commit 48d0d161); (5) **Puertos VPS** y cierre del 8642 fantasma; (6) Historial actualizado. Además **corregida corrupción de la tabla de mantenimiento** (filas con `||` de más). |
 | 2026-10-04 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO) presentes, actualizados y coherentes. Protocolo íntegro. |
 | 2026-10-03 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **Marca LOBO** — mascota/producto agente (lobo negro peluche 3D), temas claro+oscuro con oscuro por defecto, sello de unidad social añadidos a MARCA; (2) **NEREUS ↔ LOBO** — enlace de marca documentado (NEREUS = clave interna del producto LOBO); (3) **Modelo de Bellion fijado** (`deepseek-v4.1-flash`); (4) **Corregida la Red de Sombras** — decía `delegate_task`, contradiciendo la regla de oro #4; ahora indica `hermes -p <perfil> chat -q`. Integridad estructural completa (174→181 líneas, todas las secciones presentes). |

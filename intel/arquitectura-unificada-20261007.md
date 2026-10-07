@@ -163,7 +163,7 @@ dar por cerrada la fase, y queda registrado como evidencia.
 | **F2** | **Índice semántico + herramienta de retrieval** expuesta al agente (patrón NEREUS: pgvector) | **Igris** + **Jima** | El agente responde el caso X (§6) |
 | **F3** | **Outbound universal**: todo saliente (avisos, respuestas, correos) se registra en el bus | **Tank** | Un saliente aparece como evento |
 | **F4** | **Multi-tenant + Audit Trail**: namespace por tenant; cada evento es auditable | **Tank** + **Beru** | Aislamiento probado con 2 tenants |
-| **F5** | **Onboarding** declara el mapa de capacidades (Capa 1→2→3) | **Igris** | Draft v2 + guion de arranque |
+| **F5** | **Onboarding**: mapa completo de capacidades + **estado honesto** (activo/en desarrollo/disponible en X) desde el día 1, y **primer wow real en 48 h** | **Igris** + **Greed** | Draft v2 + mapa de capacidades + guion de arranque |
 | **F6** | **Copy de venta** reescrito: el filtro es un bullet del agente, no un producto | **Greed** | 1-pager v2 + planes v2 |
 | **F7** | **Auditoría** del conjunto y Audit Trail de ejemplo como pieza de confianza | **Beru** | Reporte + ejemplo |
 
@@ -174,9 +174,22 @@ prueba que hay UN solo cerebro) → luego F3–F7.
 
 ## 8. DECISIONES ABIERTAS (requieren al Monarca)
 
-1. **Transparencia de la escalera:** ¿el cliente sabe desde el día 1 que puede escalar a
-   automatización/dashboard, o lo descubre solo al usar la Capa 2? *(Pregunta pendiente, cambio la
-   redacción del onboarding en F5.)*
+1. **Transparencia de la escalera — DECIDIDO (2026-10-07, Monarca): el cliente lo sabe desde el
+   día 1.** Razón del Monarca: *"el efecto wow que sea desde el principio; eso cerrará ventas de
+   clientes más experimentados, con conocimiento de tecnología, automatizaciones o IA — dirán «ya
+   tienen esto implementado, qué bueno» y no se irán a otras alternativas buscando eso que ya
+   tenemos pero no vieron desde el primer momento."*
+   **Refinamiento del Comandante (mapa ≠ desbloqueo):** transparencia total de **capacidades**,
+   activación **progresiva**. El arranque se compone de tres movimientos:
+   - **(a) El mapa completo, el día 1** — el cliente ve TODO lo que el agente puede llegar a hacer
+     (Capa 1 filtro → Capa 2 acciones → Capa 3 dashboard), para que no busque afuera lo que ya hay.
+   - **(b) El estado honesto** — junto a cada capacidad, su estado real: **activo hoy** / **en
+     desarrollo** / **disponible en X**. Un cliente experto **prueba en el día 1**: prometer lo que
+     aún no existe es lo único que destruye su confianza (y es peor que no anunciarlo).
+   - **(c) El primer wow REAL en 48 h** — su propio WhatsApp filtrado con sus mensajes reales. El
+     mapa cierra la venta; el wow entregado la sostiene. Un mapa sin primera entrega es una promesa.
+   **Regla de retención del cliente avanzado:** hitos visibles y periódicos (roadmap visible) — un
+   cliente técnico no se va por falta de funciones, se va cuando cree que estamos detenidos.
 2. **Almacén:** ¿SQLite por tenant (simple, ya probado) o PostgreSQL central (escala, como NEREUS)?
 3. **Grafo temporal:** ¿se suma Graphiti-patrón ya en F2, o se pospone a F4 (multi-tenant)?
 4. **Retención/privacidad:** cuánto tiempo se guarda el event log y qué se borra a pedido del cliente

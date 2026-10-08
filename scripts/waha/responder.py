@@ -211,7 +211,7 @@ def procesar_orden(texto, de="dueno"):
     if not abiertos:
         _log("ORDEN recibida sin propuestas abiertas: %s" % t[:80])
         if bus:
-            bus.emit(channel="whatsapp", direction="in", kind="order", text=t, peer=SELF,
+            bus.emit(channel="whatsapp", direction="in", kind="order_processed", text=t, peer=SELF,
                      actor=de, layer=2, artifacts=[{"type": "order", "sin_pendientes": True}])
         return
 
@@ -227,7 +227,9 @@ def procesar_orden(texto, de="dueno"):
         _post("/api/sendText", {"session": "seawolf", "chatId": SELF, "text": "✅ Descartada. No envié nada."})
         _log("ORDEN: propuesta %s descartada" % pid)
         if bus:
-            bus.emit(channel="whatsapp", direction="in", kind="order", text=t, peer=SELF,
+            # kind='order_processed' (NO 'order'): el motor lee el bus, y si emitiera 'order'
+            # se reprocesaria a si mismo en bucle infinito (bug medido 2026-10-07: 68 eventos basura).
+            bus.emit(channel="whatsapp", direction="in", kind="order_processed", text=t, peer=SELF,
                      actor=de, layer=2, approved_by=None,
                      artifacts=[{"type": "order", "accion": "descartar", "id": pid}])
         return
@@ -241,10 +243,19 @@ def procesar_orden(texto, de="dueno"):
     urgente = str(p.get("nivel", "")).lower() in ("rojo", "🔥", "urgente")
     ok = enviar_humano(p["destino"], salida, urgente=urgente)
     _log("ORDEN: propuesta %s %s -> %s" % (pid, accion, "enviada" if ok else "FALLO"))
+    if not ok:
+        # un fallo silencioso es peor que un fallo: el dueno TIENE que enterarse
+        try:
+            _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
+                                    "text": "⚠️ No pude entregar el mensaje a ese contacto (no existe en WhatsApp o fue rechazado). El texto NO salió."})
+        except Exception:
+            pass
     if bus:
-        bus.emit(channel="whatsapp", direction="in", kind="order", text=t, peer=SELF, actor=de,
+        # 'order_processed', nunca 'order' (evita que el motor se reprocese a si mismo)
+        bus.emit(channel="whatsapp", direction="in", kind="order_processed", text=t, peer=SELF, actor=de,
                  layer=2, approved_by=(tenant().get("dueno", {}) or {}).get("nombre", "dueno"),
-                 artifacts=[{"type": "order", "accion": accion, "id": pid, "nivel": p.get("nivel")}])
+                 artifacts=[{"type": "order", "accion": accion, "id": pid, "nivel": p.get("nivel"),
+                             "enviado": bool(ok)}])
 
 
 # ---------------------------------------------------------------- redaccion (el agente piensa)

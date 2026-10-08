@@ -9,17 +9,35 @@ except Exception:  # nunca tumbar el filtro por el bus
 TENANTF = "/opt/waha/tenant.json"
 
 
-def _cargar_owner_lids():
-    """Identidades del DUEÑO. Sus mensajes son ORDENES, no mensajes a clasificar."""
+def _solo_digitos(s):
+    return "".join(ch for ch in str(s) if ch.isdigit())
+
+
+def _cargar_owner():
+    """Identidades del DUEÑO. Sus mensajes son ORDENES, no mensajes a clasificar.
+    Devuelve (lids, digitos): WhatsApp puede entregar el remitente como LID opaco
+    (ej. 145934583394304@lid) o como numero; hay que reconocer AMBOS."""
     try:
         t = json.load(open(TENANTF, encoding="utf-8"))
         d = t.get("dueno") or {}
-        return {str(x).strip().lower() for x in (d.get("lid"), d.get("linea1")) if x}
+        lids = {str(x).strip().lower() for x in (d.get("lid"),) if x}
+        digs = {_solo_digitos(d.get(x)) for x in ("lid", "linea1") if d.get(x)}
+        return lids, {x for x in digs if len(x) >= 8}
     except Exception:
-        return set()
+        return set(), set()
 
 
-OWNER_LIDS = _cargar_owner_lids()
+OWNER_LIDS, OWNER_DIGS = _cargar_owner()
+
+
+def es_dueno(ident):
+    i = str(ident or "").strip().lower()
+    if not i:
+        return False
+    if i in OWNER_LIDS:
+        return True
+    dig = _solo_digitos(i)
+    return bool(dig) and any(od in dig for od in OWNER_DIGS)
 
 WAHA_URL = os.environ.get("WAHA_URL", "http://127.0.0.1:3000")
 WAHA_KEY = os.environ["WAHA_API_KEY"]
@@ -140,8 +158,7 @@ class H(BaseHTTPRequestHandler):
         body = (p.get("body") or "").strip()
 
         # --- DUEÑO = ORDEN (C2): no se clasifica ni se alerta; se publica como orden al bus ---
-        if OWNER_LIDS and (str(sender).strip().lower() in OWNER_LIDS
-                           or str(chat).strip().lower() in OWNER_LIDS):
+        if es_dueno(sender) or es_dueno(chat):
             if bus:
                 try:
                     bus.emit(channel="whatsapp", direction="in", kind="order", text=body,

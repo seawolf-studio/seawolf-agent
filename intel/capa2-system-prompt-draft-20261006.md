@@ -74,6 +74,55 @@ al mismo ritmo y a las 3 de la mañana. Los 19 s no son el problema; contestar e
 —sumada a la espera humana deja ~40 s y atasca el motor con varios mensajes—. Usar modelo **rápido**
 (~2-3 s: `deepseek-v4-flash` / `qwen3.7-flash`) y dejar el grande como respaldo de razonamiento.
 
+## 7. COMPUERTA DE APROBACIÓN (C2) — DISEÑO
+
+**Principio del Monarca (2026-10-07):** *"en cuanto la aprobación, siempre debe quedar opción para
+escribir, así sea una emergencia"*. Un menú cerrado falla justo cuando más importa.
+
+### 7.1 Regla de oro: el texto libre manda
+
+- **Cualquier texto libre del dueño es una ORDEN**, no un mensaje a clasificar. El agente lo ejecuta
+  (o lo usa como instrucción) y lo registra en el bus con `approved_by=dueño`.
+- Las palabras clave son **atajos**, nunca la única puerta:
+  | Respuesta del dueño | Efecto |
+  |---|---|
+  | `ok` / `1` | Envía la propuesta 1 tal cual |
+  | `no` | La descarta |
+  | `edita: <texto>` o **cualquier texto nuevo** | Envía/registra **ese** texto como instrucción |
+  | `silencio 2h` | Silencia lo no urgente |
+- La propuesta del agente llega a **L1** con: qué pasó (nivel), quién escribe, la acción recomendada
+  y **la propuesta exacta** de respuesta — para que el dueño pueda aprobarla, corregirla o reemplazarla.
+
+### 7.2 Caso de emergencia (🔥) — emergencia con instrucción
+
+Escenario del Monarca: *incursión no autorizada*. La respuesta rápida es llamar a la policía; con el
+campo de escritura el dueño responde:
+
+> *"llamen a este número 123456789 al capitán Bellion para una respuesta más rápida"*
+
+El agente **transmite esa instrucción** al destinatario correcto y alerta al dueño. El agente es
+**puente de mando**, no filtro. Para que funcione:
+
+1. **Directorio de emergencia** en la memoria del tenant: policía / cuadrante, guarda, administrador,
+   contactos del dueño (ej. "capitán Bellion"), proveedores. Se carga en el onboarding.
+2. **Acción recomendada por el propio agente** en 🔥 (ej. *"avisar al guarda y llamar a la policía al 123"*),
+   siempre con la mitigación primero.
+3. **El agente nunca promete ni afirma por el tercero**: transmite y confirma lo que el dueño autorizó.
+
+### 7.3 Regla "rompe-rojo" (opcional, la configura el dueño)
+
+Por defecto la compuerta **espera** la respuesta del dueño. Opcionalmente, el dueño puede pre-autorizar:
+*"si es 🔥 y no respondo en N segundos, ejecuta la acción segura preaprobada (avisar al guarda) y me
+informas después"*. Sin esa regla explícita, el agente **no actúa**: deny-by-default se mantiene.
+
+### 7.4 Auditoría
+
+Cada propuesta, cada aprobación y cada instrucción libre queda como evento del bus
+(`kind=approval` / `action`, con `approved_by`). Eso convierte la compuerta en el **Audit Trail** de venta:
+se puede reconstruir quién autorizó qué, cuándo y con qué texto.
+
+---
+
 ## 3. PRINCIPIOS DE DISEÑO (por qué)
 - **Meta no banea por leer, banea por comportarse como spam.** Saliente bajo + variable + a pocos destinatarios.
 - **Menos es más:** un agente que habla poco es más creíble y más elegante.

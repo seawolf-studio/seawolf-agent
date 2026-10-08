@@ -72,6 +72,53 @@ try:  # MEDIOS: audio (whisper), imagen y VIDEO (audio + fotogramas)
 except Exception:
     describe_video = None
 
+# --- MEMORIA DE VEREDICTOS (determinismo) -------------------------------------
+# El mismo contenido debe recibir SIEMPRE el mismo veredicto. El clasificador es
+# no-determinista (medido 2026-10-08: el MISMO video dio naranja y luego verde), asi que
+# se cachea por HUELLA DEL CONTENIDO: mismos bytes -> mismo veredicto (y no se re-paga).
+import hashlib
+
+CACHE_CLASIF = "/opt/waha/clasificaciones.json"
+
+
+def _huella(datos):
+    if isinstance(datos, bytes):
+        return hashlib.sha256(datos).hexdigest()[:32]
+    return hashlib.sha256(str(datos).encode("utf-8")).hexdigest()[:32]
+
+
+def _cache_leer():
+    try:
+        return json.load(open(CACHE_CLASIF, encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _cache_guardar(d):
+    try:
+        json.dump(d, open(CACHE_CLASIF, "w", encoding="utf-8"), ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def clasificar_con_memoria(texto, huella):
+    """Devuelve la clasificacion cacheada si ya vimos este contenido exacto."""
+    d = _cache_leer()
+    if huella in d:
+        c = d[huella]
+        c["_cache"] = "hit"
+        return c
+    c = classify(texto)
+    c["_cache"] = "miss"
+    d[huella] = {"cat": c.get("cat"), "motivo": c.get("motivo"), "accion": c.get("accion"),
+                 "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    # poda simple: no crecer sin limite
+    if len(d) > 2000:
+        for k in list(d)[:500]:
+            d.pop(k, None)
+    _cache_guardar(d)
+    return c
+
 
 def _post_json(url, payload, headers):
     req = urllib.request.Request(url, data=json.dumps(payload).encode(),
@@ -232,10 +279,17 @@ class H(BaseHTTPRequestHandler):
                "group": is_group, "media": kind, "body": body}
         if text:
             try:
-                c = classify(text)
+                # huella del CONTENIDO (los bytes del adjunto si lo hay, si no el texto):
+                # el mismo contenido recibe siempre el mismo veredicto
+                if tmp and os.path.exists(tmp):
+                    huella = _huella(open(tmp, "rb").read())
+                else:
+                    huella = _huella(text)
+                c = clasificar_con_memoria(text, huella)
             except Exception as e:
                 c = {"cat": "error", "motivo": str(e)[:120], "accion": ""}
-            rec.update(cat=c.get("cat"), motivo=c.get("motivo"), accion=c.get("accion"), extra=extra)
+            rec.update(cat=c.get("cat"), motivo=c.get("motivo"), accion=c.get("accion"),
+                       extra=extra, huella=huella, cache=c.get("_cache"))
             if bus:
                 try:
                     bus.emit(channel="whatsapp", direction="in", kind="message", text=text,

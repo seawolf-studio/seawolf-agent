@@ -20,6 +20,9 @@ CASOS = [
      "Hay un hombre raro mirando los carros en el parqueadero desde hace media hora"),
     ("Queja de servicio", "nunca_verde",
      "Llevo tres semanas esperando que arreglen la reja del parque infantil, esto es un abandono"),
+    ("Objeto en riesgo (maceta/matera)", "naranja",
+     "Reporto esa matera que se encuentra con dos dias donde no le han regado, no le han echado agua "
+     "a la matera y puede accidentarse cualquier persona. Por favor, ayuda."),
     ("Consulta simple", "amarillo",
      "A que hora es la reunion del consejo de administracion?"),
     ("Saludo", "verde",

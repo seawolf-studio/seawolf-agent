@@ -265,6 +265,7 @@ def procesar_orden(texto, de="dueno", via="texto"):
         try:  # confirmacion: el dueno ve que se entendio su voz (y puede corregir)
             _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
                                     "text": eco + "✅ Enviado a ese contacto."})
+            _log("ECO de voz enviado al dueno: %s" % eco.strip()[:120])
         except Exception:
             pass
     if not ok:

@@ -1,0 +1,19 @@
+[Unit]
+Description=Seawolf Agent - Responder (C1 mecanica humana + C2 compuerta de aprobacion)
+After=network.target seawolf-filtro.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/waha
+EnvironmentFile=/opt/waha/filtro.env
+Environment=RESPONDER_TEST_FAST=1
+Environment=RESPONDER_TOPE_HORA=20
+ExecStart=/usr/bin/python3 /opt/waha/responder.py vigilar
+Restart=always
+RestartSec=5
+# NO redirigir stdout al mismo responder.log: el script ya escribe ahi y cada linea saldria doble.
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

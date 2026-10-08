@@ -1,0 +1,28 @@
+{
+  "tenant": "monarca",
+  "dueno": {
+    "nombre": "Key",
+    "lid": "145934583394304@lid",
+    "linea1": "+57 312 533 0127",
+    "nota": "LID capturado 2026-10-07 del mensaje 'Aqui esta el dueno'. Los mensajes de esta identidad son ORDENES, no mensajes a clasificar."
+  },
+  "agente": {
+    "numero": "+57 300 206 7487",
+    "linea": "L2 (prepago) — donde vive el agente",
+    "perfil": "Seawolf Agent"
+  },
+  "directorio_emergencia": {
+    "policia": "",
+    "cuadrante": "",
+    "guarda": "",
+    "administrador": "",
+    "capitan_bellion": "",
+    "nota": "Se llena en el onboarding (C4). El agente solo propone acciones con estos contactos."
+  },
+  "politica": {
+    "deny_by_default": true,
+    "texto_libre_es_orden": true,
+    "rompe_rojo": {"activo": false, "segundos": 120},
+    "tope_envios_hora": 20
+  }
+}

@@ -6,6 +6,21 @@ try:  # BUS DE EVENTOS: si pasa por un canal, pasa por el bus (ver intel/arquite
 except Exception:  # nunca tumbar el filtro por el bus
     bus = None
 
+TENANTF = "/opt/waha/tenant.json"
+
+
+def _cargar_owner_lids():
+    """Identidades del DUEÑO. Sus mensajes son ORDENES, no mensajes a clasificar."""
+    try:
+        t = json.load(open(TENANTF, encoding="utf-8"))
+        d = t.get("dueno") or {}
+        return {str(x).strip().lower() for x in (d.get("lid"), d.get("linea1")) if x}
+    except Exception:
+        return set()
+
+
+OWNER_LIDS = _cargar_owner_lids()
+
 WAHA_URL = os.environ.get("WAHA_URL", "http://127.0.0.1:3000")
 WAHA_KEY = os.environ["WAHA_API_KEY"]
 ORK = os.environ["OPENROUTER_API_KEY"]
@@ -37,6 +52,10 @@ def _post_json(url, payload, headers):
 def classify(text):
     d = _post_json("https://openrouter.ai/api/v1/chat/completions",
                    {"model": MODEL, "temperature": 0, "response_format": {"type": "json_object"},
+                    "max_tokens": 400,
+                    # CRITICO: qwen3.7-flash razona. Con razonamiento activado medido 13.7 s/mensaje
+                    # y 11x mas caro; desactivado: 1.8 s. La Capa 1 no puede razonar en voz alta.
+                    "reasoning": {"enabled": False},
                     "messages": [{"role": "system", "content": SYS}, {"role": "user", "content": text}]},
                    {"Authorization": "Bearer " + ORK})
     return json.loads(d["choices"][0]["message"]["content"])
@@ -119,6 +138,23 @@ class H(BaseHTTPRequestHandler):
         is_group = str(chat).endswith("@g.us")
         sender = (p.get("participant") or frm) if is_group else frm
         body = (p.get("body") or "").strip()
+
+        # --- DUEÑO = ORDEN (C2): no se clasifica ni se alerta; se publica como orden al bus ---
+        if OWNER_LIDS and (str(sender).strip().lower() in OWNER_LIDS
+                           or str(chat).strip().lower() in OWNER_LIDS):
+            if bus:
+                try:
+                    bus.emit(channel="whatsapp", direction="in", kind="order", text=body,
+                             peer=str(chat), actor=str(sender), layer=2,
+                             artifacts=[{"type": "order", "via": "whatsapp"}])
+                except Exception:
+                    pass
+            log({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "from": sender, "chat": chat,
+                 "group": is_group, "owner_order": True, "body": body})
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"ok")
+            return
         medi = p.get("media") or {}
         has = p.get("hasMedia")
         mt = medi.get("mimetype") or ""

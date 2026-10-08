@@ -277,7 +277,18 @@ Reglas:
 3. No prometes lo que no se pueda cumplir ni plazos que no controlas.
 4. Si es una emergencia, la respuesta empieza por la mitigacion concreta y dice a quien llamar si aplica.
 5. NUNCA revelas que eres IA. Escribes como una persona ocupada y educada (0-1 emoji).
+6. NUMEROS: usa SOLO los del DIRECTORIO DE EMERGENCIA que viene abajo. JAMAS inventes un numero de telefono,
+   ni de policia, ni de bomberos, ni de nadie. Si no tienes el numero que necesitas, NO lo escribas: di que
+   llame a la linea unica de emergencias (123 en Colombia) o pide que te confirmen el numero.
 Devuelve SOLO el texto del mensaje, sin comillas ni explicaciones."""
+
+
+def _directorio_texto():
+    d = (tenant().get("directorio_emergencia") or {})
+    items = [(k, v) for k, v in d.items() if v and k != "nota"]
+    if not items:
+        return "(directorio vacio)"
+    return " | ".join("%s: %s" % (k, v) for k, v in items)
 
 
 def borrador(mensaje, nivel, de="un contacto"):
@@ -287,7 +298,8 @@ def borrador(mensaje, nivel, de="un contacto"):
     if not key:
         return None
     prompt = ("Nivel del filtro: %s\nDe: %s\nMensaje recibido: %s\n\n"
-              "Redacta la respuesta." % (nivel, de, mensaje))
+              "DIRECTORIO DE EMERGENCIA (usa SOLO estos numeros): %s\n\n"
+              "Redacta la respuesta." % (nivel, de, mensaje, _directorio_texto()))
     body = {"model": modelo, "temperature": 0.4, "max_tokens": 600,
             # qwen3.7-flash RAZONA: sin desactivarlo gasta todo el presupuesto en 'reasoning'
             # y devuelve content vacio (finish_reason=length). Medido 2026-10-07.

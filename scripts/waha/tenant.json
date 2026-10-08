@@ -19,12 +19,14 @@
     }
   },
   "directorio_emergencia": {
-    "policia": "",
+    "policia": "123",
+    "bomberos": "119",
+    "ambulancia": "125",
     "cuadrante": "",
     "guarda": "",
     "administrador": "",
     "capitan_bellion": "",
-    "nota": "Se llena en el onboarding (C4). El agente solo propone acciones con estos contactos."
+    "nota": "linea unica de emergencias en Colombia = 123. Los numeros locales (cuadrante, guarda, administrador) los llena el Monarca en el onboarding (C4)."
   },
   "politica": {
     "deny_by_default": true,

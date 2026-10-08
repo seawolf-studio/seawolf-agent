@@ -67,6 +67,11 @@ except Exception:  # nunca tumbar el filtro: si falla, el criterio local de abaj
     SYS = ""
     classify = None
 
+try:  # MEDIOS: audio (whisper), imagen y VIDEO (audio + fotogramas)
+    from medios import describe_video
+except Exception:
+    describe_video = None
+
 
 def _post_json(url, payload, headers):
     req = urllib.request.Request(url, data=json.dumps(payload).encode(),
@@ -157,16 +162,39 @@ class H(BaseHTTPRequestHandler):
         body = (p.get("body") or "").strip()
 
         # --- DUEÑO = ORDEN (C2): no se clasifica ni se alerta; se publica como orden al bus ---
+        #     El dueño puede decidir por TEXTO o por NOTA DE VOZ (se transcribe).
         if es_dueno(sender) or es_dueno(chat):
+            texto_orden, via = body, "texto"
+            medi_o = p.get("media") or {}
+            if p.get("hasMedia") and str(medi_o.get("mimetype") or "").lower().startswith("audio"):
+                url_o = medi_o.get("url")
+                if url_o:
+                    tmp_o = None
+                    try:
+                        tmp_o = tempfile.NamedTemporaryFile(delete=False, suffix=".ogg").name
+                        download(url_o, tmp_o)
+                        t = transcribe(tmp_o)
+                        if t:
+                            texto_orden, via = t, "voz"
+                    except Exception as e:
+                        log({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "owner_order": True,
+                             "via": "voz", "error": str(e)[:120]})
+                    finally:
+                        if tmp_o:
+                            try:
+                                os.unlink(tmp_o)
+                            except Exception:
+                                pass
             if bus:
                 try:
-                    bus.emit(channel="whatsapp", direction="in", kind="order", text=body,
+                    bus.emit(channel="whatsapp", direction="in", kind="order", text=texto_orden,
                              peer=str(chat), actor=str(sender), layer=2,
-                             artifacts=[{"type": "order", "via": "whatsapp"}])
+                             artifacts=[{"type": "order", "via": via}])
                 except Exception:
                     pass
             log({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "from": sender, "chat": chat,
-                 "group": is_group, "owner_order": True, "body": body})
+                 "group": is_group, "owner_order": True, "via": via, "body": body,
+                 "texto_orden": texto_orden})
             self.send_response(200)
             self.end_headers()
             self.wfile.write(b"ok")
@@ -189,6 +217,10 @@ class H(BaseHTTPRequestHandler):
                     elif mt.startswith("image"):
                         dsc = describe_image(tmp, mt)
                         extra = ("[descripcion de " + kind + "]: " + dsc) if dsc else ("[" + kind + ": descripcion vacia]")
+                    elif mt.startswith("video") and describe_video:
+                        # VIDEO = dos canales: lo que se dice (audio) y lo que se ve (fotogramas)
+                        dv = describe_video(tmp)
+                        extra = dv if dv else ("[" + kind + " adjunto]")
                     else:
                         extra = "[" + kind + " adjunto]"
                 except Exception as e:

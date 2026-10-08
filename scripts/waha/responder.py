@@ -198,11 +198,20 @@ def proponer(destino, texto, nivel, de="un contacto", propuesta=None, mensaje=No
     return pid
 
 
-def procesar_orden(texto, de="dueno"):
-    """Texto libre = ORDEN. Atajos son conveniencia, nunca la unica puerta."""
+def procesar_orden(texto, de="dueno", via="texto"):
+    """Texto libre = ORDEN. Atajos son conveniencia, nunca la unica puerta.
+    via='voz' cuando el dueno decidio por nota de voz (se transcribio)."""
     t = (texto or "").strip()
     if not t:
+        _log("ORDEN vacia (via=%s): no hay texto que interpretar" % via)
+        if via == "voz":
+            try:
+                _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
+                                        "text": "🎤 No pude entender su nota de voz. ¿Me la repite o me lo escribe?"})
+            except Exception:
+                pass
         return
+    eco = ("🎤 Entendido por voz: «%s»\n" % t[:160]) if via == "voz" else ""
     d = pendientes()
     abiertos = [k for k, v in d.items() if v.get("estado") == "pendiente"]
     bajo = t.lower()
@@ -233,7 +242,7 @@ def procesar_orden(texto, de="dueno"):
     elif bajo in ("no", "2", "cancelar", "descartar", "nel"):
         p["estado"] = "descartada"
         _guardar_pend(d)
-        _post("/api/sendText", {"session": "seawolf", "chatId": SELF, "text": "✅ Descartada. No envié nada."})
+        _post("/api/sendText", {"session": "seawolf", "chatId": SELF, "text": eco + "✅ Descartada. No envié nada."})
         _log("ORDEN: propuesta %s descartada" % pid)
         if bus:
             # kind='order_processed' (NO 'order'): el motor lee el bus, y si emitiera 'order'
@@ -252,11 +261,17 @@ def procesar_orden(texto, de="dueno"):
     urgente = str(p.get("nivel", "")).lower() in ("rojo", "🔥", "urgente")
     ok = enviar_humano(p["destino"], salida, urgente=urgente)
     _log("ORDEN: propuesta %s %s -> %s" % (pid, accion, "enviada" if ok else "FALLO"))
+    if ok and via == "voz":
+        try:  # confirmacion: el dueno ve que se entendio su voz (y puede corregir)
+            _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
+                                    "text": eco + "✅ Enviado a ese contacto."})
+        except Exception:
+            pass
     if not ok:
         # un fallo silencioso es peor que un fallo: el dueno TIENE que enterarse
         try:
             _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
-                                    "text": "⚠️ No pude entregar el mensaje a ese contacto (no existe en WhatsApp o fue rechazado). El texto NO salió."})
+                                    "text": eco + "⚠️ No pude entregar el mensaje a ese contacto (no existe en WhatsApp o fue rechazado). El texto NO salió."})
         except Exception:
             pass
     if bus:
@@ -364,7 +379,13 @@ def vigilar(intervalo=3):
                     r = dict(r)
                     e["ultimo_orden"] = r["id"]
                     _guardar_estado(e)
-                    procesar_orden(r.get("text") or "", de=r.get("actor") or "dueno")
+                    try:
+                        art = json.loads(r.get("artifacts") or "[]")
+                        via = next((str(a.get("via", "texto")) for a in art
+                                    if isinstance(a, dict) and a.get("type") == "order"), "texto")
+                    except Exception:
+                        via = "texto"
+                    procesar_orden(r.get("text") or "", de=r.get("actor") or "dueno", via=via)
                 # (b) entrantes que ameritan respuesta
                 for r in c.execute("SELECT * FROM events WHERE id > ? AND kind='message' AND direction='in' "
                                    "ORDER BY id ASC", (int(e.get("ultimo_msg", 0)),)).fetchall():

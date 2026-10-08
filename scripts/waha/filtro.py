@@ -61,13 +61,11 @@ BIND_IP = os.environ.get("BIND_IP", "127.0.0.1")
 BIND_PORT = int(os.environ.get("BIND_PORT", "3011"))
 LOG = "/opt/waha/filtro.log"
 
-SYS = """Eres el Filtro de ruido de un Cliente Super Ocupado (administrador de conjuntos residenciales / empresario) en Colombia. Clasifica el mensaje en UNA categoria segun este criterio:
-- rojo: URGENTE. El mensaje PERTURBA LA SEGURIDAD o requiere ATENCION INMEDIATA que no puede diferirse. Ejemplos: intrusion o ingreso no autorizado, amenaza o riesgo a personas, incendio, fuga de gas, alguien herido, estafa o fraude en curso, emergencia activa.
-- naranja: puede MITIGARSE ahora y arreglarse despues. La accion DEBE empezar por la mitigacion concreta. Ejemplo: tubo roto -> cerrar el registro de agua y programar plomero; plaga -> fumigar y limpiar; dano -> asegurar y agendar reparacion.
-- amarillo: consulta simple que se responde con datos.
-- verde: informativo o saludo, sin accion.
-Para naranja y rojo, la accion debe empezar por la medida de mitigacion concreta.
-Responde SOLO JSON valido con las claves cat, motivo, accion, donde cat es rojo|naranja|amarillo|verde."""
+try:  # CRITERIO en su propio archivo: es doctrina de negocio, no codigo del filtro
+    from criterio import SYS, classify
+except Exception:  # nunca tumbar el filtro: si falla, el criterio local de abajo
+    SYS = ""
+    classify = None
 
 
 def _post_json(url, payload, headers):
@@ -77,16 +75,7 @@ def _post_json(url, payload, headers):
         return json.load(r)
 
 
-def classify(text):
-    d = _post_json("https://openrouter.ai/api/v1/chat/completions",
-                   {"model": MODEL, "temperature": 0, "response_format": {"type": "json_object"},
-                    "max_tokens": 400,
-                    # CRITICO: qwen3.7-flash razona. Con razonamiento activado medido 13.7 s/mensaje
-                    # y 11x mas caro; desactivado: 1.8 s. La Capa 1 no puede razonar en voz alta.
-                    "reasoning": {"enabled": False},
-                    "messages": [{"role": "system", "content": SYS}, {"role": "user", "content": text}]},
-                   {"Authorization": "Bearer " + ORK})
-    return json.loads(d["choices"][0]["message"]["content"])
+# classify() y SYS viven en criterio.py (unica fuente de verdad del criterio de negocio).
 
 
 def send_self(text):

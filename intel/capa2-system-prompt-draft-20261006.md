@@ -50,6 +50,30 @@ El system prompt dice "sé humano", pero el **cómo** se logra es en el motor de
 
 ---
 
+## 2-bis. CORRECCIÓN DE LA MECÁNICA HUMANA (2026-10-07 — cazada por el Monarca)
+
+**Pregunta del Monarca:** *"¿Es comportamiento humano demorarse 19 segundos en contestar algo y que aparezca
+el aviso de escribiendo?"* → **No.** El diseño de arriba mezclaba dos cosas que deben ir separadas:
+
+1. **Latencia del modelo = INVISIBLE.** Es el tiempo que el modelo piensa. El cliente no mira nada: la
+   respuesta simplemente llega más tarde. **Nunca se enciende el aviso durante la inferencia.**
+2. **Humanización del envío = visible.** Únicamente al final, cuando la respuesta ya está lista.
+
+**El bot no se delata por LENTO, se delata por RÁPIDO:** responder instantáneo a todo, con la misma longitud,
+al mismo ritmo y a las 3 de la mañana. Los 19 s no son el problema; contestar en 3 s todos los turnos sí.
+
+| Regla | Antes (incorrecto) | Corregido |
+|---|---|---|
+| Inferencia | — | **Invisible**: ocurre ANTES de encender el aviso |
+| "Escribiendo…" | Toda la espera | **Solo los últimos 2-4 s**, proporcional al largo; jamás 19 s |
+| Primera respuesta (no urgente) | 2-5 s | **15 s a 3 min, aleatorio** (persona ocupada) |
+| 🔥 Urgente | igual | **Rápido** — la seguridad pesa más que el realismo |
+| Ritmo/volumen | — | Tope por hora, sin ráfagas, frases variadas, horas de silencio |
+
+**Consecuencia de modelo:** una latencia de ~19 s (`nemotron ultra`) no sirve para turnos conversacionales
+—sumada a la espera humana deja ~40 s y atasca el motor con varios mensajes—. Usar modelo **rápido**
+(~2-3 s: `deepseek-v4-flash` / `qwen3.7-flash`) y dejar el grande como respaldo de razonamiento.
+
 ## 3. PRINCIPIOS DE DISEÑO (por qué)
 - **Meta no banea por leer, banea por comportarse como spam.** Saliente bajo + variable + a pocos destinatarios.
 - **Menos es más:** un agente que habla poco es más creíble y más elegante.

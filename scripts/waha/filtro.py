@@ -41,6 +41,16 @@ def es_dueno(ident):
 
 WAHA_URL = os.environ.get("WAHA_URL", "http://127.0.0.1:3000")
 WAHA_KEY = os.environ["WAHA_API_KEY"]
+HEARTBEAT = "/opt/waha/responder_heartbeat"
+
+
+def responder_vivo(max_edad=60):
+    """El motor de respuestas escribe un latido en cada vuelta. Si esta vivo, EL propone
+    (aviso unificado); si esta caido, el filtro alerta solo: nunca nos quedamos sin aviso."""
+    try:
+        return (time.time() - os.path.getmtime(HEARTBEAT)) < max_edad
+    except Exception:
+        return False
 ORK = os.environ["OPENROUTER_API_KEY"]
 GROQ = os.environ.get("GROQ_API_KEY", "")
 SELF = os.environ.get("SELF_CHAT", "")
@@ -214,21 +224,28 @@ class H(BaseHTTPRequestHandler):
                 except Exception:
                     pass
             if c.get("cat") in ("naranja", "rojo"):
-                emo = {"naranja": "\U0001F7E0", "rojo": "\U0001F525"}[c["cat"]]
-                tag = "[grupo] " if is_group else ""
-                alerta = (emo + " " + c["cat"].upper() + "\n" + tag + "\U0001F4AC " + (body or extra) +
-                          "\n\U0001F464 " + sender + "\n\u27A1\uFE0F " + str(c.get("accion")))
-                send_self(alerta)
-                if bus:
-                    try:
-                        bus.emit(channel="whatsapp", direction="out", kind="alert",
-                                 text=c["cat"].upper() + " " + tag + (body or extra) +
-                                      " -> " + str(c.get("accion")),
-                                 peer="self:L1", actor="seawolf-agent", layer=1,
-                                 artifacts=[{"type": "classification", "cat": c.get("cat"),
-                                             "accion": c.get("accion"), "de": str(sender)}])
-                    except Exception:
-                        pass
+                if responder_vivo():
+                    # AVISO UNIFICADO: el motor de respuestas manda UN solo mensaje
+                    # (nivel + quien + accion sugerida + borrador + como responder).
+                    # Asi el dueno no recibe dos avisos por lo mismo.
+                    print("alerta delegada al responder (vivo)")
+                else:
+                    emo = {"naranja": "\U0001F7E0", "rojo": "\U0001F525"}[c["cat"]]
+                    tag = "[grupo] " if is_group else ""
+                    alerta = (emo + " " + c["cat"].upper() + "\n" + tag + "\U0001F4AC " + (body or extra) +
+                              "\n\U0001F464 " + sender + "\n\u27A1\uFE0F " + str(c.get("accion")))
+                    send_self(alerta)
+                    if bus:
+                        try:
+                            bus.emit(channel="whatsapp", direction="out", kind="alert",
+                                     text=c["cat"].upper() + " " + tag + (body or extra) +
+                                          " -> " + str(c.get("accion")),
+                                     peer="self:L1", actor="seawolf-agent", layer=1,
+                                     artifacts=[{"type": "classification", "cat": c.get("cat"),
+                                                 "accion": c.get("accion"), "de": str(sender),
+                                                 "fallback": "responder_caido"}])
+                        except Exception:
+                            pass
             log(rec)
         if tmp:
             try:

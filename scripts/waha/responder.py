@@ -160,30 +160,39 @@ def enviar_humano(chat_id, texto, urgente=False):
 
 
 # ---------------------------------------------------------------- compuerta (C2)
-def proponer(destino, texto, nivel, de="un contacto", propuesta=None):
-    """El agente NO envia: propone al dueno. Devuelve el id del pendiente."""
+def proponer(destino, texto, nivel, de="un contacto", propuesta=None, mensaje=None, accion=None):
+    """El agente NO envia: propone al dueno en UN SOLO mensaje (aviso + propuesta).
+    Devuelve el id del pendiente."""
     pid = "p" + uuid.uuid4().hex[:6]
     d = pendientes()
     d[pid] = {"destino": destino, "texto": texto, "nivel": nivel, "de": de,
               "creado": time.strftime("%Y-%m-%dT%H:%M:%S"), "estado": "pendiente",
-              "propuesta": propuesta or texto}
+              "propuesta": propuesta or texto, "mensaje_original": mensaje or "", "accion": accion or ""}
     _guardar_pend(d)
 
-    cuerpo = ("🐺 *APROBACIÓN REQUERIDA*\n"
-              "_%s · de: %s_\n\n"
-              "📩 Propuesta de respuesta:\n«%s»\n\n"
-              "Responda:\n*ok* o *1* → enviar\n*no* → descartar\n"
-              "…o escríbame su propia respuesta (texto libre = orden)") % (nivel.upper(), de, (propuesta or texto))
+    emo = {"rojo": "\U0001F525", "naranja": "\U0001F7E0"}.get(str(nivel).lower(), "\U0001F535")
+    lineas = ["%s *%s — requiere su decisión*" % (emo, str(nivel).upper()),
+              "\U0001F4E9 De: %s" % de]
+    if mensaje:
+        lineas.append("\U0001F4AC «%s»" % str(mensaje)[:300])
+    if accion:
+        lineas.append("\u26A1 Acción sugerida: %s" % str(accion)[:200])
+    lineas += ["", "\U0001F4DD *Respuesta que propongo enviar:*",
+               "«%s»" % (propuesta or texto), "",
+               "Responda: *ok* o *1* → enviar · *no* → descartar",
+               "…o escríbame su propia respuesta (texto libre = orden)"]
+    cuerpo = "\n".join(lineas)
     try:
         _post("/api/sendText", {"session": "seawolf", "chatId": SELF, "text": cuerpo})
-        _log("PROPUESTA %s enviada al dueno (%s) para %s" % (pid, SELF, destino))
+        _log("AVISO UNIFICADO %s enviado al dueno (%s) para %s" % (pid, SELF, destino))
     except Exception as e:
         _log("ERROR al proponer: %s" % str(e)[:120])
     if bus:
         try:
             bus.emit(channel="whatsapp", direction="out", kind="approval", text=cuerpo,
                      peer=SELF, actor="seawolf-agent", layer=2,
-                     artifacts=[{"type": "proposal", "id": pid, "destino": destino, "nivel": nivel}])
+                     artifacts=[{"type": "proposal", "id": pid, "destino": destino, "nivel": nivel,
+                                 "unificado": True}])
         except Exception:
             pass
     return pid
@@ -301,6 +310,27 @@ def borrador(mensaje, nivel, de="un contacto"):
         return None
 
 
+def ten_pend():
+    return pendientes()
+
+
+def nombre_contacto(ident):
+    """Traduce un LID/numero a un nombre humano si esta en el directorio del tenant."""
+    try:
+        cont = tenant().get("contactos") or {}
+        i = str(ident or "").strip().lower()
+        if i in cont:
+            return cont[i].get("nombre") or ident
+        dig = "".join(ch for ch in i if ch.isdigit())
+        for k, v in cont.items():
+            kd = "".join(ch for ch in str(k) if ch.isdigit())
+            if kd and dig and (kd in dig or dig in kd):
+                return v.get("nombre") or ident
+    except Exception:
+        pass
+    return ident
+
+
 def vigilar(intervalo=3):
     """Bucle del bus:
        (a) mensajes del DUEÑO (kind='order') -> ejecutar la compuerta;
@@ -308,6 +338,10 @@ def vigilar(intervalo=3):
     _log("RESPONDER en vigilancia (intervalo %ss, test_fast=%s, tope=%d/h)"
          % (intervalo, TEST_FAST, TOPE_ENVIOS_HORA))
     while True:
+        try:  # latido: el filtro lo lee para saber si delegar el aviso (aviso unificado)
+            open("/opt/waha/responder_heartbeat", "w").write(str(time.time()))
+        except Exception:
+            pass
         try:
             e = _estado()
             if bus:
@@ -332,10 +366,14 @@ def vigilar(intervalo=3):
                     cat = next((str(a.get("cat", "")).lower() for a in arts if isinstance(a, dict) and a.get("cat")), "")
                     if cat in ("rojo", "naranja"):
                         texto = r.get("text") or ""
-                        de = r.get("actor") or r.get("peer") or "un contacto"
+                        de = nombre_contacto(r.get("peer") or r.get("actor") or "")
+                        if de == (r.get("peer") or r.get("actor")):
+                            de = r.get("actor") or r.get("peer") or "un contacto"
+                        accion = next((str(a.get("accion", "")) for a in arts
+                                       if isinstance(a, dict) and a.get("accion")), "")
                         txt = borrador(texto, cat, de) or "Ok, lo estoy atendiendo."
                         proponer(destino=r.get("peer") or "", texto=txt, nivel=cat, de=de,
-                                 propuesta=txt)
+                                 propuesta=txt, mensaje=texto, accion=accion)
                     else:
                         _log("entrante %s (%s): no amerita respuesta" % (r["id"], cat or "sin nivel"))
                 c.close()

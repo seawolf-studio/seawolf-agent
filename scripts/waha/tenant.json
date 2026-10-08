@@ -11,6 +11,13 @@
     "linea": "L2 (prepago) — donde vive el agente",
     "perfil": "Seawolf Agent"
   },
+  "contactos": {
+    "247501969993958@lid": {
+      "nombre": "Guarda (prueba)",
+      "rol": "guarda",
+      "nota": "Identidad de la amiga del Monarca que ayuda con las pruebas de Capa 2 (2026-10-07)."
+    }
+  },
   "directorio_emergencia": {
     "policia": "",
     "cuadrante": "",

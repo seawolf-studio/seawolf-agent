@@ -51,6 +51,18 @@ except Exception as e:                                          # pragma: no cov
     bus = None
     print("AVISO: sin bus (%s)" % e)
 
+try:                     # C3: reglas preaprobadas
+    import reglas
+except Exception as e:                                          # pragma: no cover
+    reglas = None
+    print("AVISO: sin reglas C3 (%s)" % e)
+
+try:                     # C4: onboarding
+    import onboarding
+except Exception as e:                                          # pragma: no cover
+    onboarding = None
+    print("AVISO: sin onboarding C4 (%s)" % e)
+
 
 # ---------------------------------------------------------------- utilidades
 def _log(msg):
@@ -160,14 +172,18 @@ def enviar_humano(chat_id, texto, urgente=False):
 
 
 # ---------------------------------------------------------------- compuerta (C2)
-def proponer(destino, texto, nivel, de="un contacto", propuesta=None, mensaje=None, accion=None):
+def proponer(destino, texto, nivel, de="un contacto", propuesta=None, mensaje=None, accion=None,
+             rompe_rojo_seg=None):
     """El agente NO envia: propone al dueno en UN SOLO mensaje (aviso + propuesta).
-    Devuelve el id del pendiente."""
+    Devuelve el id del pendiente. rompe_rojo_seg: segundos tras los que se ejecuta la
+    accion segura preaprobada si el dueno no responde (regla C3, opcional)."""
     pid = "p" + uuid.uuid4().hex[:6]
     d = pendientes()
     d[pid] = {"destino": destino, "texto": texto, "nivel": nivel, "de": de,
               "creado": time.strftime("%Y-%m-%dT%H:%M:%S"), "estado": "pendiente",
               "propuesta": propuesta or texto, "mensaje_original": mensaje or "", "accion": accion or ""}
+    if rompe_rojo_seg:
+        d[pid]["rompe_rojo_hasta"] = time.time() + int(rompe_rojo_seg)
     _guardar_pend(d)
 
     emo = {"rojo": "\U0001F525", "naranja": "\U0001F7E0"}.get(str(nivel).lower(), "\U0001F535")
@@ -211,6 +227,18 @@ def procesar_orden(texto, de="dueno", via="texto"):
             except Exception:
                 pass
         return
+    # C4: arrancar el onboarding con una palabra
+    if t.lower() in ("onboarding", "configurar", "configuracion", "configuración", "empezar onboarding"):
+        if onboarding:
+            onboarding.iniciar(con_mapa=True)
+        return
+    # C4b: recalibrar un campo ya acordado ("cambiar horario", "actualizar tono")
+    m = re.match(r"(?:cambiar|cambia|actualizar|actualiza|corregir)\s+([a-z_]+)", t.lower())
+    if m and onboarding:
+        campo = m.group(1)
+        if campo in onboarding.CAMPOS:
+            onboarding.pedir_cambio(campo)
+            return
     eco = ("🎤 Entendido por voz: «%s»\n" % t[:160]) if via == "voz" else ""
     d = pendientes()
     abiertos = [k for k, v in d.items() if v.get("estado") == "pendiente"]
@@ -386,7 +414,12 @@ def vigilar(intervalo=3):
                                     if isinstance(a, dict) and a.get("type") == "order"), "texto")
                     except Exception:
                         via = "texto"
-                    procesar_orden(r.get("text") or "", de=r.get("actor") or "dueno", via=via)
+                    texto_orden = r.get("text") or ""
+                    # C4: si el onboarding (o una recalibracion) esta en curso, sus mensajes son RESPUESTAS
+                    if onboarding and onboarding.activo():
+                        onboarding.manejar(texto_orden)
+                    else:
+                        procesar_orden(texto_orden, de=r.get("actor") or "dueno", via=via)
                 # (b) entrantes que ameritan respuesta
                 for r in c.execute("SELECT * FROM events WHERE id > ? AND kind='message' AND direction='in' "
                                    "ORDER BY id ASC", (int(e.get("ultimo_msg", 0)),)).fetchall():
@@ -405,12 +438,43 @@ def vigilar(intervalo=3):
                             de = r.get("actor") or r.get("peer") or "un contacto"
                         accion = next((str(a.get("accion", "")) for a in arts
                                        if isinstance(a, dict) and a.get("accion")), "")
+                        destino = r.get("peer") or ""
+                        # --- C3: REGLAS PREAPROBADAS antes de molestar al dueno ---
+                        hechas = []
+                        for reg in reglas.evaluar(cat, texto, destino):
+                            h = reglas.aplicar(reg, cat, texto, de, destino)
+                            if h:
+                                hechas.append("%s: %s" % (reg.get("nombre"), h))
+                        if hechas:
+                            _log("C3 aplicada(s): %s" % " | ".join(hechas))
+                            try:
+                                _post("/api/sendText", {"session": "seawolf", "chatId": SELF,
+                                                        "text": "⚙️ *Regla preaprobada aplicada*\n" +
+                                                                "\n".join("· " + h for h in hechas) +
+                                                                "\n\nNo le consulté porque usted ya la autorizó."})
+                            except Exception:
+                                pass
+                            continue   # la regla ya obro: no se pide aprobacion
                         txt = borrador(texto, cat, de) or "Ok, lo estoy atendiendo."
-                        proponer(destino=r.get("peer") or "", texto=txt, nivel=cat, de=de,
-                                 propuesta=txt, mensaje=texto, accion=accion)
+                        rr = reglas.regla_rompe_rojo(cat)
+                        proponer(destino=destino, texto=txt, nivel=cat, de=de,
+                                 propuesta=txt, mensaje=texto, accion=accion,
+                                 rompe_rojo_seg=(rr.get("entonces", {}) or {}).get("segundos") if rr else None)
                     else:
                         _log("entrante %s (%s): no amerita respuesta" % (r["id"], cat or "sin nivel"))
                 c.close()
+            # (c) C3 rompe-rojo: 🔥 propuesto y sin respuesta del dueno dentro del plazo
+            if reglas:
+                for pid, p in list(pendientes().items()):
+                    if (p.get("estado") == "pendiente" and p.get("rompe_rojo_hasta")
+                            and time.time() > float(p["rompe_rojo_hasta"])):
+                        reg = reglas.regla_rompe_rojo(p.get("nivel"))
+                        if reg:
+                            reglas.ejecutar_rompe_rojo(reg, p.get("destino"), p.get("nivel"),
+                                                       p.get("mensaje_original") or p.get("texto"))
+                        d = pendientes()
+                        d[pid]["estado"] = "rompe_rojo_ejecutada"
+                        _guardar_pend(d)
         except Exception as ex:
             _log("(error en vigilancia: %s)" % str(ex)[:120])
         time.sleep(intervalo)

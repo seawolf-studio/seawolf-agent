@@ -1,0 +1,131 @@
+{
+    "palette": {
+        "client": {
+            "primary_black": "#000000",
+            "accent_red": "#E60000",
+            "neutral_white": "#FFFFFF"
+        },
+        "seawolf_signature": {
+            "dark_base": "#121E1E",
+            "cyan_accent": "#4CE8E7",
+            "teal_accent": "#48E8D8"
+        }
+    },
+    "theme_contract": {
+        "default": "dark",
+        "tokens": {
+            "dark": {
+                "attribute": "data-theme='dark'",
+                "color_scheme": "dark",
+                "background": "var(--primary-black)",
+                "text": "var(--neutral-white)",
+                "accent": "var(--accent-red)",
+                "surface": "#1A1A1A"
+            },
+            "light": {
+                "attribute": "data-theme='light'",
+                "color_scheme": "light",
+                "background": "var(--neutral-white)",
+                "text": "var(--primary-black)",
+                "accent": "var(--accent-red)",
+                "surface": "#F5F5F5"
+            }
+        },
+        "global_css": {
+            "selection": "background: var(--accent-red); color: var(--neutral-white);",
+            "transition": "background-color 0.3s ease, color 0.3s ease"
+        }
+    },
+    "typography": {
+        "families": {
+            "headings": "'Montserrat', sans-serif",
+            "body": "'Inter', sans-serif"
+        },
+        "scale": {
+            "h1": {
+                "size": "3.5rem",
+                "weight": "800",
+                "line_height": "1.1"
+            },
+            "h2": {
+                "size": "2.5rem",
+                "weight": "700",
+                "line_height": "1.2"
+            },
+            "h3": {
+                "size": "1.75rem",
+                "weight": "600",
+                "line_height": "1.3"
+            },
+            "h4": {
+                "size": "1.25rem",
+                "weight": "500",
+                "line_height": "1.4"
+            },
+            "body": {
+                "size": "1rem",
+                "weight": "400",
+                "line_height": "1.6"
+            }
+        }
+    },
+    "wireframe": [
+        {
+            "section": "hero",
+            "hierarchy": "H1 -> H2",
+            "objective": "Impacto inmediato y conversión rápida"
+        },
+        {
+            "section": "quienes_somos",
+            "hierarchy": "H2",
+            "objective": "Establecer autoridad y calidez familiar"
+        },
+        {
+            "section": "valores",
+            "hierarchy": "H2 -> H3",
+            "objective": "Transmitir la filosofía de formación humana"
+        },
+        {
+            "section": "que_hacemos",
+            "hierarchy": "H2 -> H3 -> H4",
+            "objective": "Detallar los 3 programas (Campamento, Escuela, Tecnificación)"
+        },
+        {
+            "section": "categorias_horarios",
+            "hierarchy": "H2 -> H3",
+            "objective": "Información logística clara (Infantil/Cadete)"
+        },
+        {
+            "section": "equipo",
+            "hierarchy": "H2",
+            "objective": "Presentar el cuerpo técnico y legado de la fundadora"
+        },
+        {
+            "section": "prueba_social",
+            "hierarchy": "H2 -> H3",
+            "objective": "Validar éxito mediante títulos 2026 y reseñas"
+        },
+        {
+            "section": "inscripcion",
+            "hierarchy": "H2 -> H3",
+            "objective": "CTA final directo a App Cluber"
+        },
+        {
+            "section": "contacto",
+            "hierarchy": "H2 -> H3",
+            "objective": "Canales directos (WhatsApp/Email)"
+        },
+        {
+            "section": "footer",
+            "hierarchy": "P",
+            "objective": "Legales, copyright y firma Seawolf"
+        }
+    ],
+    "animation_spec": {
+        "hero_cinetico": "Entrance animation: Opacity 0 -> 1, TranslateY 20px -> 0 with staggered delay for H1, H2 and CTA.",
+        "scroll_reveal": "IntersectionObserver trigger: elements slide up and fade in when 20% visible.",
+        "cta_interaction": "Hover: scale(1.05), brightness(1.2), box-shadow: 0 0 20px var(--accent-red).",
+        "accessibility": "Wrap all animations in @media (prefers-reduced-motion: no-reduce)."
+    },
+    "html_css_example": "\n<section class=\"hero\" data-theme=\"dark\">\n    <div class=\"hero-content\">\n        <h1>Club Deportivo Wonder's Voley</h1>\n        <h2>Talento, equipo y valores.</h2>\n        <p>6 en la pista, 1 corazón.</p>\n        <a href=\"#inscripcion\" class=\"cta-button\">Reserva tu plaza</a>\n    </div>\n</section>\n\n<style>\n:root {\n    --primary-black: #000000;\n    --accent-red: #E60000;\n    --neutral-white: #FFFFFF;\n    --seawolf-cyan: #4CE8E7;\n}\n\n.hero {\n    background: var(--primary-black);\n    color: var(--neutral-white);\n    height: 100vh;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n    font-family: 'Montserrat', sans-serif;\n}\n\n.hero-content h1 {\n    font-size: 3.5rem;\n    font-weight: 800;\n    margin-bottom: 1rem;\n    text-transform: uppercase;\n}\n\n.hero-content h2 {\n    font-size: 2.5rem;\n    color: var(--accent-red);\n    margin-bottom: 2rem;\n}\n\n.cta-button {\n    background: var(--accent-red);\n    color: var(--neutral-white);\n    padding: 1.2rem 2.5rem;\n    text-decoration: none;\n    font-weight: 700;\n    border-radius: 4px;\n    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: inline-block;\n    text-transform: uppercase;\n}\n\n.cta-button:hover {\n    transform: scale(1.05);\n    filter: brightness(1.2);\n    box-shadow: 0 0 25px var(--accent-red);\n    color: var(--neutral-white);\n}\n\n@media (prefers-reduced-motion: reduce) {\n    .cta-button { transition: none; }\n}\n</style>\n"
+}

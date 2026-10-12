@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-10-08*
+*Última actualización: 2026-10-12*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -102,7 +102,9 @@ El Monarca las odia con toda su alma.
 - **Trampas cazadas:** un contenedor NO alcanza `127.0.0.1` del host → el sink va al gateway Docker `172.16.0.1:3010`; el backlog de webhooks fallidos sigue reintentando → mirar la URL **dentro** del error; `PUT /api/sessions/<name>` **reinicia** la sesión (nuevo QR).
 - **MODELO DE 2 LÍNEAS (CONFIRMADO):** **Línea 1** = número **personal** del cliente (ya existe), recibe SOLO lo filtrado, **intocable**. **Línea 2** = línea **dedicada** donde VIVE el agente (eSIM/SIM aparte); el cliente migra ahí sus contactos de trabajo y el agente observa/clasifica/filtra. Aviso **L2 (bot) → L1 (personal)** = notificación natural; no hace falta 3ª línea. Privacidad = arma de venta (el agente solo lee L2).
 - **Canal Bellion → Monarca:** helper `/opt/waha/avisar.sh "mensaje"` (L2 → +57 312 533 0127). Probado ✅.
-- **Falta:** construir la **Capa 2** (automatización/delegación); ver diseño en `intel/capa2-system-prompt-draft-20261006.md`.
+- **Capa 2 (C1+C2) OPERATIVA — 2026-10-07/08:** el agente **responde** al cliente con **compuerta de aprobación** (deny-by-default). `responder.py` (unit `seawolf-responder`): latencia del modelo **invisible**, aviso "escribiendo…" solo 2-4 s, primera respuesta 15 s-3 min (🔥 2-4 s), tope 20 salientes/hora. **C2:** aviso unificado al dueño (nivel+quién+mensaje+acción+borrador), **texto libre = ORDEN**, decisión por **nota de voz** (transcrita + eco), identidad por LID/número, directorio de contactos, fallo de entrega nunca silencioso. Probado de punta a punta con un tercero real (34 s ciclo completo), auditable en el bus (`approved_by: Key`).
+- **Capas 3 y 4 — ✅ construidas (2026-10-08, ausencia de 72 h del Monarca):** **C3 Reglas preaprobadas** (`reglas.py`, tipos `notificar`/`auto_respuesta`/`rompe_rojo`, prueba 6/6, **`reglas.json` VACÍO** — las dicta el Monarca) · **C4 Onboarding** (`onboarding.py`: mapa de capacidades honesto + 10 preguntas -> `tenant.json` + mini-contrato + recalibración, prueba 8/8) · **Vigilante de salud** (`healthcheck.py`, cron 30 min, avisa solo tras 2 fallos seguidos).
+- **Pendiente:** reglas C3 (del Monarca) · primer cliente real con onboarding · envío de **adjuntos** por el agente · bus en directorio propio (no exponer `filtro.env`) · cuarto de guerra Telegram · descartar transcripciones de video sin habla.
 - **Skill:** `seawolf-whatsapp-waha`.
 
 ### INFRAESTRUCTURA TÉCNICA
@@ -121,13 +123,36 @@ El Monarca las odia con toda su alma.
 ### RED DE SOMBRAS (Agentes)
 **Cómo orquestar (REGLA DE ORO, 2026-09-10):** las sombras son **perfiles Hermes REALES con modelos propios**. Se invocan con `hermes -p <perfil> chat -q "<misión>"`. `delegate_task` NO son las sombras — son subagentes efímeros de trabajo auxiliar.
 
-| Sombra | Rol | Cómo contactar |
-|:-------|:----|:---------------|
-| **Bellion** | Gran Comandante / Estratega | Este mismo chat (modelo fijado: `deepseek-v4.1-flash`) |
-| **Beru** | Escriba / Auditor / Diario | `hermes -p beru chat -q "..."` |
-| **Igris** | Guerrero / Infra VPS | `hermes -p igris chat -q "..."` |
-| **Tank** | Puntero / Búsquedas | `hermes -p tank chat -q "..."` |
-| **Kaisel** | Despliegues / Alas | `hermes -p kaisel chat -q "..."` |
+**Configuración Maestra v2 (2026-10-11, `intel/Ejercito_de_Sombras_Configuracion_v2.md`):** 11 sombras operativas, cada una con SU soul y SU modelo OpenRouter directo + respaldos (sin gateways, sin `:free`). Reporte dual obligatorio (`QUE HICE · ENTREGABLE · HALLAZGO · BLOQUEO · SIGUIENTE`).
+
+| Sombra | Rol (v2) | Contacto |
+|:-------|:---------|:---------|
+| **Bellion** | Gran Comandante / Orquestador | `deepseek/deepseek-v4.1-flash` → este chat |
+| **Beru** | Auditor General / Informes | `deepseek/deepseek-v4-pro` · `hermes -p beru chat -q "..."` |
+| **Igris** | **Copywriting** (persuasión/ventas) | `deepseek/deepseek-v4-flash-0731` |
+| **Tank** | **Ventas / Cierre** de leads | `qwen/qwen3.7-flash` |
+| **Greed** | Ads / Tráfico pago (sin Meta/AdSense) | `bytedance-seed/seed-1.6-flash` |
+| **Iron** | Email Marketing | `deepseek/deepseek-v4-flash-0731` |
+| **Tusk** | SEO / Tráfico orgánico | `qwen/qwen3.7-flash` |
+| **Kamish** | Redes sociales / distribución | `z-ai/glm-5.3-flash` |
+| **Kaisel** | Web Dev (front/back) | `qwen/qwen3-coder-30b-a3b-instruct` |
+| **Titan** | UX/UI | `qwen/qwen3-vl-32b-instruct` |
+| **Jima** | Automatización (n8n/APIs/Workers) | `qwen/qwen3-30b-a3b-instruct-2507` |
+
+> Nota: los roles cambiaron respecto a la v1; **Igris ya NO es infra VPS** (es copy) y **Tank ya NO es búsquedas** (es cierre). Auditoría Beru: 10/10 PASA. Sueltas de Telegram por orden del Monarca.
+
+### CAPACIDAD: HYPERFRAMES (contenido por código: HTML/CSS/GSAP -> MP4)
+**Absorbida 2026-10-11** (`intel/hyperframes/CAPACIDAD-hyperframes.md`). `heygen-com/hyperframes` — **Apache-2.0**, 100% local (Chrome headless + FFmpeg), **sin claves ni nube**. Convierte HTML+CSS+GSAP en MP4 deterministas (hasta 4K, fps 1-240; MP4/WebM/MOV-alfa/GIF/HLS). Nativo: TTS Kokoro, whisper, quitar fondo, LUTs, LUFS, cortes por beat. ~446 bloques. Límites honestos: render ≈2× tiempo real, NO es text-to-video, pesado en RAM. **Sting oficial del estudio** ya renderizado (`renders/seawolf-sting.mp4`, 1080×1920, 10 s). Skill del ejército: `hyperframes-content-SKILL.md` (KAISEL/TITAN/KAMISH). Pitfalls Windows: usar su propio `chrome-headless-shell`; render con el binario global, no `npx`.
+
+### DOCTRINA «SMART WEB» (estándar de sitios del estudio)
+De la misión Wonder's Voley (`intel/convoca/20261010-wonders-voley/CONCLUSIONES-smart-web-wonders.md`):
+- **Una sola pieza** (HTML+CSS+JS); multipágina por router hash; **un formulario por subpágina** -> correo del cliente (sin backend ni claves).
+- **Tema oscuro por defecto** + claro · **contenido visible sin JS** · **IA embebida con la clave server-side** (Cloudflare Worker).
+- **Elección de modelo = calidad, no precio** (el volumen local es bajo): núcleo `google/gemini-2.5-flash-lite` (~$0.86/mes), económico `qwen/qwen3.7-flash` (~$0.27/mes), potencia `google/gemini-2.5-flash` (~$3.84/mes). La palanca real es acortar **contexto** (últimos ~12 mensajes). **Prohibido en producción:** `:free`/`:batch` y razonamiento (respuestas vacías; si aplica, `reasoning.enabled=false`).
+- **Verificación:** renderizar, no solo auditar código fuente (BERU 10/10 leyendo código pero el fallo real solo apareció al renderizar). Un coder de 30B se atasca con pieza grande -> re-tareas con modelo fuerte, "una sola pasada".
+
+### PROYECTO: SMART WEB — CLUB WONDER'S VOLEY (Madrid) — ⏸️ PAUSADA
+Primera «Smart Web» del portafolio; sitio del **Club Deportivo Wonder's Voley** (escuela de voleibol de **Kennya**, hermana del Monarca y futura embajadora del estudio en España). Orquestada con el protocolo «Convoca a las Sombras» (IGRIS copy + TUSK SEO -> TITAN diseño -> KAISEL build -> JIMA capa IA -> BERU auditoría). Entregables: pieza v2 (171 KB, 10 vistas, 9 formularios), archivo autocontenido (882 KB), PDF de requerimientos para la hermana. **PAUSADA a petición de la cliente** hasta fin de temporada. Al retomar: recibir fotos/logo vectorial/tarifas, publicar en dominio temporal Hostinger -> migrar a Cloudflare + Worker IA. Refs: `intel/convoca/20261010-wonders-voley/`, `diario-de-sombras/sesion-smart-web-wonders-20261010.md`.
 
 ### PRECIOS Y NEGOCIO
 - **Modelo:** Suscripción mensual (MRR)
@@ -148,11 +173,14 @@ El Monarca las odia con toda su alma.
 | 2026-09-30→10-02 | **Proyecto NEREUS** (agente personal → marca LOBO): clone+build (276 tests), persistencia Postgres/pgvector, gateway OpenRouter, Fase 3 Voz (VoiceBox + clon de voz + streaming por frases TTFA 0,75 s), Fase 4 Memoria (Mem0 + Graphiti/Neo4j bajo systemd) | ✅ Fases 0-4 OK — pendiente conectar Graphiti al flujo, pruebas integrales y decisión nodo de voz |
 | 2026-10-04 | **Saneamiento VPS + Rebranding + Tubo de WhatsApp:** reconocimiento de puertos, Telegram apagado, 8642 cerrado, rebranding WebUI (favicons lobo + i18n) desplegado, WAHA montado y probado (`session.status` capturado) | ✅ Tubo listo |
 | 2026-10-06 | **Filtro WhatsApp (Capa 1) + modelo de negocio 2 líneas:** WAHA migrado a motor **GOWS** (passkey), sesión `seawolf` vinculada (`WORKING`, +57 300 206 7487), **Filtro Capa 1** construido (🔥🟠🟡🟢 + voz Groq + imagen Gemini), canal Bellion→Monarca (`avisar.sh`), pipeline de 100 repos IA, **diseño de la Capa 2** | ✅ Capa 1 operativa — **Capa 2 pendiente de construir** |
-| Pendiente | Construir **Capa 2** (automatización/delegación: motor de respuestas con cola/pausas/presencia, compuerta de aprobación, onboarding configurable, límites + auditoría) — diseño en `intel/capa2-system-prompt-draft-20261006.md` | ⏳ Pendiente |
+| 2026-10-06→08 | **Capa 2** (motor de respuestas + compuerta de aprobación + reglas C3 + onboarding C4) — diseño original en `intel/capa2-system-prompt-draft-20261006.md` | ✅ Construida (ver fila 2026-10-07/08) |
 | Pendiente | Landing page + pasarela COP | ⏳ Pendiente |
 | Pendiente | Traducción paneles restantes | ⏳ Pendiente |
 | Pendiente | Pruebas de campo (2 frentes) | ⏳ Pendiente |
-| **MAÑANA** | Retomar Seawolf Agent — desprender a Bellion de lo operativo paulatinamente, hacer pruebas y entregar al PRIMER CLIENTE | 🔥 Prioridad |
+| 2026-10-07/08 | **Capas 2, 3 y 4 de Seawolf Agent:** C1 motor de respuestas humanas + C2 compuerta de aprobación (voz, video, determinismo, aviso unificado) probadas con tercero real; C3 reglas preaprobadas + C4 onboarding + vigilante de salud | ✅ Operativas |
+| 2026-10-11 | **Ejército de Sombras v2 + HyperFrames + Smart Web Wonder's Voley:** config maestra de 11 sombras (souls+modelos+fallbacks), capacidad HyperFrames absorbida (sting oficial), primera Smart Web (club de Kennya) entregada y **pausada** | ✅ Entregado — Smart Web pausada por la cliente |
+| Pendiente | Reglas C3 (las dicta el Monarca) · primer cliente real con onboarding · envío de adjuntos por el agente · bus en directorio propio · cuarto de guerra Telegram · landing + pasarela COP · pruebas de campo | ⏳ Pendiente |
+| **PRÓXIMO** | Entregar Seawolf Agent al **PRIMER CLIENTE** (desprender a Bellion de lo operativo paulatinamente) | 🔥 Prioridad |
 
 ### LECCIONES APRENDIDAS
 1. **Honestidad sobre capacidades:** Cuando una herramienta falla, reportarlo inmediatamente. El Monarca prefiere "no puedo" a un diagnóstico falso.
@@ -186,8 +214,12 @@ Un cron diario (6:00 AM) ejecuta:
 ### REGISTRO DE MANTENIMIENTO (cron diario)
 | Fecha | Integridad | Cambios aplicados |
 |:------|:-----------|:------------------|
-| 2026-10-07 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesión 2026-10-06: Filtro WhatsApp Capa 1):** (1) **Canal WhatsApp/WAHA** actualizado — migrado a motor **GOWS** (passkey obligatorio; WEBJS/NOWEB fallan), sesión `seawolf` **`WORKING`** con número **+57 300 206 7487** (ya no "falta escanear el QR"); (2) **Filtro (Capa 1) CONSTRUIDO** (`/opt/waha/filtro.py`, `seawolf-filtro.service`, puerto 3011) con criterio del Monarca 🔥🟠🟡🟢, voz vía Groq `whisper-large-v3-turbo`, imagen y clasificación con `gemini-2.5-flash`, entrega a Línea 1; (3) **Modelo de negocio de 2 líneas** documentado (L1 personal intocable / L2 dedicada con el agente); (4) **Canal Bellion→Monarca** (`/opt/waha/avisar.sh`); (5) **Capa 2** — diseño en `intel/capa2-system-prompt-draft-20261006.md` registrado como pendiente; (6) Historial actualizado (fila 2026-10-06 + pendiente Capa 2). Integridad estructural OK. |
+| 2026-10-12 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesiones 2026-10-07→10-11):** (1) **Capa 2 OPERATIVA** (C1 respuestas humanas + C2 compuerta de aprobación) — el protocolo la tenía como "pendiente"; (2) **Capas 3 y 4 construidas** (reglas preaprobadas + onboarding + vigilante de salud); (3) **Ejército de Sombras Config v2** — tabla ROSTER desactualizada reemplazada (11 sombras con modelos reales; Igris=copy, Tank=cierre, nuevas Greed/Iron/Tusk/Kamish/Jima); (4) **HyperFrames** absorbido (HTML->MP4) + sting oficial; (5) **Doctrina Smart Web** (elección de modelo por calidad + palanca de contexto); (6) **Proyecto Smart Web Wonder's Voley** (club de Kennya) entregado y PAUSADO; (7) Historial actualizado. Además **corregida corrupción de la tabla de mantenimiento** (filas con `||` de más). Integridad estructural OK. |
+| 2026-10-11 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS/LOBO, tienda e-commerce, marca LOBO, WAHA/Capa 1, Capa 2 pendiente) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-10 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS/LOBO, tienda e-commerce, marca LOBO, WAHA/Capa 1, Capa 2 pendiente) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-09 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS/LOBO, tienda e-commerce, marca LOBO, WAHA/Capa 1, Capa 2 pendiente) presentes, actualizados y coherentes. Protocolo íntegro. |
 | 2026-10-08 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO, WAHA/Capa 1) presentes, actualizados y coherentes. Protocolo íntegro. |
+| 2026-10-07 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesión 2026-10-06: Filtro WhatsApp Capa 1):** (1) **Canal WhatsApp/WAHA** actualizado — migrado a motor **GOWS** (passkey obligatorio; WEBJS/NOWEB fallan), sesión `seawolf` **`WORKING`** con número **+57 300 206 7487** (ya no "falta escanear el QR"); (2) **Filtro (Capa 1) CONSTRUIDO** (`/opt/waha/filtro.py`, `seawolf-filtro.service`, puerto 3011) con criterio del Monarca 🔥🟠🟡🟢, voz vía Groq `whisper-large-v3-turbo`, imagen y clasificación con `gemini-2.5-flash`, entrega a Línea 1; (3) **Modelo de negocio de 2 líneas** documentado (L1 personal intocable / L2 dedicada con el agente); (4) **Canal Bellion→Monarca** (`/opt/waha/avisar.sh`); (5) **Capa 2** — diseño en `intel/capa2-system-prompt-draft-20261006.md` registrado como pendiente; (6) Historial actualizado (fila 2026-10-06 + pendiente Capa 2). Integridad estructural OK. |
 | 2026-10-05 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **NEREUS Fase 3 completada** (voz clonada + streaming por frases TTFA 0,75 s) y **Fase 4** (Mem0 + Graphiti/Neo4j bajo systemd) — la sección estaba congelada en "Fase 3 parcial"; (2) **Canal WhatsApp (WAHA)** — sección nueva: tubo montado y probado, ruta no oficial, trampas y pendiente del QR; (3) **Telegram apagado** (corregido el "Canal principal" obsoleto); (4) **Rebranding WebUI desplegado** (favicons lobo, i18n, commit 48d0d161); (5) **Puertos VPS** y cierre del 8642 fantasma; (6) Historial actualizado. Además **corregida corrupción de la tabla de mantenimiento** (filas con `||` de más). |
 | 2026-10-04 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS, tienda e-commerce, marca LOBO) presentes, actualizados y coherentes. Protocolo íntegro. |
 | 2026-10-03 | ✅ OK | Fecha revisada. **Información crítica faltante registrada:** (1) **Marca LOBO** — mascota/producto agente (lobo negro peluche 3D), temas claro+oscuro con oscuro por defecto, sello de unidad social añadidos a MARCA; (2) **NEREUS ↔ LOBO** — enlace de marca documentado (NEREUS = clave interna del producto LOBO); (3) **Modelo de Bellion fijado** (`deepseek-v4.1-flash`); (4) **Corregida la Red de Sombras** — decía `delegate_task`, contradiciendo la regla de oro #4; ahora indica `hermes -p <perfil> chat -q`. Integridad estructural completa (174→181 líneas, todas las secciones presentes). |

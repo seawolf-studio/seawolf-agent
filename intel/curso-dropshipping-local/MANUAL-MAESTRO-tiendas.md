@@ -690,14 +690,6 @@ Para recibir notificaciones de pedidos en el celular:
 - **Consecuencia:** Producto parece rentable pero las devoluciones comen toda la ganancia
 - **Solución:** Incluir porcentaje estimado de devoluciones en TODOS los cálculos de rentabilidad
 
-#### ERROR OPERATIVO #7: Tocar la campaña de publicidad en los primeros días
-- **Consecuencia:** Cada cambio reinicia el aprendizaje de Meta → pierdes data acumulada
-- **Solución:** Dejar correr mínimo **7 días calendario** con el mismo presupuesto y creatividades. Anotar métricas una vez al día, NO intervenir.
-
-#### ERROR OPERATIVO #8: Prometer lo que la plataforma no permite
-- **Consecuencia:** Bloqueo de cuenta publicitaria → negocio detenido
-- **Solución:** Usar generador de anuncios aprobados. Nada de "curas", "resultados garantizados", "antes y después" con claims médicos. Si vendes productos de salud o belleza, usar copies seguros.
-
 ### 6.3 — Plan de Primera Semana (Checklist)
 
 | Día | Acción |
@@ -705,8 +697,8 @@ Para recibir notificaciones de pedidos en el celular:
 | **Día 1** | Crear cuenta Dropi → completar datos personales → iniciar validación de identidad |
 | **Día 2** | Finalizar validación → agregar cuenta bancaria → explorar catálogo → guardar 10 productos favoritos |
 | **Día 3** | Evaluar 3 productos con Test de Viabilidad + Calculadora → elegir 1 ganador |
-| **Día 4** | Contactar proveedor del producto elegido → crear Fan Page → configurar WhatsApp Business |
-| **Día 5** | Generar copies (GATO) y creativos con IA → lanzar primera campaña de WhatsApp |
+| **Día 4** | Contactar proveedor del producto elegido → preparar los perfiles de redes de la tienda → configurar WhatsApp Business |
+| **Día 5** | Generar copies (GADO) y creativos con IA → lanzar la primera promoción por WhatsApp |
 | **Día 6** | Monitorizar respuestas → responder chats → cerrar primeras ventas → montar pedidos en Dropi |
 | **Día 7** | Revisar huellas digitales de clientes nuevos → gestionar novedades → evaluar métricas → planear siguiente producto |
 

@@ -1,0 +1,41 @@
+BERU — RE-AUDITORÍA (ronda 2). Auditas la corrección, no la fe de quien la hizo.
+
+OBJETO: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v3.md (TANK, corrección de tu informe)
+TU INFORME ANTERIOR: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v2.md
+FUENTE de verdad: C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (13.273 líneas — por partes)
+VERSIÓN PREVIA: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v2.md
+ENTREGABLE: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v3.md
+
+ORDEN DE EJECUCIÓN (no acumules el informe para el final: escríbelo con write_file apenas tengas el veredicto y ve reescribiéndolo completo al cerrar cada bloque).
+
+VERIFICA, CON EVIDENCIA LÍNEA POR LÍNEA (no aceptes la palabra de TANK: si dice "corregido", comprueba el texto real):
+
+1) LAS 16 CORRECCIONES EXIGIDAS — estado real de cada una (RESUELTA / PARCIAL / NO RESUELTA):
+   URGENTES: (A1) L295 "descendió"→"descargó" · (A2) L298 signo de exclamación de cierre · (A3) Anexo C dice la verdad.
+   ALTAS: (B1) L235 horarios del transcript, sin precisión inventada · (B2) "PROPIDAD"→"PROPIA" · (B3) "Orgânico"/"orgànica" · (B4) doble marca [SEAWOLF]/[CURSO] en L607 (y L592/L596).
+   MEDIAS: (C1) "configuracion" · (C2) atribución "PAS" · (C3) marca [CURSO] en datos personales/facturación.
+   BAJAS: (D1) marcas en L115/L239-248/L354-355 · (D2) glosario [SEAWOLF].
+   RESCATADAS: (E1) "pipiti.ai de Binance"→ByteDance · (E2) "menos de 3 minutos"→"menos de un minuto" (transcript L7159) · (E3) "sin restricciones de energía" fuera o marcado · (E4) "tasa de contraentrega fallida 30-40%" marcado como estimación [SEAWOLF].
+
+2) DEMOLICIÓN DOCTRINAL (sección 6, orden del Monarca): debe quedar CERO infraestructura Meta operativa. Busca y cuantifica: "Fan Page", "página de Facebook", "verificación en dos pasos" (de Meta), "vincular WhatsApp Business a la página", "grupos de Facebook", "cuenta profesional de Instagram", "Business Manager", "Pixel". Cada paso operativo de burocracia Meta que sobreviva es un hallazgo ALTO. Los canales permitidos son WhatsApp/estados, TikTok y contenido orgánico.
+
+3) ANEXO A: no debe quedar ninguna mención OPERATIVA (pasos, configuración, APIs) de Pixel Meta, API de Conversiones o campañas. Una nota de "no aplica" es aceptable; instrucciones, no.
+
+4) REGRESIÓN — lo que ya estaba bien no puede romperse: vuelve a comprobar las cifras verificadas en tu informe anterior (flete $17.900, comisión $5.000, devolución 40-50%, IVA $164M, cortes 11AM/4PM, dinero a medianoche, 9 estados, huella digital, departamentos sin cobertura, enlace con exoneración). Cualquier cifra que haya cambiado de valor sin justificación es un hallazgo MÁXIMO.
+
+5) PIEZAS NUEVAS: si TANK añadió "logo con IA" (~01:39:47) y "2FA en Dropi" (~01:34:09), verifica que estén en el transcript y que el resumen sea fiel. Si inventó pasos, hallazgo MÁXIMO.
+
+6) CAZA LIBRE: cualquier errata nueva, dato sin fuente, marca de procedencia mal puesta o afirmación no verificable que se te cruce. Incluye el estado de las 6 erratas nuevas que tú detectaste en la ronda anterior.
+
+7) HONESTIDAD: lista lo que NO pudiste verificar. No rellenes.
+
+VEREDICTO FINAL: PASA o NO PASA. Si NO PASA, enumera SOLO las correcciones que faltan (con línea exacta y evidencia), listas para una última ronda.
+
+No edites el manual. Tu producto es el informe.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+VEREDICTO
+HALLAZGOS CLAVE
+BLOQUEO

@@ -1,0 +1,55 @@
+IGRIS — LOS GUIONES DEL NIVEL 1 (curso imán de venta por redes y WhatsApp).
+
+CONTEXTO: Seawolf Studio. El Nivel 1 es el curso imán del embudo de "Cursos de Dropshipping Local + Smart Shop". Es un **Smart Course**: micro-web + videos explicativos presentados por **Kaelen** (el robot presentador del estudio: casco blanco, visera negra con ojos LED y boca-onda; su voz es Piper es_ES local). Tú escribes lo que Kaelen dice y lo que se ve en pantalla.
+
+FUENTES (léelas; el manual es la columna vertebral)
+- MANUAL: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v4.md
+- PLAN y precios: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/PLAN-CURSOS-TIENDAS.md
+- Fuente original (por si necesitas un detalle exacto): C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (léelo por partes con offset/limit)
+
+ENTREGABLES (carpeta nueva)
+- C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/igris/guiones-N1/00-INDICE.md
+- 01-mentalidad-y-modelo-local.md
+- 02-elegir-producto-con-numeros.md
+- 03-copys-que-venden.md
+- 04-creativos-con-ia.md
+- 05-vender-por-redes-y-whatsapp.md   ← **MÉTODO SEAWOLF** (ver abajo)
+- 06-atencion-al-cliente-y-cierre.md
+
+LOS 6 MÓDULOS DEL NIVEL 1
+1. Mentalidad y modelo local (actores del negocio, flujo del pedido, contraentrega).
+2. Elegir producto con números (test de viabilidad, precio, margen, calculadora, proyector de metas).
+3. Copys que venden (niveles de consciencia + método GADO + cómo usar IA para copys).
+4. Creativos con IA (imagen y video: ángulos de venta, formatos verticales, efecto wow en 3 segundos).
+5. **Vender por redes y WhatsApp** — publicaciones, del post al chat, DMs, cierre por chat. **OJO: el curso NO enseña esto** (dedica su tiempo a infraestructura de anuncios, que está proscrita). Este módulo es **NUESTRO MÉTODO**: escribe con tu oficio y **márcalo [MÉTODO SEAWOLF]** en el índice y en el encabezado del guion.
+6. Atención al cliente y cierre (respuesta rápida, manejo de objeciones, seguimiento post-venta).
+
+FORMATO OBLIGATORIO DE CADA GUION
+- Encabezado: módulo, **duración objetivo (4-6 minutos ≈ 600-900 palabras habladas)**, objetivo del video en una línea, y las secciones del manual de donde sale.
+- **GANCHO (primeros 10 segundos)**: literal, dicho por Kaelen.
+- **BLOQUES** numerados. Cada bloque con:
+  - `KAELEN:` el texto EXACTO que lee el presentador (coloquial, frases cortas, cero palabrería).
+  - `[indicaciones]`: pausas, énfasis, cambio de ritmo (Kaelen anima por audio y visera).
+  - `PANTALLA:` el texto en pantalla (máximo 8 palabras por rótulo).
+  - `IMAGEN:` qué se muestra (ejemplo, demo, lista, número grande, captura del manual).
+- **CIERRE**: resumen en 3 frases + llamada a la acción concreta.
+
+ESTILO (no negociable)
+- Español colombiano neutro y coloquial, tuteo, directo. Cero relleno motivacional vacío.
+- **Cero promesas de ingresos garantizados.** Hablamos de método y de números, no de fantasías.
+- Nunca digas "gratis de por vida", "te vas a hacer rico", "método secreto".
+- Habla el idioma del manual: huella digital, contraentrega, corte, wallet, los 9 estados, no un producto que te guste sino uno que los números aprueben.
+
+DOCTRINA (prohibido, sin excepciones)
+- Nada de Meta/Facebook/Instagram Ads, Business Manager, Pixel, campañas pagadas, Shopify ni Google AdSense. El estudio vende con **tráfico 100% orgánico**: contenido, WhatsApp y cierre por chat. Tampoco Fan Pages ni verificación de Meta: eso está proscrito.
+
+VERIFICACIÓN (evidencia o no existe)
+- Al terminar, revisa tus propios archivos: que existan los 7, que ningún guion mencione lo prohibido (busca con search_files los términos prohibidos en tu carpeta) y que cada cifra citada coincida con el manual.
+- Reporta el conteo de palabras por guion.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

@@ -1,0 +1,26 @@
+BERU — ORDEN DE EJECUCIÓN (envoltorio)
+
+Lee PRIMERO tu orden completa y cumple TODO lo que allí se exige:
+C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru-audit-prompt.txt
+
+ARCHIVOS QUE AUDITAS
+- v2 (objeto): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v2.md
+- v1 (referencia): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas.md
+- FUENTE de verdad: C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (525.258 caracteres / 13.273 líneas — por partes con read_file offset/limit)
+- TU ENTREGABLE: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v2.md
+
+ORDEN DE EJECUCIÓN OBLIGATORIO (una corrida anterior tuya fue interrumpida a los 7 minutos y se perdió todo lo verificado — no vuelvas a acumular el informe para el final):
+1. Verifica PRIMERO los seis puntos de severidad MÁXIMA: cifras inventadas, atribuciones falsas, datos marcados como "no verificados" que SÍ están en el transcript, afirmaciones operativas sin fuente.
+2. ESCRIBE EL INFORME CON write_file EN CUANTO TERMINES EL PUNTO 1 — aunque falten las secciones restantes. Escribe ya el veredicto y la tabla de hallazgos máximos, con una sección final "PENDIENTE DE COMPLETAR".
+3. Después verifica doctrina (incluida la burocracia Meta de la sección 6), erratas residuales, exhaustividad del temario, Anexo A y procedencia.
+4. Al cerrar cada bloque, VUELVE a escribir el archivo completo con los hallazgos acumulados (write_file sobrescribe; mantén todo lo anterior).
+5. Solo si nada de lo anterior aplica, sigue con el resto.
+
+No dejes de escribir el informe antes de terminar. Un informe incompleto en disco vale infinitamente más que un análisis perfecto que se pierde.
+
+Al terminar imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+VEREDICTO
+HALLAZGOS CLAVE
+BLOQUEO

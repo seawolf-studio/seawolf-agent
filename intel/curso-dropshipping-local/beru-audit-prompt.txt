@@ -1,0 +1,53 @@
+BERU — auditoría adversarial. Orden directa del Monarca.
+
+OBJETO DE AUDITORÍA: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v2.md (escrito por TANK en esta misma jornada).
+
+FUENTE DE VERDAD (contra esto se audita): C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md — transcript del curso, 525.258 caracteres / 13.273 líneas. LÉELO POR PARTES con read_file offset/limit; nunca entero de golpe.
+VERSIÓN ANTERIOR (para diff y regresiones): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas.md
+
+TU ROL: eres el auditor, NO el corrector. NO edites el manual. Tu producto es un informe de hallazgos con evidencia.
+
+QUÉ AUDITAR (en orden de severidad)
+
+1) INVENCIÓN DE DATOS (lo más grave)
+Toda cifra, plazo, precio, porcentaje, nombre de herramienta o paso operativo del v2 debe poder localizarse en el transcript. Rastrea especialmente: fletes, márgenes, comisiones (~$5.000 COP), horarios de retiro (5:00-7:30 AM), horarios de corte, plazo de pago a medianoche, porcentaje de devolución (40-50% del flete), los 9 estados de la guía, los departamentos sin cobertura, la tasa de conversión y las marcas [t≈HH:MM:SS]/[Lxxxx]. Si una marca apunta a un lugar del transcript donde el dato NO está: eso es un hallazgo de severidad MÁXIMA.
+
+2) DOCTRINA (violación = NO PASA)
+- Cero menciones de: Meta/Facebook/Instagram Ads, Business Manager, Pixel, campañas de Facebook/Instagram, Shopify, Google AdSense. Busca términos sueltos: "anuncio", "anuncios", "campaña", "publicidad", "ads", "tráfico pagado", "presupuesto".
+- Toda referencia de tráfico pagado debe estar etiquetada >> [NO APLICA — doctrina Seawolf: tráfico 100% orgánico]. Si aparece una recomendación de comprar tráfico sin etiquetar → hallazgo.
+- Verifica que la regla de margen 35%-50% siga intacta y coherente con la reserva por devoluciones.
+- BUROCRACIA META (punto que el Monarca debe decidir, tú solo documentas): la doctrina prohíbe la burocracia de Facebook/Meta (Fan Page con verificación en dos pasos, Business Manager, Pixel). Cuantifica CADA mención de infraestructura Meta en la sección 6 (redes orgánicas): Fan Page, grupos de Facebook, Instagram, Pixel Meta. Repórtalo como hallazgo ALTO con las líneas exactas y expón el conflicto con la doctrina — NO decidas tú la doctrina ni la reescribas.
+
+3) ERRATAS RESIDUALES (del v1 al v2)
+Residual detectado por el Gran Comandante en su inspección del v2: la línea 295 dice "El proveedor generó y descendió la guía". "Descendió" es incoherente (¿"descargó"?). Verifica contra el transcript cuál es el verbo correcto y repórtalo.
+Confirma que quedaron corregidas: L42 "eneverywhere" · L272 "Proveedorder/descendió" · L275 negrita sin cerrar · L586 "Amazon s" · L673 "CRITÉCO" · L399 "EFEKT de Eugene Schwartz". Y caza las que TANK no detectó (frases rotas, términos en inglés, atribuciones falsas, enumeraciones truncadas).
+
+4) EXHAUSTIVIDAD DEL TEMARIO (contra el plan)
+Verifica cobertura real de las 6 áreas: (a) elegir producto con números · (b) cuenta y uso de Dropi (registro, validación, wallet, pedido, huella digital, 9 estados, novedades, cuándo paga) · (c) venta por WhatsApp · (d) copys y creativos con IA (niveles de consciencia, GADO) · (e) landing + checkout contraentrega · (f) herramientas gratis y errores costosos. Señala lo que falta y, si el v2 lo justifica diciendo que el transcript no lo cubre, VERIFÍCALO tú mismo (busca el tema en el transcript y confirma o desmiente esa excusa).
+
+5) ANEXO A — GOOGLE SITES
+Cada paso debe estar marcado [SEAWOLF] o PENDIENTE-VERIFICAR. Si un paso de Google Sites aparece como verdad operativa sin haber sido verificado → hallazgo. Verifica que la sección de WordPress/WooCommerce quedó reencuadrada como "REFERENCIA DEL CURSO — NO es nuestro Nivel 2".
+
+6) PROCEDENCIA
+Comprueba que los bloques lleven marcas [CURSO] / [SEAWOLF] y que estén bien puestas (un bloque del curso marcado como propio, o al revés, es un hallazgo de fidelidad).
+
+ENTREGABLE
+C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v2.md (crea la carpeta si no existe; usa write_file).
+Contenido mínimo:
+- VEREDICTO: PASA / NO PASA (y por qué, en una línea).
+- Tabla de hallazgos: | # | Severidad (MÁXIMA/ALTA/MEDIA/BAJA) | Línea del manual v2 | Qué dice | Evidencia en el transcript (offset/línea) | Corrección exigida |
+- Nº de cifras verificadas / cifras no verificables.
+- Lista de correcciones OBLIGATORIAS para la ronda 2 de TANK.
+- Lo que NO pudiste verificar (honestidad explícita, sin adornos).
+
+REGLAS
+- No inventes hallazgos ni rellenes vacíos: si algo no lo puedes verificar, lo declaras NO VERIFICABLE.
+- No corrijas el manual. No audites tu propio criterio: cita siempre la evidencia.
+- Sé implacable: el Monarca prefiere un NO PASA honesto a un PASA complaciente.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+VEREDICTO
+HALLAZGOS CLAVE
+BLOQUEO

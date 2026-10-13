@@ -1,0 +1,34 @@
+TANK — RONDA 3 (FINAL). La re-auditoría de BERU sobre tu v3 dictamina NO PASA: las 16 correcciones están bien aplicadas, las 13 cifras sobrevivieron intactas y la demolición Meta fue completa (0 pasos operativos). Pero la sección 6, al reescribirse, DEGRADÓ la ortografía y metió una infidelidad al transcript. Se corrige exactamente esto y nada más: es la ronda de cierre.
+
+ARCHIVOS
+- v3 (objeto): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v3.md
+- INFORME (léelo completo antes de tocar nada): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v3.md
+- FUENTE de verdad: C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (por partes, con offset/limit)
+- ENTREGABLE: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v4.md  (NO sobrescribas v1/v2/v3)
+
+ORDEN DE EJECUCIÓN: escribe el v4 con write_file apenas tengas resueltas las correcciones 1 y 2, y reescríbelo completo al cerrar cada bloque. No acumules todo para el final.
+
+=== CORRECCIONES (lista exacta de BERU, verificada por el Gran Comandante) ===
+1. [ALTA] L553 — "Utiliza un generador de logos con IA (Canva, Looka, o similar gratuito)": INFIDELIDAD AL TRANSCRIPT. El instructor (transcript L2878-2895) usa **ChatGPT** y **descarta Canva explícitamente** ("no tienes que ir a Canva... los logos de Canva en el plan gratuito son repetitivos y mediocres"). Escribe lo que el curso REALMENTE dice (ChatGPT) y, si quieres recomendar otras herramientas, va en línea aparte marcada [SEAWOLF].
+2. [ALTA] L582 — "Siempre **radiar** el número del cliente en Dropi": el verbo es incorrecto ("radiar" = emitir ondas). Debe ser **"revisar"**, **"validar"** o **"consultar la huella digital"**. Corrige también cualquier otra aparición de "radiar" en el documento.
+3. [MEDIA] L554 — "nombre, **colors**, estilo" → "**colores**" (texto en español).
+4. [MEDIA] L238 — "Después de las **7 AM** → probablemente cae al siguiente día hábil": el transcript (L1597) dice **"después de las 8 de la mañana"**. Corrige la frontera a 8 AM (y mantén, del transcript, "antes de las 7, ojalá 5-6 de la mañana" para el mismo día).
+5. [MEDIA] ORTOGRAFÍA — la sección 6 reescrita perdió las tildes de forma sistemática. Añádelas TODAS: "capítulo" (×2: L551, L700), "método" (×2: L570, L613), "imágenes" (×2: L571, L574), "versión" (L574), "orgánico/orgánica" (×6: L613, L619, L625, L643, L661, L673), "publicación" (×3: L619, L643, L662), "información" (×2: L641, L656), "solución" (L647), "lógica" (L619), "conversación" (L663).
+   >>> ADEMÁS: haz una PASADA ORTOGRÁFICA COMPLETA del documento con esa misma vara (la sección nueva demostró que se te escapan). Busca también caracteres extranjeros (circunflejo portugués, acento grave catalán/francés) y palabras en inglés sueltas. El manual se vende: la ortografía es parte del producto.
+6. [BAJA] L869 — glosario: "**Demonstración**" → "**Demostración**".
+7. [DOCTRINA] L868 — ELIMINA la entrada "Fan Page" del glosario. Es un término de la burocracia Meta proscrita: el glosario es NUESTRO y no debe definir ni legitimar esa infraestructura.
+8. [FIDELIDAD — hallazgo del Gran Comandante] Sección 4.1: los **5 niveles de consciencia** aparecen con procedencia del curso, pero **el curso NUNCA menciona a Eugene Schwartz ni su libro** (lo verificó BERU). Marca ese marco como **[SEAWOLF — marco externo de copywriting, no del curso]** sin perder su utilidad. Revisa igual el Anexo C (fila de la errata L399): no puede afirmar que el curso nombra a Schwartz.
+
+=== LO QUE NO SE TOCA ===
+- Las secciones 1-5 heredadas están verificadas: 13 de 13 cifras de negocio contra el transcript. NO las reescribas.
+- La demolición Meta de la sección 6 es correcta (0 pasos operativos): no reintroduzcas nada.
+- PROHIBIDO: Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, Google AdSense.
+- No inventes. Toda cifra debe rastrear al transcript.
+- El Anexo C y el Anexo D deben seguir diciendo la VERDAD del estado real de cada corrección (añade la fila de esta ronda con su estado).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

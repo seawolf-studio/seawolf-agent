@@ -1,0 +1,33 @@
+BERU — VERIFICACIÓN DE CIERRE (acotada). No es una auditoría completa: es el sello final sobre la lista de TU ronda anterior.
+
+OBJETO: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v4.md (TANK, ronda 3 final)
+TU INFORME ANTERIOR: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v3.md
+FUENTE de verdad: C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (por partes)
+ENTREGABLE: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/verificacion-final-v4.md (escríbelo apenas tengas el veredicto; luego reescríbelo completo al cerrar)
+
+VERIFICA SOLO ESTO, EN EL CUERPO DEL TEXTO (no te basta con que los anexos afirmen que se hizo: comprueba el texto real):
+1. L553: ¿la herramienta del curso es ahora ChatGPT y quedó claro que el instructor descarta Canva? ¿Lo que se recomienda de más va marcado [SEAWOLF]?
+2. L582: ¿desapareció el verbo "radiar" del cuerpo? ¿Dice "validar/revisar/consultar el número del cliente"?
+3. L554: ¿"colores" en lugar de "colors"?
+4. L238: ¿"8 AM" en lugar de "7 AM", manteniendo el "antes de las 7 (ojalá 5-6 AM)" del transcript?
+5. Ortografía: barre TODO el cuerpo del manual (excluye las tablas de anexos de erratas, que deben citar las palabras mal escritas) en busca de tildes omitidas, caracteres extranjeros (â/à) y palabras en inglés. Reporta cualquier resto con línea exacta.
+6. Glosario: ¿desapareció la entrada "Fan Page"? ¿"Demostración" escrito correctamente?
+7. Procedencia: ¿los 5 Niveles de Consciencia están marcados como marco externo ([SEAWOLF]) y NO como del curso? ¿El Anexo C dejó de afirmar que el curso nombra a Schwartz?
+
+Y ADEMÁS, lo que no puede romperse:
+8. REGRESIÓN: las 13 cifras de negocio certificadas siguen intactas. Si alguna se movió, es hallazgo MÁXIMO.
+9. DOCTRINA: cero pasos OPERATIVOS de burocracia Meta (las líneas de señalización [NO APLICA] y las tablas de anexos son válidas). Cero Meta/FB/IG Ads, Business Manager, Pixel operativo, Shopify, AdSense.
+
+REGLAS
+- Si algo es solo cosmético y no afecta a la verdad ni a lo vendible, dilo tal cual y NO bloquees por eso: quiero una lista honesta y proporcionada, no una cacería infinita.
+- Si algo contradice al transcript o a la doctrina, es bloquearnte.
+- No edites el manual.
+
+VEREDICTO: PASA / NO PASA (si NO PASA, enumera SOLO lo bloqueante, con línea y evidencia).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+VEREDICTO
+BLOQUEANTES (si hay)
+BLOQUEO

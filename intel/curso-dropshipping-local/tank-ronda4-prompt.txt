@@ -1,0 +1,30 @@
+TANK — RONDA 4 (PULIDO COSMÉTICO, ACOTADÍSIMO). BERU dio **PASA** al v4. Solo queda una observación cosmética: 14 tildes omitidas en la sección 4.5 ("Ángulos de Venta"), contenido heredado del v2 que ninguna ronda alcanzó. Esta ronda corrige SOLO eso. No reescribas, no reordenes, no "mejores" nada más: es un pulido.
+
+ARCHIVO
+- Base: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v4.md
+- ENTREGABLE NUEVO: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v5.md (copia del v4 con las correcciones; NO sobrescribas v1-v4)
+
+CORRECCIONES EXACTAS (lista del auditor, líneas del v4)
+- L539: "Kit Cuadernos **Magicos Montesori**" → "Kit Cuadernos **Mágicos Montessori**"
+- L541: "**Angulo** emocional" → "**Ángulo** emocional"
+- L542: "pegados al **telefono** todo el **dia**" → "**teléfono** ... **día**" · "**Angulo** de salud" → "**Ángulo** de salud"
+- L543: "Ahorro **economico**" → "Ahorro **económico**" · "**Angulo economico**" → "**Ángulo económico**"
+- L544: "**Preparacion** escolar" → "**Preparación** escolar" · "primer **dia**" → "primer **día**" · "**Angulo** temporal" → "**Ángulo** temporal"
+- L545: "**Angulo** de **ocasion**" → "**Ángulo** de **ocasión**"
+
+ADEMÁS
+- Haz una pasada de tildes/ortografía por TODO el documento, pero corrige **solo** errores ortográficos evidentes (tildes, mayúsculas de marca, palabras mal escritas). No cambies redacción, ni formato, ni números, ni marcas de procedencia.
+- Añade al Anexo D2 una fila con esta ronda (4) y su estado real.
+- No toques las tablas de erratas: ahí las palabras mal escritas se citan a propósito.
+
+INVARIANTES (si algo de esto cambia, has fallado)
+- Las 13 cifras de negocio (flete $17.900, comisión $5.000, devolución 40-50%, margen 35-50%, IVA $164M, 6 meses, sueldo mínimo/10%, medianoche 12-2 AM, cortes 11 AM/4 PM, 9 estados, departamentos sin cobertura, edición antes de guía, enlace con exoneración).
+- Cero burocracia Meta operativa. Cero Meta/FB/IG Ads, Business Manager, Pixel, Shopify, AdSense.
+- Las marcas [CURSO] / [SEAWOLF] intactas.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

@@ -1,0 +1,49 @@
+TANK — segunda pasada sobre el curso de dropshipping local. El Monarca aprobó esta orden.
+
+SITUACIÓN: tu manual v1 (724 líneas) ya fue leído COMPLETO por el Gran Comandante y NO ha pasado auditoría. Beru audita DESPUÉS de esta pasada. Objetivo de esta pasada: dejar el manual v2 limpio, fiel y alineado a la doctrina del estudio. REGLA SUPREMA: no inventes nada. Si no está en la fuente, no existe.
+
+ARCHIVOS
+- v1 (léelo completo primero): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas.md
+- FUENTE (transcript del curso, 525.258 caracteres / 13.273 líneas — LÉELO POR PARTES con read_file offset/limit, nunca entero de golpe): C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md
+- ENTREGABLE (archivo NUEVO, NO sobrescribas el v1): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v2.md
+
+TAREAS EN ORDEN
+
+1) ERRATAS Y DEFECTOS DE TEXTO
+Corrige los detectados y caza todos los del mismo tipo (frases rotas, negritas sin cerrar, palabras truncadas, mezclas de inglés, términos y atribuciones inventadas). Lista conocida a corregir:
+   - L42: "Está disponible eneverywhere" (mezcla con inglés)
+   - L272: "Proveedorder generó y descendió la guía" (frase rota)
+   - L275: negrita sin cerrar en "¡AVISAR AL CLIENTE hoy mismo"
+   - L586: "Amazon s" → Amazonas (lista de departamentos excluidos)
+   - L673: "ERROR CRITÉCO" → CRÍTICO
+   - L399: "EFEKT de Eugene Schwartz" → ese nombre no existe; son los 5 NIVELES DE CONSCIENCIA del cliente de Eugene Schwartz (libro Breakthrough Advertising). Corrige el nombre y la atribución.
+
+2) DOCTRINA — TRÁFICO ORGÁNICO
+Elimina todo lenguaje que enseñe a comprar tráfico pagado (anuncio, anuncios, campaña, publicidad, presupuesto de ads, optimización de anuncios). NO borres los datos del curso: márcalos y reencuádralos con esta etiqueta:
+   >> [NO APLICA — doctrina Seawolf: tráfico 100% orgánico]
+Ejemplo: el "costo de publicidad ~10-12% del precio de venta" del curso → reencuádralo a nuestro riesgo real: reserva por DEVOLUCIONES y contraentrega fallida (40-50% del valor del flete, dato que ya está en el manual). Mantén intacta la regla de margen 35%-50%.
+Referencias a revisar: L62, L204, L237, L474, L499-507, L658.
+
+3) HUECO DEL MÓDULO 5 (REDES ORGÁNICAS)
+Hoy el manual solo cubre vender por WhatsApp. Destila del transcript lo OPERATIVO de publicar y vender por REDES SOCIALES de forma orgánica: tipos de publicación, formatos (vertical 9:16), frecuencia/cadencia, cómo usar los DMs, cómo llevar del post al chat, cierre. Si el transcript NO cubre esto, dilo explícitamente en el reporte y NO lo rellenes por tu cuenta.
+
+4) DECISIÓN DEL MONARCA — EL NIVEL 2 SE MONTA EN GOOGLE SITES (no WordPress)
+   - Añade un ANEXO A: "RUTA NIVEL 2 — GOOGLE SITES (ruta propia del estudio, NO del curso)" paso a paso: crear el sitio, estructura de páginas, captura de pedido (formulario), botón/enlace de WhatsApp con mensaje prellenado, publicar en dominio temporal, límites reales de la versión gratuita.
+   - Reencuadra la sección 5 actual (WordPress + WooCommerce + Elementor + COD) como: "REFERENCIA DEL CURSO — NO es nuestro Nivel 2".
+   - OBLIGATORIO: marca la PROCEDENCIA de cada bloque: [CURSO] cuando sale del transcript, [SEAWOLF] cuando es ruta propia del estudio. Todo paso de Google Sites que no puedas verificar, escríbelo como PENDIENTE-VERIFICAR — nunca como verdad.
+
+5) ENLACE DE REGISTRO DROPI
+Se mantiene el enlace del curso (exime de la comisión de plataforma de ~$5.000 COP por venta a quien se registre por él). Deja explícito que es el enlace DEL CURSO y qué exoneración otorga.
+
+6) FIDELIDAD DE CIFRAS
+Toda cifra (precios, fletes, márgenes, tasas, plazos) debe poder rastrearse a la fuente. Junto a cada cifra clave de las secciones 1 y 2 añade una marca [t≈HH:MM:SS] o [Lxxxx] cuando logres ubicarla en el transcript. Si no logras ubicarla, márcala [CIFRA NO VERIFICADA] y repórtalo.
+
+PROHIBIDO mencionar o recomendar: Meta/Facebook/Instagram Ads, Business Manager, Pixel, campañas de Facebook o Instagram, Shopify, Google AdSense. WooCommerce solo como referencia del curso.
+FORMATO: español, tablas y checklists, extenso pero sin relleno. Titula el documento como v2 y anota la fecha de hoy.
+
+AL TERMINAR imprime EXACTAMENTE estas cinco líneas, sin adornos:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

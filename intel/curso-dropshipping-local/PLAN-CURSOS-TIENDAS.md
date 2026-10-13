@@ -67,9 +67,28 @@ Checklist derivado del mismo temario aplicado a las tiendas del estudio: product
 | 3 | Empaquetado Smart Course (HyperFrames/Kaelen) | **kaisel** |
 | — | QA final | **beru** |
 
-## 7. PENDIENTE DE APROBACIÓN
-- Precios de la tabla (§4).
-- ¿Arranco **Fase 0** (destilar las 8h con **tank**) ya?
+## 7. DECISIONES APROBADAS (2026-10-13)
+- ✅ **Precios (§4) APROBADOS** por el Monarca (commit `54ce192`).
+- ✅ **NIVEL 2 = GOOGLE SITES** — ruta gratis, manual y con dolor a propósito. El stack WordPress/WooCommerce del curso queda **solo como referencia**, no es nuestro N2.
+- ✅ **Enlace de registro Dropi:** sirve **cualquier enlace que otorgue la exoneración** de la comisión de plataforma (~$5.000 COP/venta). No es obligatorio el del curso — importa el beneficio, no el dueño del enlace.
+- ✅ **Nadie audita su propio trabajo:** **tank** escribe, **beru** audita (cadena obligatoria).
+
+## 8. RUTA DE RETOMA (en ejecución)
+| # | Paso | Sombra | Estado |
+|---|---|---|---|
+| 1 | Manual **v2**: erratas + doctrina orgánica + Anexo A (Google Sites) + hueco de redes | **tank** | ✅ entregado (878 L / 47 KB) |
+| 2 | Auditoría del v2 contra el transcript | **beru** | ✅ **NO PASA** — 3 hallazgos máximos |
+| 3 | Manual **v3**: 16 correcciones + **demolición de la burocracia Meta** + logo IA + 2FA Dropi | **tank** | ✅ entregado (927 L / 52 KB) |
+| 4 | Re-auditoría del v3 | **beru** | 🔄 en curso |
+| 5 | Guiones de video N1 (6 módulos → Kaelen) — módulo 5 es **método Seawolf** | **igris** | ⏳ |
+| 6 | Afinar nuestras tiendas (checklist de Fase 1) | **kaisel** + **beru** | ⏳ |
+
+### Decisiones de doctrina aplicadas (2026-10-13)
+- **Burocracia Meta proscrita:** sección 6 demolida (Fan Page con 2FA, Business Manager, Pixel, grupos de Facebook, Instagram profesional). Canales permitidos: WhatsApp/estados, TikTok y contenido orgánico.
+- **N1 · módulo 5 = método Seawolf** (el curso NO enseña a vender por redes: solo infraestructura de *ads*).
+- **Enlace de registro Dropi:** sirve cualquier enlace que otorgue la exoneración de la comisión (~$5.000 COP/venta).
+
+> **Regla de fuego:** *evidencia o no existe* — cada cifra del manual rastrea al transcript. **Nadie audita su propio trabajo.**
 
 ---
 *Plano de Bellion · evidencia o no existe.*

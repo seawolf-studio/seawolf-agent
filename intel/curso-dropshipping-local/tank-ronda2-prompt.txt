@@ -1,0 +1,58 @@
+TANK — RONDA 2. El auditor BERU dictaminó NO PASA sobre tu v2. Aquí están sus hallazgos, verificados uno por uno por el Gran Comandante. Es una ronda de corrección: no reescribas lo que ya está bien, no inventes, y no toques nada que no se te ordene.
+
+ARCHIVOS
+- v2 (objeto de la corrección): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v2.md
+- INFORME DE AUDITORÍA (léelo COMPLETO antes de tocar nada): C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/beru/auditoria-manual-v2.md
+- FUENTE de verdad: C:/Users/Admin/AppData/Local/hermes/cache/web/youtu.be-cc7a4b8939.md (13.273 líneas — por partes con read_file offset/limit)
+- ENTREGABLE NUEVO: C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v3.md  (NO sobrescribas v1 ni v2)
+
+ORDEN DE EJECUCIÓN (una corrida tuya anterior se perdió por acumular el trabajo al final): escribe el v3 con write_file en cuanto tengas resueltas las correcciones URGENTES, y luego VUELVE a escribirlo completo (write_file sobrescribe) al ir cerrando cada bloque. No acumules todo para el final.
+
+=== A) CORRECCIONES URGENTES (severidad MÁXIMA de BERU) ===
+A1. L295: "El proveedor generó y **descendió** la guía" → el verbó correcto es "**descargó**" (transcript L8345: "cuando se crea la guía, se descarga y se envía al cliente"). "Descendió" no existe en la fuente.
+A2. L298: el defecto real NO es una negrita sin cerrar (el Gran Comandante se equivocó al reportarlo — no lo "arregles" inventando un bold). El defecto real es que falta el signo de cierre de la exclamación: debe quedar **¡AVISAR AL CLIENTE hoy mismo!**
+A3. Anexo C (L869 en el v2): el Anexo C reclama correcciones que NO se aplicaron. Corrígelo para que diga la VERDAD, incluyendo: (i) que la errata descrita de L275 era un signo de exclamación faltante, no una negrita sin cerrar; (ii) el estado real de cada corrección. Un anexo que miente sobre su propio trabajo es el peor hallazgo posible en este estudio.
+
+=== B) SEVERIDAD ALTA ===
+B1. L235: "5:00 AM y 7:30 AM" y "5:30 PM - 7:00 PM" es PRECISIÓN INVENTADA. El transcript (L1591-1594) dice: retiro "antes de las 7 de la mañana, ojalá 5, 6" y el dinero cae "el mismo día después de las 6 de la tarde". Usa esa formulación textual. Si quieres conservar una recomendación práctica más afinada, va marcada aparte como [SEAWOLF] y declarada como criterio empírico, no como dato del curso.
+B2. L700: "PROPIDAD" → "PROPIA".
+B3. L646: "Orgânico" → "Orgánico" (circunflejo portugués). L629: "orgànica" → "orgánica" (acento grave).
+B4. L607: doble marca contradictoria ([SEAWOLF] en la apertura, [CURSO] al cierre). Un bloque = una sola procedencia. Revisa igual el par L592/L596.
+
+=== C) SEVERIDAD MEDIA ===
+C1. L651: "configuracion" → "configuración".
+C2. L463: "estructura GADO adaptada del framework PAS" → verifica en el transcript si el instructor menciona "PAS". Si NO lo menciona, quita la atribución o márcala como [SEAWOLF].
+C3. L149-161: añadir marca [CURSO] a los párrafos de datos personales y facturación electrónica.
+
+=== D) SEVERIDAD BAJA ===
+D1. L115, L239-248, L354-355: añadir marca de procedencia.
+D2. L842-859 (glosario): es definición propia → marcar [SEAWOLF].
+
+=== E) HALLAZGOS RESCATADOS (los encontró la primera corrida de BERU; su informe final los perdió — el Gran Comandante los rescató y verificó) ===
+E1. L516: "pipiti.ai (de **Binance**, creadores de TikTok)" → ERROR FACTUAL. TikTok es de **ByteDance**, no de Binance. Verifica en el transcript qué dice exactamente y corrígelo.
+E2. L371: "Respuesta en **menos de 3 minutos**" → el transcript (L7159) dice "**menos de un minuto**". Usa la cifra de la fuente. No la infles.
+E3. L405: "Activar **sin restricciones de energía**" → NO está en el transcript. Quítalo o márcalo [SEAWOLF].
+E4. L83: "si tu tasa de contraentrega fallida es del **30-40% del volumen**" → NO está en el transcript. Es tu estimación. Márcala explícitamente como [SEAWOLF — estimación propia, no dato del curso], sin marca de tiempo del curso.
+
+=== F) DEMOLICIÓN DOCTRINAL — ORDEN DEL MONARCA (sección 6) ===
+La burocracia de Meta está PROSCRITA en el estudio (es doctrina permanente del Monarca, no una sugerencia). En consecuencia:
+F1. ELIMINA de la sección 6 toda la infraestructura Meta operativa: crear Fan Page, la verificación en DOS PASOS (L598), vincular WhatsApp Business a la página de Facebook (L604, L662), los grupos de Facebook como canal, y el ceremonial de cuenta profesional de Instagram.
+F2. La sección 6 se reescribe como **método [SEAWOLF]**: publicar contenido orgánico y vender por **WhatsApp (estados), TikTok y redes** — del post al chat y cierre por chat. Es nuestra sección, no del curso: márcala [SEAWOLF].
+F3. Donde el contenido del curso dependa inevitablemente de Facebook, NO lo operes: una sola línea de nota basta — ">> [NO APLICA — burocracia Meta proscrita en el estudio]".
+F4. ANEXO A: elimina las menciones operativas a Pixel Meta, API de Conversiones y campañas (L834-838). No se detallan herramientas prohibidas: basta la nota de que el stack del curso las incluye y que aquí no aplican.
+F5. AÑADE dos piezas que BERU detectó como ausentes del temario, SI están en el transcript: (i) cómo crear un logo con IA (capítulo ~01:39:47) y (ii) la configuración de verificación en dos pasos (2FA) dentro de **Dropi** (capítulo ~01:34:09) — esta última SÍ se permite, es seguridad de la cuenta de Dropi, no de Meta.
+
+=== G) ENLACE DE REGISTRO DROPI — ACLARACIÓN DEL MONARCA ===
+No es obligatorio el enlace del curso. El Monarca aclaró: **sirve cualquiera de los enlaces de registro que otorgue la exoneración** de la comisión de plataforma (~$5.000 COP por venta). Documenta el CRITERIO (que el enlace exonere), mantén el del curso como ejemplo y deja claro que otro enlace con la misma exoneración es igual de válido.
+
+=== H) REGLAS DE LA CASA ===
+- PROHIBIDO mencionar, detallar o recomendar: Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, Google AdSense.
+- Cada corrección que apliques debe quedar reflejada en el Anexo C con su estado REAL.
+- No cambies nada fuera de lo ordenado. No reescribas secciones que BERU aprobó (la sección 1-5 y las cifras verificadas están bien: 12 de 13 verificadas contra el transcript).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño en bytes)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

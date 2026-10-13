@@ -41,15 +41,17 @@ Nivel 1 (imán) ─► Nivel 2 (imán + DOLOR) ─► Nivel 3 (SERVICIO de pago)
 | **Pago** | Smart Course **sin anuncios** + bonus (kits, planillas, grupo) | ingreso + filtra serios |
 *(Igual que el curso de referencia: "gratis" vs "completo sin anuncios + grupo".)*
 
-## 4. PRECIOS (propuesta Bellion — ajustable)
-| Producto | Gratis | Pago (COP) |
-|---|---|---|
-| Nivel 1 | con anuncios | **79.000** |
-| Nivel 2 | con anuncios | **169.000** |
-| Bundle N1+N2 (sin anuncios) | — | **199.000** |
-| **Smart Shop** (montaje Astro+Dropi) | — | **890.000** (o 3 cuotas) |
-| Smart Shop · mantenimiento | — | **49.000 / mes** |
-> Dominio/hosting se cobra aparte (a favor del cliente). Precios ancla para Colombia/LATAM.
+## 4. PRECIOS (aprobados · −30%, excepto mantenimiento)
+*Tasa: 1 USD = **3.198,10 COP** (2026-10-12) · valores redondeados.*
+
+| Producto | Gratis | Pago (COP) | Pago (USD) |
+|---|---|---|---|
+| Nivel 1 | con anuncios | **55.000** | **~$17** |
+| Nivel 2 | con anuncios | **118.000** | **~$37** |
+| Bundle N1+N2 (sin anuncios) | — | **139.000** | **~$43** |
+| **Smart Shop** (montaje Astro+Dropi) | — | **620.000** (o 3 cuotas) | **~$194** |
+| Smart Shop · mantenimiento | — | **49.000 / mes** *(sin cambio)* | **~$15 / mes** |
+> Precios para los **países donde opera Dropi** (LATAM); el USD es la referencia multi-país. Dominio/hosting aparte (a favor del cliente).
 
 ## 5. FASE 1 — AFINAR NUESTRAS TIENDAS
 Checklist derivado del mismo temario aplicado a las tiendas del estudio: producto/margen, fricción de compra, checkout contraentrega, WhatsApp, capa IA, velocidad (Astro), SEO local.

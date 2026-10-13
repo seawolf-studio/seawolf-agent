@@ -15,7 +15,7 @@ Cuando el Monarca (Key) diga **"memento"** seguido de información, el Gran Coma
 
 ## 🧠 CONTENIDO VIVO DE MEMORIA
 
-*Última actualización: 2026-10-12*
+*Última actualización: 2026-10-13*
 
 ### IDENTIDAD DEL MONARCA
 - **Nombre real:** Keynes
@@ -144,6 +144,31 @@ El Monarca las odia con toda su alma.
 ### CAPACIDAD: HYPERFRAMES (contenido por código: HTML/CSS/GSAP -> MP4)
 **Absorbida 2026-10-11** (`intel/hyperframes/CAPACIDAD-hyperframes.md`). `heygen-com/hyperframes` — **Apache-2.0**, 100% local (Chrome headless + FFmpeg), **sin claves ni nube**. Convierte HTML+CSS+GSAP en MP4 deterministas (hasta 4K, fps 1-240; MP4/WebM/MOV-alfa/GIF/HLS). Nativo: TTS Kokoro, whisper, quitar fondo, LUTs, LUFS, cortes por beat. ~446 bloques. Límites honestos: render ≈2× tiempo real, NO es text-to-video, pesado en RAM. **Sting oficial del estudio** ya renderizado (`renders/seawolf-sting.mp4`, 1080×1920, 10 s). Skill del ejército: `hyperframes-content-SKILL.md` (KAISEL/TITAN/KAMISH). Pitfalls Windows: usar su propio `chrome-headless-shell`; render con el binario global, no `npx`.
 
+### CAPACIDAD: AVATAR KAELEN (robot presentador ESTÁNDAR del estudio) — 2026-10-13
+`F:/seawolf/kaelen/` · skill `kaelen-avatar`. Robot con **casco blanco + visera negra**; en la visera viven **ojos LED (estilo EVE)** + **boca-onda** de audio. Pipeline 100% local sobre **HyperFrames**:
+- Limpieza (ffmpeg): `delogo` del watermark "Veo" + `chromakey` del verde real **`#08A82E`** con *similarity baja 0.15* + `despill` (⚠️ 0.35 borraba al sujeto).
+- **Rastreo del marco LOCAL de la visera:** `CSRT` (ROI por frame) + flujo óptico denso **Farneback + mínimos cuadrados** → `(rx, ry, rot, scale)` por frame. ❌ SIFT/ORB y Lucas-Kanade puntual fallaron (texturas repetidas del casco) — NO reintentar.
+- Composición: capa `#vframe` anclada al centro de la visera (`transform-origin` centro) que traslada+rota+escala; `#eyes` y `#mouthLayer` como capas separadas. Boca-onda con forma fija simétrica × amplitud (NO ventana deslizante).
+- Voz: **Piper TTS** local (`es_ES-davefx-medium`); envolvente RMS sin librosa (`wave`+numpy, 24 fps; numpy2 rompe scipy).
+- Entregables: `kaelen-voz-real.mp4`, `kaelen-verde.mp4`, proyecto HyperFrames en `F:/seawolf/kaelen/kaelen/`.
+- **`seawolf-avatar` (SadTalker)** sigue para **avatares humanos**; Kaelen usa la ruta **robot**.
+
+### PRODUCTO: SMART COURSES (nueva línea del estudio — hermana de las Smart Webs) — 2026-10-13
+Definición del Monarca: **"un modelo muy pequeño entrenado con el temario del curso"** como tutor → **variante magistral** de la Smart Web.
+- **Estructura:** `Información → Video explicativo (Kaelen) → Evaluación → Tutor IA`.
+- **Diferencial absoluto:** un curso que **CONVERSA** con el alumno (tutor IA + evaluación, idealmente respuestas abiertas calificadas).
+- **PDF: DESCARTADO** como curso y como certificado (el estudio NO es entidad avalada para emitir certificados).
+- **Foco vigente:** TODO lo "smart" (Smart Webs + Smart Courses). Pendiente: curso piloto, modelo de cobro, tipo de evaluación.
+
+### EMBUDO «CURSOS DE DROPSHIPPING LOCAL + SMART SHOP» (plan maestro de negocio) — 2026-10-13
+`intel/curso-dropshipping-local/` (`PLAN-CURSOS-TIENDAS.md` + `MANUAL-MAESTRO-tiendas.md`, 724 líneas destiladas de un curso de referencia de ~8h20m — "Aprender E-commerce"). Principio: **Dropi es solo el proveedor; el método y la marca son nuestros.**
+- **Embudo:** `N1 (imán) → N2 (imán + DOLOR) → N3 (SERVICIO de pago = $$$)`.
+- **N1** «Vender por redes sociales» (concepto, sin herramientas difíciles; **sin Meta Ads**) · **N2** «Vender productos de Dropi con Google Sites (manual y trabajoso A PROPÓSITO — crea el dolor)» · **N3 = Smart Shop** (le armamos su tienda: Astro + Dropi API + capa IA → "cuestión de maquillaje", margen alto).
+- **Doble carril:** gratis **con anuncios** (Adsterra u otra red rápida) = alcance/captación · pago **sin anuncios** + bonus = ingreso/filtra serios.
+- **Precios propuesta (COP, ajustable):** N1 **79.000** · N2 **169.000** · Bundle N1+N2 **199.000** · **Smart Shop 890.000** (o 3 cuotas) · mantenimiento **49.000/mes**. Dominio/hosting aparte (a favor del cliente). ⏳ **Pendiente de aprobación del Monarca** (precios + arrancar Fase 0 con **tank**).
+- **Reparto:** Fase 0 destilar (tank) + guiones N1 (igris) · Fase 1 afinar tiendas (kaisel+beru) · Fase 2 capa IA Smart Shop/tutor (jima) · Fase 3 diseño (titan) + empaquetado HyperFrames/Kaelen (kaisel) · QA (beru).
+- **Doctrina limpia:** manual depurado (fuera Meta/FB/pixel/Shopify).
+
 ### DOCTRINA «SMART WEB» (estándar de sitios del estudio)
 De la misión Wonder's Voley (`intel/convoca/20261010-wonders-voley/CONCLUSIONES-smart-web-wonders.md`):
 - **Una sola pieza** (HTML+CSS+JS); multipágina por router hash; **un formulario por subpágina** -> correo del cliente (sin backend ni claves).
@@ -152,7 +177,7 @@ De la misión Wonder's Voley (`intel/convoca/20261010-wonders-voley/CONCLUSIONES
 - **Verificación:** renderizar, no solo auditar código fuente (BERU 10/10 leyendo código pero el fallo real solo apareció al renderizar). Un coder de 30B se atasca con pieza grande -> re-tareas con modelo fuerte, "una sola pasada".
 
 ### PROYECTO: SMART WEB — CLUB WONDER'S VOLEY (Madrid) — ⏸️ PAUSADA
-Primera «Smart Web» del portafolio; sitio del **Club Deportivo Wonder's Voley** (escuela de voleibol de **Kennya**, hermana del Monarca y futura embajadora del estudio en España). Orquestada con el protocolo «Convoca a las Sombras» (IGRIS copy + TUSK SEO -> TITAN diseño -> KAISEL build -> JIMA capa IA -> BERU auditoría). Entregables: pieza v2 (171 KB, 10 vistas, 9 formularios), archivo autocontenido (882 KB), PDF de requerimientos para la hermana. **PAUSADA a petición de la cliente** hasta fin de temporada. Al retomar: recibir fotos/logo vectorial/tarifas, publicar en dominio temporal Hostinger -> migrar a Cloudflare + Worker IA. Refs: `intel/convoca/20261010-wonders-voley/`, `diario-de-sombras/sesion-smart-web-wonders-20261010.md`.
+Primera «Smart Web» del portafolio; sitio del **Club Deportivo Wonder's Voley** (escuela de voleibol de **Kennya**, hermana del Monarca y futura embajadora del estudio en España). Orquestada con el protocolo «Convoca a las Sombras» (IGRIS copy + TUSK SEO -> TITAN diseño -> KAISEL build -> JIMA capa IA -> BERU auditoría). Entregables: pieza v2 (171 KB, 10 vistas, 9 formularios), archivo autocontenido (882 KB), PDF de requerimientos para la hermana. **PAUSADA a petición de la cliente** hasta fin de temporada. Al retomar: recibir fotos/logo vectorial/tarifas, publicar en dominio temporal Hostinger -> migrar a Cloudflare + Worker IA. **Handoff de retorno listo (2026-10-13, `diario-de-sombras/wonders-retomar-20261013.md`):** checklist de despliegue + datos públicos del club (email `clubdeportivowonders@gmail.com`, WhatsApp `+34 614 696 077`, colores negro/rojo/blanco) + upsell natural (video de bienvenida con Kaelen o Smart Course deportivo). Refs: `intel/convoca/20261010-wonders-voley/`, `diario-de-sombras/sesion-smart-web-wonders-20261010.md`.
 
 ### PRECIOS Y NEGOCIO
 - **Modelo:** Suscripción mensual (MRR)
@@ -179,6 +204,7 @@ Primera «Smart Web» del portafolio; sitio del **Club Deportivo Wonder's Voley*
 | Pendiente | Pruebas de campo (2 frentes) | ⏳ Pendiente |
 | 2026-10-07/08 | **Capas 2, 3 y 4 de Seawolf Agent:** C1 motor de respuestas humanas + C2 compuerta de aprobación (voz, video, determinismo, aviso unificado) probadas con tercero real; C3 reglas preaprobadas + C4 onboarding + vigilante de salud | ✅ Operativas |
 | 2026-10-11 | **Ejército de Sombras v2 + HyperFrames + Smart Web Wonder's Voley:** config maestra de 11 sombras (souls+modelos+fallbacks), capacidad HyperFrames absorbida (sting oficial), primera Smart Web (club de Kennya) entregada y **pausada** | ✅ Entregado — Smart Web pausada por la cliente |
+| 2026-10-13 | **Avatar Kaelen + línea de producto SMART COURSES + embudo Cursos/Smart Shop:** Kaelen (robot presentador estándar, visera viva, skill `kaelen-avatar`) cerrado; acuñada la línea **Smart Courses** (curso que conversa: tutor IA + evaluación; PDF descartado); plan maestro del embudo N1/N2/N3 (Cursos imán → Smart Shop servicio) + manual maestro de dropshipping local; handoff de retorno de Wonder's Voley | ✅ Entregado — precios del embudo ⏳ pendientes de aprobación |
 | Pendiente | Reglas C3 (las dicta el Monarca) · primer cliente real con onboarding · envío de adjuntos por el agente · bus en directorio propio · cuarto de guerra Telegram · landing + pasarela COP · pruebas de campo | ⏳ Pendiente |
 | **PRÓXIMO** | Entregar Seawolf Agent al **PRIMER CLIENTE** (desprender a Bellion de lo operativo paulatinamente) | 🔥 Prioridad |
 
@@ -214,6 +240,7 @@ Un cron diario (6:00 AM) ejecuta:
 ### REGISTRO DE MANTENIMIENTO (cron diario)
 | Fecha | Integridad | Cambios aplicados |
 |:------|:-----------|:------------------|
+| 2026-10-13 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesión 2026-10-13):** (1) **AVATAR KAELEN** — sección nueva: robot presentador ESTÁNDAR del estudio (casco blanco + visera negra, ojos LED, boca-onda), pipeline HyperFrames + tracking CSRT/Farneback + Piper TTS, skill `kaelen-avatar`, entregables en `F:/seawolf/kaelen/`; (2) **PRODUCTO SMART COURSES** — sección nueva: nueva línea hermana de las Smart Webs (curso que CONVERSA: Información→Video Kaelen→Evaluación→Tutor IA; PDF descartado como curso/certificado); (3) **EMBUDO CURSOS DROPSHIPPING LOCAL + SMART SHOP** — sección nueva: plan maestro N1/N2/N3, doble carril (gratis con anuncios Adsterra / pago), precios COP (79k/169k/199k/890k + 49k mes), manual maestro destilado (724 líneas), reparto de sombras; (4) **Wonder's Voley** — añadido handoff de retorno 2026-10-13 (checklist + datos del club + upsell Kaelen); (5) Historial actualizado. Integridad estructural OK. |
 | 2026-10-12 | ✅ OK | Fecha revisada. **Información crítica faltante registrada (sesiones 2026-10-07→10-11):** (1) **Capa 2 OPERATIVA** (C1 respuestas humanas + C2 compuerta de aprobación) — el protocolo la tenía como "pendiente"; (2) **Capas 3 y 4 construidas** (reglas preaprobadas + onboarding + vigilante de salud); (3) **Ejército de Sombras Config v2** — tabla ROSTER desactualizada reemplazada (11 sombras con modelos reales; Igris=copy, Tank=cierre, nuevas Greed/Iron/Tusk/Kamish/Jima); (4) **HyperFrames** absorbido (HTML->MP4) + sting oficial; (5) **Doctrina Smart Web** (elección de modelo por calidad + palanca de contexto); (6) **Proyecto Smart Web Wonder's Voley** (club de Kennya) entregado y PAUSADO; (7) Historial actualizado. Además **corregida corrupción de la tabla de mantenimiento** (filas con `||` de más). Integridad estructural OK. |
 | 2026-10-11 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS/LOBO, tienda e-commerce, marca LOBO, WAHA/Capa 1, Capa 2 pendiente) presentes, actualizados y coherentes. Protocolo íntegro. |
 | 2026-10-10 | ✅ OK | Fecha revisada. **Verificación de integridad completa. Sin información crítica faltante.** Todos los datos clave (Monarca, VPS, productos, sombras, precios, infraestructura, Proyecto NEREUS/LOBO, tienda e-commerce, marca LOBO, WAHA/Capa 1, Capa 2 pendiente) presentes, actualizados y coherentes. Protocolo íntegro. |

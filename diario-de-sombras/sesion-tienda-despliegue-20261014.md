@@ -65,9 +65,16 @@ El primer intento subía **199 de 200** precios (mismo error caro de septiembre)
 5. **Los hashes no auditan la lógica**: un paquete con hashes perfectos puede ser incapaz de crear un pedido.
 6. **Verificar la fuente antes de acusar** (el "desfase de 46 productos" no existía).
 
-## 7. LO QUE FALTA (en orden)
-- [ ] **BERU re-auditoría del paquete** → si PASA: **el Monarca sube**.
-- [ ] **Rotar la llave del puente y la clave del procesador** (mañana, en WordPress con el Monarca) — estuvieron en el ZIP viejo y en el historial de git.
+## 7.b PENDIENTE DE DECISIÓN — CANAL DE NOTIFICACIONES (planteado por el Monarca 2026-10-14)
+**Pregunta:** ¿se pueden usar los reportes también por WhatsApp (el puente del agente) y no solo por Telegram?
+**Verificado:** el puente WAHA está **vivo** en el VPS (contenedor `waha` arriba 7 días, 4 servicios activos). `avisar.sh` envía por `POST http://127.0.0.1:3000/api/sendText` con sesión `seawolf` al chatId del Monarca (`573125330127`). **WAHA escucha solo en localhost** → la tienda (hosting compartido) necesita un **endpoint autenticado** en el VPS para usarlo.
+**Veredicto de Bellion:** sí, con distinción — **Telegram para alertas al dueño** (sin riesgo de ban; es el paracaídas) y **WhatsApp para clientes solo DENTRO de una conversación que el cliente abrió** (su propio flujo ya lo garantiza: la página de gracias invita a confirmar por chat). El mensaje **frío y masivo** por WAHA (cliente no oficial) es lo que banea números.
+**Propuesta pendiente de su OK:** (1) endpoint seguro en el VPS; (2) `notificador.php` **multicanal** (telegram + whatsapp + email) con fallback; (3) regla de ventana por cliente en la tienda; (4) rotar el token de `avisar.sh`. Sombras: **JIMA** + **KAISEL**. *Aprobado el plan numerado antes de tocar nada.*
+
+## 8. LO QUE FALTA (en orden)
+- [x] ~~BERU re-auditoría del paquete~~ → **PASA** (3 bloqueantes cerrados + 2 hallazgos nuevos corregidos). **El paquete está listo: solo falta que el Monarca lo suba.**
+- [ ] **SUBE EL MONARCA**: sitio temporal → ZIP (sello `20261014-0131`, SHA-256 `9cdfe811…`) → los 2 secretos a `public_html/api/` → simulado → **orden real de prueba** (ya autorizada).
+- [ ] **Rotar la llave del puente y la clave del procesador** (en WordPress, con el Monarca) — estuvieron en el ZIP viejo y en el historial de git.
 - [ ] **Higiene pendiente**: llaves en `secrets.local.example.json` / `config.json` / `docs`; y el `.gitignore` ya está.
 - [ ] **Desplegar** en dominio temporal → **simulado** → **orden REAL de prueba** (autorizada).
 - [ ] **Motor de reglas + autorización por Telegram + seguimiento de 9 estados** (JIMA) — el corazón de la promesa.

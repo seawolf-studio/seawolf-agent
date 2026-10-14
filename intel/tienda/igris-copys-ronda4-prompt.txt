@@ -1,0 +1,41 @@
+IGRIS — RONDA 4 (MÍNIMA, CIERRE). Vas bien: bajaste de 45 palabras sin tilde a **7**. Quedan estas y el spec sin tocar. Esto es todo lo que hay que hacer; nada más.
+
+MEDIDO POR EL COMANDANTE (no lo busques a ojo, es esto exacto):
+- `mas ` (sin tilde) → **6 apariciones** en `copys-GADO-piloto.json`
+- `dia ` (sin tilde) → **1 aparición**
+- Todo lo demás ya está correcto.
+- (`funciona` sin tilde es CORRECTO: es llana terminada en vocal. **No la toques.**)
+
+REGLA DE ESCRITURA (obligatoria, te falló antes): antes de modificar un archivo, **léelo con `read_file`** y luego usa `write_file` o `patch`. **NUNCA uses `echo` ni heredoc por terminal para escribir archivos** — se rompen las líneas.
+
+=== TAREA 1 — LOS 7 ===
+1. `read_file` del JSON.
+2. Corrige las 6 `mas` → `más` y la `dia` → `día`.
+   **OJO:** el slug `dia-madre` (dentro del array `ocasion`) NO se toca — solo la palabra suelta en texto. Y `más` con tilde diacrítica (adverbio), nunca dentro de otra palabra.
+3. Vuelve a contar con un script: las 7 deben dar **0** y el JSON debe parsear con **25 SKU** (los mismos).
+4. Muestra el conteo antes/después en el reporte.
+
+=== TAREA 2 — EL NORMALIZADOR AL REPOSITORIO (esto es lo valioso) ===
+Tu script de normalización está en tu carpeta temporal y ahí no sirve para nadie. **Guárdalo en el proyecto**:
+`C:/Users/Admin/seawolf-store/mantenimiento/normalizar_copys.py`
+Requisitos del script (para que sirva con los 246):
+- Lee un JSON de copys, **recorre TODOS los campos de texto** y aplica un diccionario **palabra completa** (límites de palabra; nunca dentro de otra palabra).
+- Diccionario **amplio** (no solo las que viste): incluye `mas, tambien, dia, facil, categoria, numero, ultimo, practico, publico, rapido, unico, maximo, minimo, telefono, informacion, solucion, atencion, direccion, circulacion, musculos, bateria, energia, economico, duracion, funcion, decision, accion, corazon, razon, jabon, algodon, cafe, esta, estan, sera, tendra, informacion, proteccion, aplicacion, conexion` y las formas verbales que detectes.
+- **NO toca**: la clave `sku`, ni los slugs del array `ocasion`.
+- Al final **imprime cuántas correcciones hizo** y **lista las palabras que siguen pareciendo sin tilde** (heurística: palabras del diccionario pendientes) para que un humano revise.
+- Modo `--dry-run` que solo reporta sin escribir.
+- Pruébalo: córrelo en dry-run sobre el piloto y muestra su salida.
+
+=== TAREA 3 — EL SPEC ===
+En `C:/Users/Admin/seawolf-agent/intel/tienda/igris-copys-spec.md` (léelo antes, luego `patch` o `write_file`):
+Añade la sección **"REGLA ORTOGRÁFICA OBLIGATORIA"**: (a) todo copy sale con tildes y signos de apertura (`¿…?`, `¡…!`); (b) **antes de inyectar al catálogo se corre `mantenimiento/normalizar_copys.py`** y su reporte debe quedar en 0 palabras pendientes; (c) qué NO se normaliza (`sku`, slugs de `ocasion`).
+Y refuerza el hallazgo del **filtro de ocasiones muerto** (`tags` vacío → 0 productos) como bloqueante, con su arreglo al inyectar el copy.
+
+NO toques `dist/products.json`, ni precios, ni nada más. No pidas instrucciones: la orden está completa.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

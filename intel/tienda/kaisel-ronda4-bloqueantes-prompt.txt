@@ -1,0 +1,67 @@
+KAISEL — RONDA 4 (CORRECCIÓN DE BLOQUEANTES). La auditoría de BERU encontró **2 errores críticos que la tienda no puede tolerar**: tal como está, **ningún pedido se crearía bien en Dropi**. Verificados por el Comandante línea por línea. Corrige EXACTAMENTE esto, reconstruye el ZIP y no toques nada más.
+
+**REGLA DE ESCRITURA (te falló antes):** antes de modificar cualquier archivo → `read_file` primero, luego `write_file`/`patch`. **NUNCA `echo`/heredoc por terminal para escribir archivos.**
+
+ARCHIVOS: `C:/Users/Admin/seawolf-store/public/api/pedidos.php` · `.../public/api/procesar-pedidos.php` · `.../src/components/CheckoutForm.tsx` · `.../LEEME-DEPLOY.txt`
+
+=== 1) CRÍTICO — `$departamento` NO EXISTE (pedidos.php) ===
+En la línea 84-86 definiste `$departamento_normalizado` y `$departamento_alias`, pero la **línea 167** sigue usando `$departamento`, **variable que nunca se asigna** → el pedido se guarda con `departamento: null` y Dropi recibe `state: ""`. **Ningún pedido saldría bien.**
+Corrección: en esa línea usa el valor **normalizado** (sin tilde, mayúsculas), no el alias — es el que se guarda y el que viaja a Dropi de forma consistente:
+```php
+'departamento' => $departamento_final,
+```
+y justo después de la lógica de alias (línea ~86), define:
+```php
+// valor canónico que se guarda y viaja a Dropi (sin tildes, mayúsculas)
+$departamento_final = $departamento_normalizado;
+```
+
+=== 2) CRÍTICO — `tg()` sin definir (pedidos.php) ===
+La línea 242 llama `tg(...)` y esa función **solo existe en `procesar-pedidos.php`** → si el token de Telegram está presente (lo estará, porque se sube `notify-config.php`), el script muere con **FATAL ERROR** y el cliente ve una pantalla en blanco.
+Corrección: **elimina de `pedidos.php` la notificación de Telegram y deja el chequeo de stock sin aviso** (el procesador ya avisa). Regla de diseño: **`pedidos.php` RECIBE, VALIDA y GUARDA. Avisar y crear pedidos es trabajo del procesador.** Revisa que no quede ninguna otra llamada a `tg()` en ese archivo.
+
+=== 3) ALTO — LISTA BLANCA de departamentos (mejor que la lista negra) ===
+Hoy `departamento` **no está en `$required`**, así que puede llegar vacío y pasar; y el dropdown tiene una opción **"Otro"** que viajaría a Dropi como `state: "Otro"`.
+Corrección: sustituye el enfoque por **lista blanca de lo que SÍ cubrimos** (los departamentos de Colombia menos los 9 bloqueados). Acepta solo (en forma normalizada, sin tildes, mayúsculas):
+```
+ANTIOQUIA, ATLANTICO, BOLIVAR, BOYACA, CALDAS, CAQUETA, CASANARE, CAUCA, CESAR,
+CORDOBA, CUNDINAMARCA, HUILA, LA GUAJIRA, MAGDALENA, META, NARINO,
+NORTE DE SANTANDER, QUINDIO, RISARALDA, SANTANDER, SUCRE, TOLIMA,
+VALLE DEL CAUCA, BOGOTA
+```
+Más alias que deben mapear a esos valores: `BOGOTA D.C.`, `BOGOTA DC`, `DISTRITO CAPITAL`, `VALLE`, `VALLE DEL CAUCA`, `N DE SANTANDER`, `NORTE SANTANDER`, `SAN ANDRES`/`SAN ANDRES Y PROVIDENCIA` (estos dos a su bloqueo respectivo).
+Si el departamento (normalizado) **no está en la lista blanca** → rechaza con **422** y este mensaje amable: *"Aún no tenemos cobertura en tu departamento. Escríbenos por WhatsApp y lo revisamos contigo."*
+Añade además `'departamento'` al array `$required` para que llegue siempre.
+**En el front (`CheckoutForm.tsx`): quita la opción "Otro" del selector de departamento** (si no se puede determinar el departamento, se le invita a escribir por WhatsApp, no a inventar).
+
+=== 4) ALTO — EL FRONT NO MUESTRA LOS MENSAJES DEL SERVIDOR (CheckoutForm.tsx) ===
+Hoy, ante un 422 (sin cobertura) o 429 (límite de tasa), el cliente ve un genérico *"Error al procesar el pedido"* y **se va sin saber por qué**. Corrección: en el manejo de la respuesta, **lee el JSON aunque el status sea de error** y muestra al usuario `result.mensaje || result.error` (con un respaldo genérico si no viene nada). Mensaje visible, no solo consola.
+
+=== 5) MEDIO — LA CLAVE DENTRO DEL ZIP (LEEME-DEPLOY.txt) ===
+`LEEME-DEPLOY.txt` **se sube dentro del ZIP** y contiene la clave del procesador **3 veces** en texto plano. Sustitúyela por `[TU-CLAVE-DEL-PROCESADOR]` en las 3 apariciones. Aprovecha para corregir que dice **"194 productos"** cuando el ZIP tiene **200**.
+
+=== 6) MEDIO — HIGIENE DE LA LLAVE EN EL REPOSITORIO ===
+1. `.gitignore`: añade `mantenimiento/secrets.local.json` **y** `mantenimiento/respaldos/`.
+2. `mantenimiento/secrets.local.example.json` → **placeholder**, cero valores reales: `{"bridge_key": "PON-AQUI-TU-LLAVE", "processor_key": "PON-AQUI-TU-CLAVE"}`.
+3. `mantenimiento/config.json` → **quita** `bridge_key`.
+4. `mantenimiento/sincronizar_tienda.py` → que **lea la llave de `secrets.local.json`** (mensaje claro si falta); cero literales.
+5. `mantenimiento/MANUAL-MANTENIMIENTO.md` → la llave real por `[VA EN secrets.local.json]`.
+6. `mantenimiento/PENDIENTES-DESPLIEGUE.md` → la clave por placeholder.
+7. **NO rotes las llaves** (eso es mañana en WordPress, con el Monarca).
+
+=== 7) PRUEBA OBLIGATORIA (sin PHP local: replicar en Python) ===
+No hay PHP en este equipo, así que **verifica la lógica replicándola en Python** y muestra la salida. Casos: `Vaupes`, `vaupés`, `VAUPES`, `Choco`, `San Andres`, `Guaviare`, `Vichada` → **RECHAZAR**; `Bogotá D.C.`, `bogota`, `Antioquia`, `VALLE`, `Norte de Santander`, `Cundinamarca` → **ACEPTAR**; `''`, `Otro`, `Marte` → **RECHAZAR**.
+
+=== 8) RECONSTRUIR Y VERIFICAR EL PAQUETE ===
+1. `npm run build` (reconstruye `dist/`).
+2. `python mantenimiento/construir_tienda.py` (ZIP nuevo en el Escritorio, con fecha de hoy).
+3. Verifica y **muestra la salida**: md5 de `api/pedidos.php` y `api/procesar-pedidos.php` dentro del ZIP == sus fuentes · el ZIP **sin** `seawolf-config.php`/`notify-config.php`/`secrets.local.json` · el ZIP **sin** la clave `sw-proceso-2026` (cuenta en todo el ZIP: debe ser 0) · `index.html` en la raíz.
+4. `git grep -l "sw7-Gh41"` y `git grep -l "sw-proceso-2026"` → **0 archivos** (muestra la salida).
+5. Commit nuevo y `git status` limpio.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

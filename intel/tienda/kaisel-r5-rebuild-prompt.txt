@@ -1,0 +1,25 @@
+KAISEL — MISIÓN «SOLO RECONSTRUIR Y VERIFICAR». Es una orden de un solo paso: **no edites ni corrijas ningún archivo.** La fuente ya quedó bien (verificada por el Comandante); lo único que falta es que el **paquete** refleje esos arreglos.
+
+=== POR QUÉ ===
+El ZIP del Escritorio es de las **00:38** y contiene los archivos **VIEJOS**: sin `$departamento_final`, sin la lista blanca, y con la clave del procesador dentro del `LEEME-DEPLOY.txt`. Si el Monarca lo sube, la tienda no crea pedidos. La fuente ya está corregida; falta reconstruir.
+
+=== LO ÚNICO QUE DEBES HACER ===
+1. `npm run build` (o el guion del proyecto) para regenerar `dist/` **desde las fuentes actuales**.
+2. `python mantenimiento/construir_tienda.py` para armar el ZIP nuevo (con fecha de HOY en el Escritorio + la copia de nombre fijo).
+
+=== VERIFICACIÓN (imprime la salida de cada comando, no afirmes nada) ===
+1. md5 de `api/pedidos.php` y `api/procesar-pedidos.php` **dentro del ZIP** == md5 de sus fuentes en `public/api/` → deben ser **IGUALES**.
+2. Dentro del ZIP: `departamento_final` **presente** en `api/pedidos.php`; la **lista blanca** presente (`VALLE DEL CAUCA` / `ANTIOQUIA`).
+3. Dentro del ZIP: conteo de la clave `sw-proceso-2026` en TODOS los archivos de texto → **0**.
+4. `index.html` en la raíz · `.htaccess` presente · **cero secretos** (`seawolf-config.php`, `notify-config.php`, `secrets.local.json`).
+5. Conteo de archivos y peso del ZIP.
+
+=== PROHIBIDO ===
+Editar código · tocar precios o copys · subir nada · usar `echo`/heredoc para escribir archivos.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (ruta + peso + conteo)
+VERIFICACIÓN (los 5 puntos con su salida)
+BLOQUEO
+SIGUIENTE

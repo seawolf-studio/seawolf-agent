@@ -1,0 +1,46 @@
+TANK — RONDA 4 (DEFINITIVA) SOBRE PRECIOS. Esta es la última. Tu v3 tiene el diagnóstico perdido y un fallo de lógica heredado de MIS reglas: productos que **pierden plata** quedaron etiquetados `MANTENER` (ej.: `GRAMERA01`, −27% neto). `MANTENER` significa "está bien" y eso es falso para ellos. Se separa **DIAGNÓSTICO** de **ACCIÓN**, y se cierra.
+
+ARCHIVOS
+- Base: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013-v3.csv`
+- ENTREGABLE: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013-v4.csv` (NUEVO)
+- Informe: `C:/Users/Admin/seawolf-agent/intel/tienda/tank-precios-informe-20261013-r4.md` (NUEVO — **NO parchees el informe viejo**; la ronda anterior falló intentándolo. Archivo nuevo, siempre.)
+
+=== ESQUEMA OBLIGATORIO (13 columnas, en este orden) ===
+`sku, nombre, costo_dropi, envio, precio_actual, margen_bruto_pct, margen_neto_pct, margen_con_devolucion_pct, veredicto, cesta, precio_propuesto, alternativa_pack, nota`
+- **`veredicto` (DIAGNÓSTICO, restáuralo — lo perdiste en v3):** `SANOS` (≥25% neto con devolución) · `A_REVISAR` (15-25%) · `FLACO` (5-15%) · `PERDIDA` (<5%) · `SIN_COSTO`. **Regla dura: ningún producto con margen <15% puede llamarse sano, y ninguno con margen <0% puede quedar sin diagnóstico.**
+- **`cesta` (ACCIÓN, así se llama la columna; ya no `direccion_cambio`):** `MANTENER` · `SUBIR_SUAVE` · `PACK` · `RETIRAR_CANDIDATO` · `DECISION_MONARCA` · `NA`.
+
+=== ÁRBOL DE DECISIÓN (aplícalo en este orden, sin excepciones) ===
+1. `margen_con_devolucion_pct ≥ 15%` → **MANTENER**. (Si el `xx.900` inmediatamente inferior es ≥97% del actual, `precio_propuesto` = ese valor; si no, déjalo vacío y pon `-` en nota.)
+2. `5% ≤ margen < 15%`:
+   - Si subir al piso (25%) requiere **≤1,25×** el precio actual → **SUBIR_SUAVE** con `precio_propuesto` = mínimo necesario terminado en `xx.900`.
+   - Si requiere más de 1,25× → **DECISION_MONARCA** (con el precio mínimo viable calculado): es una decisión suya, no mía.
+3. `margen < 5%`:
+   - Si `costo_dropi ≤ 8000` **y** `K = ceil(precio_min_25 / precio_actual) ≤ 4` → **PACK** (`alternativa_pack` = `K=n (p.u. $X)`, `precio_propuesto` = precio del pack en `xx.900`).
+   - Si no → **DECISION_MONARCA**.
+4. `margen < 0%` **y** (`K > 4` **o** `R = precio_min_25/precio_actual > 3`) → **RETIRAR_CANDIDATO**.
+   - **Todo `RETIRAR_CANDIDATO` va también en la lista del Monarca. Y ningún producto con margen ≥0% entra aquí.**
+5. Sin `costo_dropi` → **NA** (y dilo).
+
+=== `precio_propuesto` — REGLA ÚNICA ===
+- Solo se propone cambio en `SUBIR_SUAVE`, `PACK` y `DECISION_MONARCA`.
+- **Nunca un producto con `cesta = MANTENER` sube de precio.** El redondeo psicológico es **hacia abajo** (`xx.900`), nunca al alza.
+- Si no hay cambio, la celda va **vacía** (no inventes un número).
+
+=== VERIFICACIÓN OBLIGATORIA (imprímela en el informe, en tabla) ===
+1. **Cuadro cruzado `veredicto` × `cesta`** (cuántos SANOS en MANTENER, cuántos PERDIDA en DECISION_MONARCA, etc.). Criterio de fallo: **cualquier fila `PERDIDA` con cesta `MANTENER`**.
+2. Conteos por cesta y por veredicto; ambos suman **200**.
+3. Lista **"NECESITAN SU PALABRA (N)"**: solo `DECISION_MONARCA`, `RETIRAR_CANDIDATO` y `PACK` (sku, nombre, costo, precio actual, precio mínimo viable, R, K sugerido, margen). Debe ser una lista corta (decenas, no cientos).
+4. **3 filas con el cálculo a mano** (costo + envío $10.000 + reserva 0,4×0,45×envío → precio mínimo → R → veredicto → cesta).
+5. Confirma: 200 filas · 0 celdas de `cesta` vacías · `margen_bruto_pct` restaurado y lleno.
+
+=== LO QUE YA ESTÁ BIEN (mantener) ===
+Supuestos declarados (envío $10.000, devolución 30/40%, reserva 45% del flete) · top 10 sanos y peores · resumen por rango de precio · el hallazgo de que **<20K es estructuralmente inviable** y el punto dulce **40K-100K** · la comparación honesta con el análisis previo.
+Prohibido: publicidad pagada, Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, AdSense. No inventar costos.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

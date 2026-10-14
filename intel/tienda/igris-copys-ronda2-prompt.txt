@@ -1,0 +1,37 @@
+IGRIS — RONDA 2 (CORRECCIÓN ORTOGRÁFICA Y BLINDAJE DEL MOLDE). Tu piloto de copys quedó bien en estructura: 25 SKU válidos, GADO completo, un `[FALTA INFO]` honesto y un hallazgo de oro (el filtro por ocasión que no filtra). Pero hay UN defecto que hay que cerrar antes de escalar a las 246: **el copy va sin tildes**, y este copy se publica en una tienda que se vende.
+
+ARCHIVOS
+- Piloto a corregir: `C:/Users/Admin/seawolf-store/mantenimiento/copys-GADO-piloto.json`
+- Molde a corregir: `C:/Users/Admin/seawolf-agent/intel/tienda/igris-copys-spec.md`
+- Catálogo (referencia de SKU/nombres): `C:/Users/Admin/seawolf-store/dist/products.json`
+
+DEFECTO MEDIDO (verificado por el Gran Comandante con conteo real)
+En el JSON del piloto: `Pestanas` ×1 · `Mascara` ×1 · `mas ` ×17 · `tambien` ×2 · `dia ` ×5 · `facil` ×6 · `categoria` ×1 … y **cero apariciones con tilde**. El molde tiene el mismo vicio (`rotulo`, `max.`, `como el producto lo resuelve`).
+Un catálogo en español sin tildes se lee pobre y resta credibilidad a la marca.
+
+=== TAREA 1 — NORMALIZAR EL PILOTO (determinista, no a ojo) ===
+1. Recorre el JSON y corrige TODAS las palabras que en español llevan tilde (sustantivos, verbos, adjetivos, interrogativos): `más, también, día, fácil, categoría, número, última, único, máscara, pestañas, útil, rápido, aún, café, sofá, mamá, papá, está, están, será, tendrá, hazlo → (sin tilde), información, solución, acción, atención, corazón, razón, jabón, algodón, canción, revisión, publicidad→ (prohibida igual), conclusión, dirección, teléfono, económico, automático, eléctrico, plástico, recámara, cosmético, estático, público, único, próximo, mínimo, máximo, típico, básico, físico, médico, técnico, práctica, magnética, energía, batería, duración, protección, aplicación, conexión, absorción, saturación…` y cualquier otra que detectes leyendo cada frase.
+2. **Reglas para no romper nada:**
+   - NO toques los valores técnicos: `sku`, `ocasion` (slugs tipo `san-valentin`, `dia-madre` se quedan EXACTAMENTE como están — son identificadores), `nivel_conciencia` (número), `whatsapp_prellenado` (revisa tildes SÍ, pero respeta el texto).
+   - NO cambies el sentido, ni el largo (título/pantalla siguen ≤8 palabras), ni agregues precio.
+   - Mantén todas las prohibiciones intactas (cero promesas de salud, cero precio, cero frases vedadas).
+   - Si dudas de una palabra, consúltala en el diccionario, no improvises.
+3. **Verifica con conteo, no con la vista:** al terminar ejecuta una comprobación que cuente las palabras sin tilde de tu lista → debe dar **0**. Y confirma que el JSON parsea y sigue teniendo **25 SKU**.
+4. Escribe el resultado en el MISMO archivo (es un dato tuyo, no del proveedor) y déjame el conteo antes/después en el reporte.
+
+=== TAREA 2 — BLINDAR EL MOLDE PARA LAS 246 ===
+En `igris-copys-spec.md`:
+1. Reescribe el molde con ortografía perfecta (también el propio documento).
+2. Añade una sección **"REGLA ORTOGRÁFICA OBLIGATORIA"** con: (a) todo copy sale con tildes y signos de apertura (`¿ … ?`, `¡ … !`); (b) **paso de normalización obligatorio antes de inyectar**: un diccionario de corrección palabra por palabra aplicado con límites de palabra (nunca reemplazos sueltos dentro de otras palabras), + conteo de verificación; (c) lista de lo que NO se normaliza (`sku`, slugs de `ocasion`).
+3. Añade también una nota sobre el **hallazgo del filtro de ocasiones muerto** (`tags` vacío) — ya está en tu §3, refuérzalo como **bloqueante para la tienda** (el hero promete ocasiones que devuelven 0 productos) y deja escrito cómo se arregla cuando se inyecte el copy (poblar `tags` con `copy.ocasion`).
+
+=== REGLAS DE SIEMPRE ===
+- No inventes datos de producto · cero promesas garantizadas/curas · cero precio en el copy · prohibido Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, AdSense.
+- No toques `dist/products.json` en esta ronda (la inyección va en una misión aparte, después de las otras correcciones).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

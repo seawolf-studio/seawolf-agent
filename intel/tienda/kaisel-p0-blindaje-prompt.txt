@@ -1,0 +1,55 @@
+KAISEL — MISIÓN P0 «BLINDAJE Y BASE DE LA TIENDA». Eres el constructor del estudio. Esta misión es de SEGURIDAD y CIMIENTOS: no toques precios, ni copys, ni el motor de reglas (van en misiones aparte, ya asignadas).
+
+PROYECTO: C:/Users/Admin/seawolf-store  (Astro 4 estático + 3 PHP para hosting compartido)
+DECISIÓN DEL MONARCA: se despliega en **dominio temporal de Hostinger** y se probará con una **orden real**.
+REGLA DE ORO: no inventes; si algo no lo puedes verificar, dilo. Y **nunca escribas una llave nueva ni un secreto en el chat**.
+
+=== A) GIT (la red de seguridad que hoy NO existe) ===
+El proyecto no tiene repositorio y vive en un solo disco. Inicialízalo ANTES de tocar nada:
+1. `git init` en seawolf-store.
+2. `.gitignore` que excluya: `node_modules/`, `dist/`, `*.zip`, `api/seawolf-config.php`, `api/notify-config.php`, `data-pedidos/`, `mantenimiento/temp/`, respaldos.
+3. Commit base con el estado actual (para poder volver atrás). Mensaje: "estado base 2026-09-27 (antes del blindaje P0)".
+4. Verifica que el commit NO contenga ninguna llave: busca el patrón de la clave del puente (`sw7-Gh41`) en todo lo versionado → debe dar 0 en los archivos rastreados.
+
+=== B) LAS LLAVES FUERA DEL CÓDIGO (falla crítica de seguridad) ===
+HOY `api/procesar-pedidos.php` lleva escritas a la vista la clave del procesador y la **llave del puente** (`sw7-Gh41-…`), y ese archivo viaja en el ZIP público que se sube a `public_html`. Quien tenga la llave **crea pedidos reales en Dropi**.
+1. Crea `api/seawolf-config.example.php` (PLANTILLA, sin valores reales, con comentarios de qué va en cada campo).
+2. Edita el procesador para que **lea las llaves de `api/seawolf-config.php`** (require). Si ese archivo no existe, el script debe **detenerse con un mensaje claro** ("falta seawolf-config.php") — que NUNCA caiga a valores por defecto.
+3. Deja `api/seawolf-config.php` con las llaves ACTUALES para las pruebas locales, pero **fuera del control de versiones y fuera del ZIP** (verifica el paso 5).
+4. Localiza el ORIGEN CANÓNICO del código (lo más probable `public/`), edita ahí — NO edites dentro de `dist/`, que es artefacto de compilación.
+5. Verifica en el guion de construcción (`scripts/`, `mantenimiento/construir_tienda.py`, `2-CONSTRUIR-TIENDA.bat`) que el ZIP **excluya** `seawolf-config.php` y `notify-config.php`. Si no lo excluye, arréglalo.
+6. Actualiza `LEEME-DEPLOY.txt` y `mantenimiento/PENDIENTES-DESPLIEGUE.md`: ahora son DOS archivos secretos los que se suben aparte a `public_html/api/` (`seawolf-config.php` y `notify-config.php`).
+
+=== C) LOS 9 DEPARTAMENTOS SIN COBERTURA (fuga de dinero al 100% del flete) ===
+VERIFICADO: hoy el checkout los acepta. Lista exacta (del manual audituado):
+`Amazonas, Arauca, Chocó, Guainía, Guaviare, Putumayo, San Andrés y Providencia, Vaupés, Vichada`
+1. En el checkout: **no los ofrezcas** como opción seleccionable.
+2. En `api/pedidos.php`: **valida en el servidor** y rechaza con JSON claro (`422`, mensaje educado para el cliente: "aún no tenemos cobertura en tu departamento"). Doble candado: el candado del servidor es el que cuenta.
+3. Si el cliente ya tenía algo en el carrito, que el mensaje no lo deje colgado: explícale y ofrécele el WhatsApp.
+
+=== D) STOCK REAL ANTES DE CREAR EL PEDIDO ===
+`products.json` ya trae `dropi_stock` y `stock_status` por producto. En `procesar-pedidos.php`, ANTES de crear el pedido:
+- Si algún ítem tiene `dropi_stock <= 0` (o menor que la cantidad pedida) → NO lo envíes a Dropi. Marca el pedido como `sin_stock`, avisa por Telegram (con producto y cantidad) y sácalo de la cola.
+
+=== E) ENDURECER `api/pedidos.php` (hosting compartido, sin base de datos) ===
+- **Límite de tasa por IP**: máximo 5 pedidos cada 10 minutos (archivo de control en `data-pedidos/`), respondiendo `429` con mensaje claro.
+- **Honeypot**: campo oculto en el formulario; si viene lleno, se descarta silenciosamente (no reveles la trampa).
+- **Saneado**: longitud máxima de cada campo, `items` no vacío, teléfono ya se valida (déjalo), y **nunca** reflejes datos del cliente sin escapar en la respuesta.
+
+=== F) QUÉ NO TOCAR ===
+- Precios y márgenes (lo hace TANK) · copys (IGRIS) · motor de reglas y autorización por Telegram (JIMA).
+- No subas nada a internet. No toques el WordPress ni el puente. No corras el sincronizador en esta misión.
+
+=== G) VERIFICACIÓN OBLIGATORIA (antes de reportar) ===
+1. `npm run build` (o el guion del proyecto) para que `dist/` refleje los cambios — y confirma que compila sin errores.
+2. `search_files` sobre el árbol versionado buscando `sw7-Gh41` → **0 resultados** fuera de archivos ignorados.
+3. Confirma que los 9 departamentos aparecen en la validación del servidor.
+4. Confirma que el proyecto tiene su commit y que `git status` queda limpio (o explica qué quedó fuera y por qué).
+5. Prueba local del candado: envía un POST de prueba a `pedidos.php` (si puedes levantar PHP local) con un departamento sin cobertura y con honeypot lleno → debe rechazar. Si no puedes levantar PHP, dilo y explica cómo lo verificaste (lectura del código).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

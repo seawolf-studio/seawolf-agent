@@ -1,0 +1,41 @@
+TANK — RONDA 2 SOBRE PRECIOS. Tu informe está bien: supuestos declarados, totales cuadrados (200=200) y una comparación honesta con el análisis previo. Pero la columna `precio_propuesto` y `direccion_cambio` están MAL y hay que corregirlas antes de que toquen la tienda. Un catálogo al que se le suben los precios sin autorización ya costó dinero una vez en este proyecto — no se repite.
+
+ARCHIVOS
+- Tu CSV: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013.csv` (200 filas)
+- Tu informe: `C:/Users/Admin/seawolf-agent/intel/tienda/tank-precios-informe-20261013.md`
+- Catálogo: `C:/Users/Admin/seawolf-store/dist/products.json` · config: `C:/Users/Admin/seawolf-store/mantenimiento/config.json`
+- ENTREGABLE CORREGIDO: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013-v2.csv` (archivo NUEVO, no sobrescribas el v1)
+
+=== EL DEFECTO MEDIDO (verificado por el Gran Comandante) ===
+- `direccion_cambio`: **SUBIR: 199 · NA: 1**. Subir el precio de 199 productos NO es una propuesta: es el mismo error caro de septiembre (166 precios bajaban / aquí suben todos sin autorización).
+- `precio_propuesto` redondea HACIA ARRIBA: `2` (precio actual 10.000) → **10.900**; `CO-0029` (10.400) → **11.300**. La regla que se te dio era: **redondear HACIA ABAJO a `xx.900` cuando ya es rentable**, nunca al alza.
+- `accion`: vacía en 189 de 200 filas (solo 11 la tienen).
+
+=== REGLAS CORREGIDAS ===
+1. **Precio psicológico hacia ABAJO, siempre, cuando el producto ya es rentable.**
+   - 25.000 → **24.900** · 10.000 → **9.900** · 49.900 → 49.900 (ya está) · 3.600 → 3.590? NO: si el `xx.900` más cercano hacia abajo es menor o igual al actual, ese es el propuesto; si el actual ya termina en 900/990, se mantiene.
+   - **Ningún producto rentable sube de precio.** Si el psicológico hacia abajo no da ≥25% neto con devolución… entonces cae en la regla 2.
+2. **Si el producto NO alcanza el piso (A_REVISAR o PÉRDIDA):** aquí sí puedes proponer un precio mayor, pero **marcado como SUBIR (mínimo viable)** y con el mínimo necesario (no más), con la terminación `xx.900`. Nada de subir a los que ya están sanos.
+3. **Altura del salto = criterio de decisión.** Añade la columna `alternativa_pack`:
+   - Si el precio mínimo viable es **más de 1,5×** el precio actual → la recomendación principal es **PACK** (agrupar K unidades, o combinar con otro producto de la misma familia, para diluir el flete). Calcula el K mínimo: `K = ceil(precio_min / precio_actual)` y deja el precio del pack con terminación `xx.900`.
+   - Si es **entre 1,0× y 1,5×** → SUBIR al mínimo viable.
+   - Si no hay precio creíble que lo salve (por ejemplo, el pack tendría que ser de 5+ unidades de un mismo producto, o el ratio supera 3×) → **RETIRAR**.
+4. `direccion_cambio` con semántica honesta y cuentas que cuadren: `BAJAR_PSICOLOGICO` · `MANTENER` · `SUBIR_MINIMO` · `PACK` · `RETIRAR` · `NA`(SIN_COSTO). Los conteos deben sumar 200.
+5. Rellena `accion` en **las 200 filas** (texto corto y accionable, no vacío).
+
+=== ADEMÁS ===
+6. **Productos SIN SKU**: hay al menos una fila con `sku` vacío (ej. "Cargador Tipo Canguro Bebé"). Sin SKU **no hay pedido automático** (el pipeline une por SKU). Deja una sección en el informe con la lista de esos productos: son los que hoy **no se podrían vender solos** y hay que arreglar en Shopio.
+7. **Declara el envío como estimación**: el `envio_estimado = 10000` es un único valor, pero Dropi cobra por destino y peso. Escribe explícitamente en el informe que el margen neto es **estimado** y qué pasaría con envío de $8.000 y $12.000 (una línea, escenario rápido).
+8. Mantén intacto todo lo que ya está bien: supuestos, top 10, rangos, el hallazgo de que **<20K es estructuralmente inviable** (20 de 23 en pérdida) y el rango sano **40K-100K**.
+
+=== VERIFICACIÓN ===
+- 200 filas y cuadre con el catálogo.
+- Cuenta las filas por `direccion_cambio` y **repórtalas**: si SUBIR_MINIMO sale en ~199 otra vez, es que sigues aplicando la regla vieja.
+- Verifica 3 filas a mano contra la fórmula y muestra el cálculo en el reporte.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

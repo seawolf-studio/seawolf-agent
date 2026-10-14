@@ -1,0 +1,42 @@
+KAISEL — MISIÓN «PAQUETE DE DESPLIEGUE». Es la última antes de que el Monarca suba la tienda al dominio temporal. Aquí NO se diseña nada: se sincroniza el catálogo y se arma el ZIP **con el blindaje ya dentro**, y se verifica.
+
+PRERREQUISITO: el núcleo del P0 **ya está en su sitio** — `dist/` está reconstruido y sus dos PHP (`pedidos.php`, `procesar-pedidos.php`) tienen **hash idéntico** al de `public/` (verificado por el Comandante). La ronda 3 (higiene de secretos + bloqueo del front) se cierra DESPUÉS, en su propia ronda: **no la esperes y no la intentes en esta misión.
+
+REGLA DE ORO PARA ESCRIBIR ARCHIVOS (aprendida a golpes en este proyecto): antes de sobrescribir cualquier archivo, **léelo primero con `read_file`** (el guardián de escritura rechaza sobrescribir lo que no se ha leído en la tarea) y **NUNCA uses `echo`/heredoc por terminal para escribir archivos** — se rompen las líneas. Usa `write_file`/`patch`.
+
+PROYECTO: `C:/Users/Admin/seawolf-store` · Puente WordPress: **VIVO** (verificado por el Comandante hoy: `action=test` responde OK).
+
+=== TAREA 1 — SINCRONIZAR EL CATÁLOGO ===
+1. Ejecuta el sincronizador del proyecto (`mantenimiento/1-SINCRONIZAR-CATALOGO.bat` o directamente `python mantenimiento/sincronizar_tienda.py`).
+2. Lo esperado: el catálogo vivo de Shopio tiene **246 productos** y la tienda construida trae **200** → hay **46 sin entrar**. El sincronizador debe traerlos, con su ID de Dropi y su foto real.
+3. Reporta el resultado exacto del sincronizador: `actualizados | NUEVOS | total` y cuántos quedaron **SIN ID de Dropi** (esos no generan pedido automático).
+4. Si el sincronizador falla: NO lo parchees a ciegas. Copia el error tal cual, revisa si es la llave (`secrets.local.json`) o el puente, y **detente a reportar** si no es trivial.
+5. **NO toques `precios.csv`**: los precios nuevos (TANK r4) NO se aplican todavía — el Monarca no ha decidido. La protección `aplicar_margen_solo_a_nuevos: true` debe seguir activa.
+6. **NO inyectes los copys** (IGRIS): eso va en la segunda pasada.
+
+=== TAREA 2 — CONSTRUIR EL ZIP ===
+1. Ejecuta `mantenimiento/2-CONSTRUIR-TIENDA.bat` (o `python mantenimiento/construir_tienda.py`).
+2. Debe dejar el ZIP en el Escritorio con la fecha de HOY + la copia de nombre fijo `seawolf-tienda-hostinger.zip` (esa copia es la que el Monarca subirá; que quede con los archivos de hoy).
+
+=== TAREA 3 — VERIFICAR DENTRO DEL ZIP (no en el código fuente) ===
+Abre el ZIP y comprueba —**con evidencia impresa**—:
+1. `index.html` en la **raíz** del ZIP (no dentro de una subcarpeta).
+2. **CERO secretos**: ningún `seawolf-config.php`, `notify-config.php`, `secrets.local.json` ni `.env`.
+3. `api/pedidos.php` dentro del ZIP → **mismo hash MD5** que `public/api/pedidos.php` (el blindado, no el viejo del 27-sep).
+4. `api/procesar-pedidos.php` → mismo hash que su original.
+5. `products.json` → **conteo real de productos** dentro del ZIP y cuántos tienen `dropi_id` y foto.
+6. El **bloqueo de los 9 departamentos** está presente en el `pedidos.php` del ZIP (muestra la línea).
+7. Conteo de archivos y peso del ZIP.
+8. `.htaccess` presente.
+
+=== PROHIBICIONES ===
+- No subas nada a internet. No toques el WordPress ni el puente.
+- No modifiques precios, copys ni el motor de reglas.
+- No inventes cifras: todo lo que reportes sale de un comando y su salida.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (ruta + peso + conteo)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

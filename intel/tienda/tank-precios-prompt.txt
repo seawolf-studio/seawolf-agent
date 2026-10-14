@@ -1,0 +1,48 @@
+TANK — MISIÓN «PRECIOS REALES Y PISO DE RENTABILIDAD» de la tienda Seawolf.
+
+CONTEXTO: la tienda (C:/Users/Admin/seawolf-store) tiene un catálogo de 200 productos en `dist/products.json`. Cada producto trae el COSTO REAL del proveedor de Dropi en el campo `dropi_cost` y el precio actual en `price`/`price_wc`. El Monarca vende con **contraentrega** y sin publicidad pagada: su único costo de adquisición es el **riesgo de devolución**.
+Del manual maestro audituado (tu fuente doctrinal): `C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v5.md`
+- Sección 1.3 — calculadora de rentabilidad y márgenes (35%-50%).
+- Sección 5.2 — los 6 errores que cuestan dinero.
+- La reserva por devolución: **40%-50% del valor del flete** se descuenta de la wallet cuando el cliente rechaza.
+
+PARÁMETROS (del `mantenimiento/config.json` de la tienda): `envio_estimado = 10000` COP. Verifícalo tú mismo y usa el valor real; si no está, dilo.
+
+=== TAREA 1 — MARGEN REAL, PRODUCTO POR PRODUCTO ===
+Para CADA producto del catálogo calcula y deja documentado:
+- `costo` (dropi_cost) · `envio` (envio_estimado) · `precio_actual`
+- **Margen bruto** sobre el precio: `(precio - costo) / precio`
+- **Margen neto con envío**: `(precio - costo - envio) / precio`
+- **Margen neto con reserva de devolución**: resta además el costo esperado de devolución. Modela dos escenarios y declara el supuesto: **tasa de devolución 30% y 40%** del volumen, con reserva = 45% del flete (punto medio del rango auditado). Fórmula: `neto = (precio - costo - envio - tasa_dev * 0,45 * envio) / precio`
+- **Veredicto por producto**: `SANOS` (≥25% neto con reserva) · `A_REVISAR` (0-25%) · `PERDIDA` (<0%)
+> OJO, lección ya pagada en este proyecto: **margen ≠ recargo**. No uses `costo × 1,4 = 40%` (eso deja 28,6%). Usa la fórmula sobre precio.
+
+=== TAREA 2 — LOS PRODUCTOS QUE NO PUEDEN SER RENTABLES ===
+Del catálogo anterior ya se midió: 104 sanos y 95 a revisar, y se detectó que los productos de ticket muy bajo (ej.: cepillo de bambú, costo $1.950) **no pueden ser rentables** con flete de $10.000: subir el precio 4× no vende.
+Identifícalos con la lista exacta (SKU + nombre + costo + precio + margen) y para cada uno recomienda UNA acción:
+- `SUBIR A X` (si con precio psicológico alcanza ≥25% neto y sigue siendo un ticket creíble)
+- `PACK` (agrupar N unidades / combinar con otro producto para diluir el flete)
+- `RETIRAR` (no hay precio que lo salve)
+Justifica con el número, no con la opinión.
+
+=== TAREA 3 — PRECIO PSICOLÓGICO ===
+Del manual: *"si vale 60.000, no digas que vale 60.000, di que vale 59.900"*.
+Propón el precio final de cada producto con terminación `xx.900` (nunca por encima del precio actual sin autorización explícita; si el psicológico queda por encima de lo necesario, redondea hacia abajo) y marca claramente los que **subirían** y los que **bajarían** con la propuesta.
+
+=== ENTREGABLES (rutas exactas) ===
+1. `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013.csv` — columnas: `sku, nombre, costo_dropi, envio, precio_actual, margen_bruto_pct, margen_neto_pct, margen_con_devolucion_pct, veredicto, accion, precio_propuesto, direccion_cambio` (guardar en `utf-8-sig` para Excel).
+2. `C:/Users/Admin/seawolf-agent/intel/tienda/tank-precios-informe-20261013.md` — informe en español con: totales por veredicto, los N peores casos, los N mejores, la tabla resumen por rango de precio, tus supuestos (tasa de devolución, reserva, flete) declarados arriba, y lo que NO pudiste verificar.
+
+=== REGLAS ===
+- NO inventes costos ni precios: todo sale de `products.json` y de `config.json`.
+- NO apliques cambios al catálogo en esta misión: solo propón (el Monarca decide y otro los aplica).
+- Si un `dropi_cost` es 0 o falta, márcalo `SIN_COSTO` y no le calcules margen.
+- Usa `python` (pandas si está; si no, csv puro) y verifica el conteo final: debe cuadrar con el total del catálogo.
+- PROHIBIDO mencionar o proponer publicidad pagada, Meta/Facebook/Instagram Ads, Shopify o Google AdSense.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

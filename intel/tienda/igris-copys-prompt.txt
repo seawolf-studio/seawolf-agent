@@ -1,0 +1,56 @@
+IGRIS — MISIÓN «COPY QUE VENDE» PARA LA TIENDA SEAWOLF (piloto + molde reutilizable).
+
+CONTEXTO: la tienda (`C:/Users/Admin/seawolf-store`) tiene el catálogo con el **copy crudo del proveedor**: descripciones truncadas y genéricas (ejemplo real: *"Shampoo Potencializador para Cabellos Rojos Natural hecho co…"*). Eso NO vende: es la misma descripción que tienen otras 500 tiendas de Dropi. Tu oficio es exactamente este.
+
+FUENTES
+- Catálogo: `C:/Users/Admin/seawolf-store/dist/products.json` (200 productos; campos `name`, `description`, `short_description`, `price`, `categories`, `tags`, `slug`).
+- Doctrina del copy (auditada): `C:/Users/Admin/seawolf-agent/intel/curso-dropshipping-local/MANUAL-MAESTRO-tiendas-v5.md` → §4.1 niveles de consciencia · §4.2 método GADO · §4.3 prompts de IA · §4.5 ángulos de venta (mismo producto, distinto enfoque).
+- La tienda filtra por **ocasión** (hero de ocasiones): el copy debe hablar el idioma de la ocasión. Averigua qué ocasiones/categorías existen hoy leyendo el código de la tienda (`src/pages/index.astro`, `catalogo.astro`, `src/data/`) — no las inventes.
+
+=== ENTREGABLE 1 — PILOTO (25 productos) ===
+`C:/Users/Admin/seawolf-store/mantenimiento/copys-GADO-piloto.json`
+Estructura (JSON por `sku`, listo para inyectar en `products.json` en una misión posterior):
+```json
+{
+  "GR25ML": {
+    "titulo": "máx 8 palabras",
+    "ocasion": ["regalo", "hogar"],
+    "nivel_conciencia": 2,
+    "angulo": "el ángulo elegido en una línea",
+    "gancho": "primera línea que detiene el scroll",
+    "agitacion": "el dolor, con empatía, sin culpar al cliente",
+    "demostracion": "cómo el producto lo resuelve — BENEFICIOS, no características",
+    "orden": "llamada a la acción concreta (contraentrega / envío gratis)",
+    "whatsapp_prellenado": "mensaje corto para el enlace de WhatsApp del producto",
+    "pantalla": "rótulo de máx 8 palabras para la ficha",
+    "fuente_dato": "de dónde salió la info (descripción real del catálogo) o [FALTA INFO]"
+  }
+}
+```
+Escoge los 25 para **cubrir todas las categorías/ocasiones** que existan, e incluye 3 productos de ticket muy bajo (para probar el ángulo de "pack") y 3 de ticket alto.
+
+=== ENTREGABLE 2 — EL MOLDE (para no reinventarlo con 246) ===
+`C:/Users/Admin/seawolf-agent/intel/tienda/igris-copys-spec.md` en español, con:
+- El prompt exacto y reutilizable (para generar los 246 después, o automatizarlo en el pipeline de mantenimiento).
+- Las reglas de estilo del estudio y la lista de **prohibiciones** (abajo).
+- Cómo se conecta al pipeline: campo nuevo en `products.json` + qué habría que tocar en la ficha del producto.
+- Los 3-5 criterios para decidir el **nivel de conciencia** por producto y el **ángulo** según ocasión.
+
+=== REGLAS DURAS (si las rompes, el copy no sirve) ===
+- **No inventes datos del producto.** Si la descripción no alcanza para un beneficio, escribe `[FALTA INFO]` y trabaja solo con lo verificable. Sin promesas médicas ni curas (hay productos de belleza/salud).
+- **Cero promesas de resultados garantizados** ("te curas", "adelgazas", "funciona al 100%").
+- **Cero precio en el copy/la imagen**: se captura la intención, no se deja que el cliente juzgue con números antes de conversar (lección del manual).
+- Español colombiano coloquial, tuteo, frases cortas, cero relleno.
+- PROHIBIDO mencionar: publicidad pagada, Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, Google AdSense.
+- No uses "método secreto", "gratis de por vida", "hazte rico".
+
+=== VERIFICACIÓN ===
+- El JSON debe parsear (`python -c "import json;json.load(open(...))"`) y tener **25 SKU exactos** del catálogo (verifica que cada sku exista en `products.json`; si no coincide, dilo).
+- Cuenta los productos por categoría que cubriste vs las que existen.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

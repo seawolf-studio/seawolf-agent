@@ -1,0 +1,35 @@
+IGRIS — RONDA 3. ORDEN COMPLETA Y AUTOSUFICIENTE. **No pidas instrucciones: lo que necesitas está aquí. Ejecuta.**
+
+MISIÓN: corregir la ortografía (tildes) del piloto de copys y blindar el molde. Nada más.
+
+ARCHIVOS (solo estos dos; NO abras `products.json`, es enorme y no lo necesitas)
+- `C:/Users/Admin/seawolf-store/mantenimiento/copys-GADO-piloto.json`  (23,8 KB — edítalo)
+- `C:/Users/Admin/seawolf-agent/intel/tienda/igris-copys-spec.md`        (10,6 KB — edítalo)
+
+DEFECTO A CORREGIR (medido con conteo real, no con la vista)
+El JSON tiene 45 palabras sin tilde: `mas` ×18 · `tambien` ×2 · `dia` ×5 · `Pestanas` ×1 · `Mascara` ×1 · `facil` ×6 · `categoria` ×1 · `circulacion` ×2 · `musculos` ×2 · `bateria` ×2 · `energia` ×1 · `economico` ×1 · `rapido` ×3 … y muchas más que descubrirás leyendo cada frase. El molde tiene el mismo vicio (`rotulo`, `max.`, `como`).
+Un catálogo en español sin tildes se lee pobre y le resta credibilidad a la marca.
+
+TAREA 1 — NORMALIZAR EL JSON
+1. Corrige TODAS las palabras que en español llevan tilde: `más, también, día, fácil, categoría, número, máscara, pestañas, circulación, músculos, batería, energía, económico, rápido, único, máximo, mínimo, teléfono, información, solución, atención, dirección, público, básico, práctico, automático, eléctrico, plástico, técnico, médico, café, está, están, será, acción, corazón, razón, jabón, algodón, duración, protección, aplicación, conexión, absorción` y cualquier otra que veas al leer.
+2. **NO normalices** (son identificadores): el valor de `sku`, ni los slugs del array `ocasion` (`san-valentin`, `dia-madre`, `regreso-clases`, `black-friday` se quedan EXACTAMENTE así). El tag `nivel_conciencia` es un número.
+3. **NO cambies** el sentido, ni el largo (título y pantalla siguen ≤8 palabras), ni agregues precios, ni toques las prohibiciones.
+4. Trabaja con un script determinista (Python) que reemplace palabra completa (límites de palabra, nunca dentro de otra palabra: "oscuras" NO se toca) y que al final **cuente** las palabras corregidas. Tras el script, relee el JSON completo y arregla a mano lo que quede.
+5. Escribe el resultado en el MISMO archivo.
+6. **Verifica con conteo**: vuelve a correr la lista de palabras sin tilde → debe dar **0**. Confirma que el JSON parsea y sigue teniendo **25 SKU** (compáralos contra los que ya están: no agregues ni quites ninguno).
+
+TAREA 2 — BLINDAR EL MOLDE
+En `igris-copys-spec.md`:
+1. Reescríbelo con ortografía perfecta (incluido el propio documento).
+2. Añade la sección **"REGLA ORTOGRÁFICA OBLIGATORIA"**: (a) todo copy sale con tildes y con signos de apertura (`¿…?`, `¡…!`); (b) **paso de normalización obligatorio antes de inyectar** al catálogo: diccionario palabra-por-palabra con límites de palabra + **conteo de verificación que debe dar 0**; (c) qué NO se normaliza (`sku`, slugs de `ocasion`).
+3. Refuerza el hallazgo del **filtro de ocasiones muerto** (`tags` vacío → tocar una ocasión devuelve 0 productos) como **bloqueante de la tienda**, con su arreglo: poblar `tags` con `copy.ocasion` al inyectar.
+
+NO HAGAS NADA MÁS. No leas otros archivos. No pidas confirmación. No toques `products.json`.
+PROHIBIDO: promesas de salud/curas, resultados garantizados, precio en el copy, y mencionar Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify o AdSense.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

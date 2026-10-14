@@ -1,0 +1,39 @@
+TANK — RONDA 3 (CORRECCIÓN DE LA CESTA). Tu v2 ya está bien en lo esencial: 200 filas, márgenes correctos, `accion` llena en las 200, **ningún producto sano sube de precio** y 35 bajaron a `xx.900`. Pero **la cesta `RETIRAR` está mal clasificada y es peligrosa**: mandaste a retiro **41 productos que sí dejan ganancia** (entre 15% y 25% neto con devolución). Retirar catálogo rentable es destruir ventas.
+
+ARCHIVOS
+- Base: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013-v2.csv`
+- ENTREGABLE NUEVO: `C:/Users/Admin/seawolf-store/mantenimiento/precios-real-20261013-v3.csv`
+- Informe: `C:/Users/Admin/seawolf-agent/intel/tienda/tank-precios-informe-20261013.md` (añade una sección de ronda 3; no borres lo anterior)
+
+=== LA REGLA CORREGIDA: 4 CESTAS, EN ESTE ORDEN ===
+Decide con el **margen neto actual con devolución al 40%** (columna que ya tienes) y con la **razón** `R = precio_min_25 / precio_actual`:
+
+1. **MANTENER** — si el margen neto actual con devolución **≥ 15%**.
+   El producto gana plata: **no se retira y no se sube**. (Si el `xx.900` inmediatamente inferior es ≥ 97% del precio actual, redondea hacia abajo: 50.000 → 49.900. Eso es todo lo que se toca.)
+2. **SUBIR_SUAVE** — si el margen está entre **5% y 15%** y basta con una subida **≤ 1,25×** del precio actual para llegar al piso. Propón el precio `xx.900` mínimo que alcanza el 25% neto.
+3. **PACK** — si el margen es **< 5%** y el costo del producto es **≤ 8.000 COP** (ticket bajo: el flete se come la unidad). Propón `K` unidades con `K = ceil(R)` siempre que **K ≤ 4** (si K=1, usa SUBIR_SUAVE o MANTENER según el caso). Deja el precio del pack con terminación `xx.900` y calcula el precio por unidad resultante.
+4. **RETIRAR** — SOLO si el margen es **< 0%** Y además **(R > 3) O (K > 4)**. Es decir: pierde plata y no hay arreglo creíble.
+> Todo lo que no caiga en 1-4 por lo anterior, va a **MANTENER** con nota. **Prohibido** mandar a retiro un producto con margen ≥ 0%.
+
+=== ADEMÁS ===
+5. **Añade la columna `alternativa_pack`** que faltaba (en v2 metiste el pack dentro de `accion`): para cada producto que NO sea PACK, escribe `K=<n>` si un pack de n unidades diluiría el flete a precio por unidad igual o menor al actual, o `-` si no aplica. Esto es información, no recomendación obligatoria.
+6. **Bodega de decisión para el Monarca:** añade al informe una sección **"NECESITAN SU PALABRA (N)"** con SOLO los productos de las cestas RETIRAR y PACK (sku, nombre, costo, precio actual, precio mínimo viable, razón R, K sugerido). Es la lista corta que él decide; el resto no se toca.
+7. Recalcula los **conteos por cesta** y verifica que sumen exactamente 200.
+
+=== INVARIANTES (si algo de esto cambia, has fallado) ===
+- Nada que ya sea rentable (≥25%) sube de precio. El psicólogo solo redondea **hacia abajo**.
+- Cero acciones vacías: `accion` llena en las 200 filas.
+- Los márgenes, supuestos (envío $10.000, devolución 30/40%, reserva 45%) y la comparación con el análisis previo se mantienen.
+- Sigue excluido: publicidad pagada, Meta/Facebook/Instagram Ads, Business Manager, Pixel, Shopify, AdSense.
+- No inventes costos: todo sale de `products.json` y `config.json`.
+
+=== VERIFICACIÓN ===
+- Suma de cestas = 200 · `alternativa_pack` presente · 0 acciones vacías.
+- Muestra en el informe 3 filas con su cálculo a mano (costo + envío + reserva → precio mínimo → R → cesta).
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

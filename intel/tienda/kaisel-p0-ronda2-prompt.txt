@@ -1,0 +1,48 @@
+KAISEL — P0 RONDA 2. Tu blindaje quedó a medias y tu reporte contiene una afirmación que es FALSA. Se corrige esto exactamente y nada más.
+
+=== LO QUE SÍ QUEDÓ BIEN (no lo toques) ===
+`public/api/pedidos.php`: la lista `$departamentos_sin_cobertura` con los 9 + el rechazo 422 con mensaje amable + el límite de tasa + el honeypot. `public/api/procesar-pedidos.php`: el `require_once seawolf-config.php` + el chequeo de stock. La exclusión de secretos en `construir_tienda.py`. Git con sus 3 commits. El git de seguridad está bien hecho: **el trabajo siguiente es cerrar los huecos.**
+
+=== HUECO 1 (GRAVE) — EL FILTRO SE ESQUIVA ESCRIBIENDO ===
+`src/components/CheckoutForm.tsx` **NO lo tocaste** (sigue del 27-sep) y el departamento es un **campo de texto libre**. Tu comparación es literal contra `'VAUPÉS'`, así que:
+- `Vaupes` (sin tilde) → **NO casa** → el pedido entra y se pierde el flete.
+- `vaupés ` / `VAUPES` / `San Andres` / `San Andrés` (sin "Y PROVIDENCIA") → igual.
+**Corrige así:**
+1. En PHP: antes de comparar, **normaliza** el texto del cliente — mayúsculas, sin tildes/diéresis, espacios colapsados, sin puntos ni comas. Compara contra la misma lista normalizada **más una lista de alias**: `SAN ANDRES`, `SAN ANDRES Y PROVIDENCIA`, `SAN ANDRÉS`, `ARCHIPIELAGO DE SAN ANDRES`, `VAUPES`, `GUAINIA`, `CHOCO`.
+2. Escribe la función de normalización una sola vez y úsala en el único punto de decisión (nada de dos criterios distintos).
+3. En el **front** (`CheckoutForm.tsx`): aplica la MISMA normalización al validar el departamento y muestra el mensaje amable **antes** de enviar (no dejes que llene todo el formulario para fallar al final). El candado del servidor manda; el del front es cortesía.
+4. **Prueba la normalización de verdad**: si hay `php` en el equipo, corre un test con estas entradas y muestra la salida: `Vaupes`, `vaupés`, `VAUPES`, `San Andres`, `San Andrés y Providencia`, `Choco`, `Guainía`, `Bogotá`, `Cundinamarca`, `Antioquia`. Las 7 primeras → RECHAZAR; las 3 últimas → ACEPTAR. Si NO hay `php` disponible, dilo explícitamente y replica la misma lógica en Python para probar la lista (y avísalo en el reporte).
+
+=== HUECO 2 (GRAVE) — EL PAQUETE DE DESPLIEGUE ESTÁ VIEJO ===
+`dist/api/pedidos.php` es del **27-sep (3.862 B)** mientras `public/api/pedidos.php` es de hoy (8.875 B). Es decir: **el ZIP que se suba llevaría el archivo VIEJO**, sin el bloqueo ni el límite de tasa — exactamente lo que veníamos a arreglar.
+1. Reconstruye `dist/` desde las fuentes (`npm run build` o el guion del proyecto).
+2. Verifica con **hash**: `dist/api/pedidos.php` y `dist/api/procesar-pedidos.php` deben ser **idénticos** a sus originales de `public/api/`. Muestra los hashes en el reporte.
+3. Verifica también que el checkout construido (`dist/checkout/index.html` + su JS) traiga el bloqueo del front.
+
+=== HUECO 3 — CLAVE DEL PROCESADOR TODAVÍA ESCRITA ===
+`public/api/procesar-pedidos.php` **línea 15** sigue teniendo `$CLAVE_PROCESO = 'sw-proceso-2026-x9k7';` escrito. El `require` de la línea 12 está bien, pero el literal debe desaparecer: la clave sale de `seawolf-config.php`, y **si no está, el script se detiene con mensaje claro**. Revisa todo el archivo y saca cualquier otro literal sensible.
+
+=== HUECO 4 — LA LLAVE DEL PUENTE SIGUE EN ARCHIVOS VERSIONADOS ===
+Tu reporte afirma: *"Confirmado que no hay claves de puente ni API en archivos versionados"*. **Es falso** — `git grep` encuentra la llave en 3 archivos rastreados:
+- `mantenimiento/config.json`
+- `mantenimiento/sincronizar_tienda.py`
+- `mantenimiento/MANUAL-MANTENIMIENTO.md`
+El sincronizador **necesita** la llave para funcionar, así que no la borres: **muévela**.
+1. La llave vive en un archivo **NO versionado** (p. ej. `mantenimiento/secrets.local.json`, añadido a `.gitignore`), y en git queda una **plantilla** (`secrets.local.example.json`) con un placeholder.
+2. `sincronizar_tienda.py` lee la llave de ese archivo (con mensaje claro si falta).
+3. En `MANUAL-MANTENIMIENTO.md`: reemplaza la llave por `[LA LLAVE VA EN secrets.local.json]`.
+4. **NO rotes la llave todavía** (eso se hace mañana tocando WordPress, con el Monarca): aquí solo se saca de git.
+5. Verifica: `git grep` de la llave → **0 resultados** (y muéstralo en el reporte).
+
+=== HUECO 5 — HONESTIDAD DEL REPORTE ===
+Añade al final de tu reporte una sección **"CORRECCIÓN DEL REPORTE ANTERIOR"** diciendo, sin adornos: que la afirmación de "no hay claves en archivos versionados" era falsa, que el checkout del front no se tocó, que el `dist/` quedó viejo y que el filtro de departamentos era esquivable. Un reporte que se equivoca y lo corrige vale; uno que se equivoca y lo esconde, no.
+
+=== VERIFICACIÓN FINAL OBLIGATORIA ===
+- 1) Test de normalización corrido y mostrado (PHP o Python). 2) Hashes de `public/` vs `dist/` idénticos. 3) `git grep` de la llave = 0. 4) `git status` limpio y nuevo commit. 5) `git grep` de `sw-proceso-2026` = 0.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

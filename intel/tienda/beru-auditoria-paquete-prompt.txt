@@ -1,0 +1,53 @@
+BERU — AUDITORÍA DEL PAQUETE DE DESPLIEGUE (la última puerta antes de que el Monarca suba la tienda).
+
+OBJETO: el ZIP que se va a subir a un dominio temporal de Hostinger y las 2 PHP que lleva dentro.
+- ZIP: `C:/Users/Admin/Desktop/seawolf-tienda-hostinger.zip` (14,2 MB, 989 archivos) + la copia con fecha `seawolf-tienda-20261014-0038.zip`
+- Fuente de las PHP: `C:/Users/Admin/seawolf-store/public/api/pedidos.php` y `.../procesar-pedidos.php`
+- El front del checkout: `C:/Users/Admin/seawolf-store/src/components/CheckoutForm.tsx` (¡NO fue modificado!)
+- Contexto del proyecto: `C:/Users/Admin/seawolf-agent/intel/TIENDA-seawolf-mejoras-desde-destilacion-20261013.md` y `C:/Users/Admin/seawolf-store/mantenimiento/DESPLIEGUE-MONARCA-PASO-A-PASO.md`
+
+**DATO CRÍTICO DEL ENTORNO: no hay PHP instalado en este equipo** (verificado: `which php` → nada; Node 26 sí). Por eso **no se puede hacer lint de sintaxis aquí** y tu revisión manual vale doble.
+
+=== 1) SINTAXIS PHP — REVISIÓN MANUAL (lo más importante de esta auditoría) ===
+Lee las dos PHP **completas** y revisa como si fueras el intérprete:
+- Llaves, paréntesis y corchetes balanceados (cuenta, no estimes).
+- Cada sentencia termina en `;` (busca las líneas que quedaron cortadas o pegadas).
+- `require_once` de `seawolf-config.php`: ¿está ANTES de usar las constantes? ¿el script se detiene con mensaje claro si el archivo o las constantes faltan? ¿alguna ruta quedó mal?
+- `hash_equals`, `in_array(..., true)`, `json_decode`, `rand`/`random_bytes`: uso correcto.
+- El `$alias` / la normalización: ¿la función se define una sola vez y se usa en el único punto de decisión? ¿hay una segunda comprobación contradictoria?
+- El bloqueo de stock: ¿qué pasa si `dropi_stock` es 0 o viene vacío? ¿el pedido se marca y NO se envía?
+- **Banderas rojas a buscar:** funciones definidas después de usarse, variables no inicializadas, texto pegado de un `echo` roto (líneas que deberían ser varias y quedaron en una), comillas sin cerrar, `?>` de sobra.
+
+=== 2) EL CONTRATO FRONT ↔ SERVIDOR (riesgo funcional real) ===
+`CheckoutForm.tsx` **no se modificó**, así que el front NO bloquea departamentos sin cobertura ni normaliza. Responde con evidencia (leyendo el código del componente):
+- ¿Qué hace la UI cuando el servidor responde **422** (departamento sin cobertura) o **429** (límite de tasa)? ¿Muestra el mensaje al cliente o falla en silencio? (Si falla en silencio, el cliente cree que pidió y no pasó nada → **hallazgo ALTO**.)
+- ¿Qué envía el front en el campo `departamento`? ¿Es texto libre? ¿Con qué formato?
+- ¿El servidor normaliza lo suficiente como para atrapar las variantes que el texto libre permite (`Vaupes`, `vaupés `, `San Andres`, `SAN ANDRÉS`)? Enumera variantes que **escaparían** y declara el riesgo.
+- ¿Qué pasa si `departamento` llega **vacío**? ¿Lo rechaza el servidor? Si pasa, ¿qué recibe Dropi en `state`? (Un pedido con `state` vacío puede fallar en Dropi.)
+
+=== 3) VERIFICACIÓN INDEPENDIENTE DEL ZIP (no confíes en el reporte de KAISEL) ===
+Abre el ZIP y comprueba tú mismo, con la salida a la vista:
+- `index.html` en la raíz · `.htaccess` presente · `api/` con exactamente las 2 PHP.
+- **Cero secretos** (`seawolf-config.php`, `notify-config.php`, `secrets.local.json`, `.env`).
+- **md5 de `api/pedidos.php` y `api/procesar-pedidos.php` dentro del ZIP == md5 de sus fuentes** en `public/api/`.
+- `products.json` dentro: conteo real, cuántos con `dropi_id` y foto.
+- El candado de departamentos y el límite de tasa **presentes en el archivo DENTRO del ZIP**.
+- Conteo de archivos y ausencia de basura (`.DS_Store`, `node_modules/`, `respaldos/`, temporales).
+
+=== 4) INVARIANTES DEL PROYECTO ===
+- `git grep` de la llave del puente (`sw7-Gh41`) y de la clave del procesador (`sw-proceso-2026`) en los archivos RASTREADOS: reporta el conteo exacto por archivo (se sabe que hay pendientes de limpieza: `secrets.local.example.json`, `config.json`, `sincronizar_tienda.py`, `MANUAL-MANTENIMIENTO.md`, `LEEME-DEPLOY.txt`, `PENDIENTES-DESPLIEGUE.md`).
+- ¿El `.gitignore` cubre `mantenimiento/secrets.local.json`? (Se sabe que NO.)
+
+=== ENTREGABLE ===
+`C:/Users/Admin/seawolf-agent/intel/tienda/beru-auditoria-paquete-20261014.md`
+Con: **VEREDICTO: PASA / NO PASA** · tabla de hallazgos (severidad, archivo/línea, qué dice, corrección exigida) · **lista de riesgos que solo se pueden probar en el servidor** (sintaxis, comportamiento real de Dropi) · lo que NO pudiste verificar.
+Escribe el informe en cuanto tengas el veredicto y luego reescríbelo completo al cerrar cada bloque (no lo acumules para el final: una corrida anterior se perdió así).
+
+REGLAS: eres auditor, NO corrector — no edites nada. Proporcionado: bloquea solo lo que afecte a la verdad, a la seguridad o a que la tienda funcione; lo cosmético va con severidad COSMÉTICA y no impide el PASA.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño)
+VEREDICTO
+BLOQUEANTES (si hay)
+BLOQUEO

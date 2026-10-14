@@ -1,0 +1,41 @@
+BERU — RE-AUDITORÍA ACOTADA DEL PAQUETE (segunda pasada, la que decide si el Monarca sube).
+
+Tu audit ría anterior dictaminó **NO PASA** con 2 bloqueantes (B1 `$departamento` fantasma, B2 `tg()` sin definir) + la clave dentro del `LEEME-DEPLOY.txt`. **Esos tres ya se corrigieron** y la fuente se reconstruyó. Aquí NO se repite la auditoría completa: se verifica que los bloqueantes están cerrados y que la corrección no rompió nada.
+
+OBJETO: `C:/Users/Admin/Desktop/seawolf-tienda-hostinger.zip` (14.925.242 bytes, 989 archivos, sello `20261014-0125`) y las fuentes en `C:/Users/Admin/seawolf-store/public/api/`.
+Tu informe anterior: `C:/Users/Admin/seawolf-agent/intel/tienda/beru-auditoria-paquete-20261014.md`
+ENTREGABLE: `C:/Users/Admin/seawolf-agent/intel/tienda/beru-reauditoria-paquete-20261014.md` (NUEVO; escríbelo en cuanto tengas veredicto y reescríbelo al cerrar. No acumules para el final.)
+
+=== 1) LOS TRES BLOQUEANTES: ¿CERRADOS DE VERDAD? ===
+- **B1**: ¿existe `$departamento_final`? ¿se usa en la línea que arma el pedido? ¿queda alguna `$departamento` suelta sin definir? ¿el valor que se guarda es coherente con lo que se envía a Dropi?
+- **B2**: ¿queda alguna llamada a `tg()` **activa** en `pedidos.php`? (Hay una comentada: ¿está bien comentada, o hay riesgo de que quede código muerto engañoso?). ¿`pedidos.php` sigue haciendo solo recibir/validar/guardar?
+- **La clave en el ZIP**: cuenta `sw-proceso-2026` en TODOS los archivos de texto dentro del ZIP → debe ser **0**.
+
+=== 2) LA CORRECCIÓN NUEVA: LA LISTA BLANCA ===
+Se sustituyó la lista negra por una **lista blanca**. Audítala:
+- ¿Los 24 departamentos permitidos están completos y bien escritos (en forma normalizada)?
+- ¿Alguno de los 9 SIN cobertura se coló en la lista blanca (sería un fallo grave)?
+- ¿Los alias mapean a donde deben (`SAN ANDRES`/`SAN ANDRES Y PROVIDENCIA` → bloqueo; `VALLE`→`VALLE DEL CAUCA`; `BOGOTA D.C.`/`BOGOTA DC` → permitido)?
+- ¿Qué pasa con `''`, `Otro`, `Marte`, `Cundinamarca`? (Rechaza / Acepta según corresponda.)
+- **Riesgo a evaluar**: si Dropi espera el nombre del departamento con tildes (ej. `Bogotá D.C.`) y el código normaliza sin tildes (`BOGOTA`), ¿puede Dropi rechazar el pedido? Declara el riesgo con la evidencia que tengas (no inventes).
+
+=== 3) EL FRONT: ¿MUESTRA EL MENSAJE AHORA? ===
+Lee `src/components/CheckoutForm.tsx` y confirma si en el manejo de la respuesta **lee el JSON también cuando el status es de error** y muestra `result.mensaje || result.error`. Y si la opción **"Otro"** fue retirada del selector de departamento.
+
+=== 4) NO REGRESIÓN (lo que ya estaba bien) ===
+- md5 dentro del ZIP == md5 de las fuentes, para las 2 PHP.
+- ZIP sin `seawolf-config.php`, `notify-config.php`, `secrets.local.json`, `.env`.
+- `index.html` en la raíz · `.htaccess` · `products.json` con 200 productos y 199 con `dropi_id`.
+- Llave del puente y clave del procesador en archivos rastreados de git: cuenta exacta por archivo.
+
+=== 5) RIESGOS QUE SOLO SE PRUEBAN EN EL SERVIDOR (lista final, corta) ===
+Recordá: aquí no hay PHP instalado → sigue sin poder validarse la sintaxis con linter. Enumera lo que el Monarca debe vigilar en la prueba simulada.
+
+REGLAS: auditor, no corrector. Proporcionado: bloquea solo lo que impida que la tienda venda o filtre un secreto; lo cosmético va con severidad COSMÉTICA y no impide el PASA. Sin adornos.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLE (ruta + tamaño)
+VEREDICTO
+BLOQUEANTES (si hay)
+BLOQUEO

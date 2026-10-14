@@ -1,0 +1,36 @@
+IGRIS — RONDA 5 (ÚLTIMA, Y ES CORTA). Tu normalizador quedó bien en la forma y ya corrigió 25 palabras, **pero miente en su reporte final** y hay que blindarlo antes de que se use con los 246.
+
+MEDIDO POR EL COMANDANTE (ejecutando tu propio script):
+- Corrió en modo real: aplicó 25 correcciones y dijo **"PENDIENTES: 0 (listo para inyectar)"**.
+- **Conteo independiente posterior: siguen `mas ` ×6 y `dia ` ×1 sin tilde.** Es decir: **el chequeo de pendientes solo mira su propio diccionario**, así que si una palabra no está en el diccionario, la declara limpia. **Un falso "todo limpio" es peor que no tener herramienta** — el que genere los 246 copys va a confiar en ese "0" y va a publicar texto sin tildes.
+
+=== TAREA 1 — COMPLETAR EL DICCIONARIO ===
+Añade estas entradas (palabra completa, límites de palabra) que **faltan**:
+`mas → más` · `dia → día` · y revisa que también estén: `tambien, facil, categoria, numero, ultimo, practico, publico, rapido, unico, maximo, minimo, telefono, informacion, solucion, atencion, direccion, circulacion, musculos, bateria, energia, economico, duracion, funcion (sustantivo: 'funcion'→'función'; NO toques 'funciona'), decision, accion, corazon, razon, jabon, algodon, cafe, sera, tendra, proteccion, aplicacion, conexion, descripcion, descripciones, estan, esta (SOLO cuando es verbo/demostrativo según contexto — si dudas, va a AMBIGUOS, nunca autocorregir a ciegas), pantalon, boton, carton, sarten, camion, frances, ingles, aleman, examen, imagen, joven, orden (sustantivo), volumen`.
+**Regla:** si una palabra es ambigua (`esta` = demostrativo/"está" verbo; `mas` puede ser conjunción arcaica; `solo`), NO la autocorrijas: mándala a la lista **AMBIGUOS** para revisión humana.
+
+=== TAREA 2 — QUE EL CHEQUEO DE PENDIENTES NO MIENTA ===
+El problema de raíz: "PENDIENTES" se calcula contra el mismo diccionario que ya corrigió, así que siempre da 0.
+Cámbialo por un chequeo **independiente del diccionario**, con esta heurística: recorre todas las palabras del JSON y marca como **SOSPECHOSAS** las que (a) tengan 4+ letras, (b) terminen en `-cion`, `-ciones`, `-dad`, `-sion`, o (c) estén en una lista amplia de palabras españolas que **deben** llevar tilde (usa como mínimo el doble de la lista de la Tarea 1). El reporte debe imprimir:
+- `CORREGIDAS: n`
+- `SOSPECHOSAS SIN RESOLVER: n` (con la lista y el SKU donde aparece) ← **si esto no es 0, NO puede decir "listo para inyectar"**
+- `AMBIGUOS: n` (para ojo humano)
+Y **prohíbete** imprimir "listo para inyectar" mientras `SOSPECHOSAS > 0`.
+
+=== TAREA 3 — APLICAR Y VERIFICAR ===
+1. Corre el script en modo real sobre `mantenimiento/copys-GADO-piloto.json`.
+2. **Verifica con un conteo externo al script** (independiente, hecho por ti con otro comando) que `mas ` y `dia ` dan **0** y que sigue habiendo **25 SKU** con los mismos slugs de `ocasion`.
+3. Muestra la salida del script y tu conteo independiente.
+
+=== TAREA 4 — EL SPEC ===
+En `C:/Users/Admin/seawolf-agent/intel/tienda/igris-copys-spec.md`: si aún no tiene la sección **"REGLA ORTOGRÁFICA OBLIGATORIA"**, añádela con: (a) tildes y signos de apertura obligatorios; (b) antes de inyectar se corre `mantenimiento/normalizar_copys.py` y **su reporte debe salir con SOSPECHOSAS = 0 y AMBIGUOS revisados a mano** — el "CORREGIDAS: n" solo no basta; (c) qué NO se normaliza (`sku`, slugs de `ocasion`). Y refuerza el hallazgo del **filtro de ocasiones muerto** (`tags` vacío) como bloqueante con su arreglo.
+
+**REGLA DE ESCRITURA:** `read_file` primero, luego `patch`/`write_file`. Nunca `echo` por terminal para escribir archivos.
+No toques `dist/products.json` ni nada más.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

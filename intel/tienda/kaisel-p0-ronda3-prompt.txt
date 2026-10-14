@@ -1,0 +1,44 @@
+KAISEL — P0 RONDA 3 (CIERRE). Tus aciertos quedan: la normalización con alias, el `dist/` reconstruido (hashes idénticos) y la clave del procesador fuera del código. Faltan DOS cosas y **creaste un riesgo nuevo**. Se cierra todo aquí.
+
+=== RIESGO NUEVO (lo primero) ===
+Pusiste la llave REAL en `mantenimiento/secrets.local.example.json` — el archivo de EJEMPLO. Un ejemplo se versiona: si lleva la llave real, se filtró otra vez y encima parece inofensivo. Y `secrets.local.json` **no está en `.gitignore`**. Y la llave sigue en `config.json`, `sincronizar_tienda.py` y `MANUAL-MANTENIMIENTO.md`.
+
+=== TAREA A — LA LLAVE DEL PUENTE: UN SOLO LUGAR ===
+1. La llave real vive **ÚNICAMENTE** en `mantenimiento/secrets.local.json` (que debe ser **ignorado por git**).
+2. `mantenimiento/secrets.local.example.json` → **placeholder**: `{"bridge_key": "PON-AQUI-TU-LLAVE"}`. Cero valores reales.
+3. `.gitignore` → añade `mantenimiento/secrets.local.json` **y** `mantenimiento/respaldos/` (y `mantenimiento/temp/` si falta).
+4. `mantenimiento/config.json` → **quita** `bridge_key` (deja solo los ajustes no secretos: tienda, envío, márgenes).
+5. `mantenimiento/sincronizar_tienda.py` → que **lea la llave de `secrets.local.json`** (mensaje claro si falta). Cero literales.
+6. `mantenimiento/MANUAL-MANTENIMIENTO.md` → reemplaza la llave por `[VA EN secrets.local.json]`.
+7. **NO rotes la llave** (eso es mañana tocando WordPress, con el Monarca).
+
+=== TAREA B — LA CLAVE DEL PROCESADOR, FUERA DE LOS DOCUMENTOS ===
+`sw-proceso-2026-x9k7` sigue en texto plano en 4 archivos rastreados. Sustitúyela por un placeholder (`[TU-CLAVE-DEL-PROCESADOR]`) en:
+`mantenimiento/MANUAL-MANTENIMIENTO.md` · `mantenimiento/PENDIENTES-DESPLIEGUE.md` · `LEEME-DEPLOY.txt` · `mantenimiento/DESPLIEGUE-MONARCA-PASO-A-PASO.md` (en este último, la guía ya usa `LA-CLAVE`, revisa que no quede el literal).
+Y confirma donde corresponde: la clave real va en `api/seawolf-config.php` (ignorado) y en el cron.
+
+=== TAREA C — EL BLOQUEO EN EL FRONT (`src/components/CheckoutForm.tsx`) ===
+Hoy NO lo tocaste. El departamento se escribe a mano y el cliente puede llenar todo el formulario para que le fallen al final (o escribir "Vaupes" y pasar sin tilde).
+1. Aplica **la misma normalización** que usa el servidor (mayúsculas, sin tildes, espacios colapsados) + la **misma lista de alias**. Escríbela una vez y reúsala.
+2. Al escribir el departamento (onBlur) y **antes de enviar**: si está en la lista sin cobertura → muéstralo con el mensaje amable y **no envíes**; ofrécele el enlace de WhatsApp.
+3. Reconstruye `dist/` y **verifica en el artefacto construido** que el chequeo quedó (busca el marcador en el JS del checkout dentro de `dist/`). Muéstralo.
+> El candado que manda es el del servidor — el del front es cortesía para no hacer perder tiempo al cliente.
+
+=== VERIFICACIÓN FINAL (exige evidencia, no afirmaciones) ===
+Imprime en el reporte, con el comando y su salida:
+1. `git check-ignore -v mantenimiento/secrets.local.json` → debe estar ignorado.
+2. `git grep -l "sw7-Gh41"` → **0 archivos** (y `git grep -l "sw-proceso-2026"` → 0).
+3. `md5sum public/api/pedidos.php dist/api/pedidos.php` → **idénticos**.
+4. El marcador del bloqueo del front presente en `dist/`.
+5. `git status` limpio y commit nuevo.
+> Ya fallaste una verificación afirmando algo que no cumplías. Esta vez muestra la salida de cada comando.
+
+=== NOTA HONESTA PARA TU REPORTE ===
+Añade: que la llave quedó en el archivo de EJEMPLO (riesgo creado por ti), que el front no se había tocado, y que por eso la llave debe **rotarse mañana** (el historial de git y los documentos ya la contenían). Sin adornos.
+
+AL TERMINAR imprime EXACTAMENTE:
+QUE HICE
+ENTREGABLES (rutas + tamaños)
+HALLAZGO
+BLOQUEO
+SIGUIENTE

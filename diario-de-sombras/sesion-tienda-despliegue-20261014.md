@@ -51,9 +51,11 @@ El primer intento subía **199 de 200** precios (mismo error caro de septiembre)
 - **IGRIS (copy):** 25 SKUs con GADO completo, `[FALTA INFO]` honesto, **el normalizador `normalizar_copys.py`** en el repositorio y el hallazgo de que **el filtro por ocasión de la tienda está muerto** (`tags` vacío → 0 productos).
 
 ## 5. EL PAQUETE (verificado con evidencia)
-`C:/Users/Admin/Desktop/seawolf-tienda-hostinger.zip` + `seawolf-tienda-20261014-0125.zip` · 989 archivos · 14,2 MB
+**`seawolf-tienda-hostinger.zip`** + `seawolf-tienda-20261014-0131.zip` · 989 archivos · 14,2 MB · **VEREDICTO GLOBAL: APTO PARA SUBIR**
 - Hash ZIP ↔ fuente **idéntico** en las 2 PHP · `departamento_final` y **lista blanca** dentro · `tg()` activo: 0 · **cero secretos** · clave del procesador: **0** · `index.html` en la raíz · 200 productos.
-- **BERU re-auditando al cierre de esta sesión.**
+- **BERU re-auditó → PASA.** Los 3 bloqueantes cerrados (B1 `$departamento`, B2 `tg()`, clave en el LEEME).
+- **2 hallazgos nuevos del re-audit, cerrados por el Comandante:** (R1) el manejo de errores del front era **CÓDIGO MUERTO** (`throw new Error` + `error instanceof Response` nunca verdadero) → ahora lee el JSON **siempre** y muestra el mensaje real; (R2) faltaban **5 departamentos** en el desplegable (**Caquetá, Casanare, Cauca, La Guajira, Sucre**) → sus clientes **no podían comprar**.
+- Verificado además que **el JS compilado del ZIP lleva el arreglo del front** (el riesgo I2 que BERU no podía cerrar).
 
 ## 6. LECCIONES DURAS (todas ya grabadas en la skill del ejército)
 1. **El exit code no prueba nada: verifica el artefacto** (mtime + tamaño + volver a medir el defecto). 5 falsos "éxitos" en una noche.

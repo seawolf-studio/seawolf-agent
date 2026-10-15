@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Mando — Seawolf Studio</title>
+<style>
+  :root{ --sw:#4CE8E7; --sw2:#48E8D8; --ok:#48E8A0; --bad:#ff6b6b; --warn:#ffb86b; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; color:var(--foreground); font-family:inherit; background:transparent; }
+  .wrap{ width:1000px; max-width:97vw; padding:16px 20px 30px; }
+  h1{ font-size:21px; margin:0; } .brand{ color:var(--sw); }
+  .sub{ color:var(--muted-foreground); font-size:12.5px; margin-bottom:14px; }
+  .top{ border:1px solid var(--border); border-radius:12px; padding:14px 16px; background:var(--card); margin-bottom:14px; }
+  .total{ font-size:44px; font-weight:700; color:var(--sw); line-height:1; }
+  .tbar{ height:12px; border-radius:7px; border:1px solid var(--border); margin:10px 0 12px; overflow:hidden; }
+  .tbar i{ display:block; height:100%; background:linear-gradient(90deg,var(--sw2),var(--sw)); width:0%; transition:width .4s; }
+  .stats{ display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+  .stats b{ color:var(--sw); }
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .card{ border:1px solid var(--border); border-radius:11px; padding:12px 13px; background:var(--card); }
+  .card.vault{ opacity:.6; }
+  .card h3{ margin:0 0 3px; font-size:14.5px; }
+  .why{ color:var(--sw); font-size:11px; margin-bottom:2px; }
+  .cost{ color:var(--bad); font-size:11px; margin-bottom:8px; }
+  .mini{ height:7px; border-radius:5px; border:1px solid var(--border); overflow:hidden; margin:6px 0 8px; }
+  .mini i{ display:block; height:100%; background:var(--sw); width:0%; }
+  .task{ display:flex; gap:8px; align-items:flex-start; font-size:12.5px; padding:3px 0; cursor:pointer; }
+  .task input{ margin-top:2px; accent-color:var(--sw); }
+  .task.done span{ text-decoration:line-through; color:var(--muted-foreground); }
+  .row{ display:flex; gap:8px; margin-top:9px; }
+  button{ font-family:inherit; cursor:pointer; border-radius:8px; font-size:12px; padding:6px 11px; border:1px solid var(--border); background:transparent; color:var(--foreground); }
+  button.sw{ background:var(--sw); color:#121E1E; border-color:var(--sw); font-weight:600; }
+  .head{ display:flex; justify-content:space-between; align-items:center; margin:18px 0 10px; }
+  .head h2{ font-size:15px; margin:0; color:var(--sw); }
+  .note{ font-size:11.5px; color:var(--muted-foreground); margin-top:6px; }
+  .form{ border:1px dashed var(--border); border-radius:11px; padding:12px 13px; margin-top:12px; display:none; }
+  .form.on{ display:block; }
+  .form input,.form textarea,.form select{ width:100%; margin:4px 0; padding:7px 9px; border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--foreground); font-family:inherit; font-size:12.5px; }
+  .pill{ display:inline-block; font-size:10.5px; border:1px solid var(--border); border-radius:20px; padding:2px 9px; }
+  .pill.ok{ color:var(--ok); border-color:var(--ok); } .pill.bad{ color:var(--bad); border-color:var(--bad); }
+  .pill.mid{ color:var(--warn); border-color:var(--warn); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Panel de <span class="brand">Mando</span> — Seawolf Studio</h1>
+  <div class="sub">3 activos máximo · el resto a la Bóveda · finalidad + costo visibles · sueldo semanal</div>
+
+  <div class="top">
+    <div class="total" id="tpct">0%</div>
+    <div class="tbar"><i id="tbar"></i></div>
+    <div class="stats">
+      <span>Nivel <b id="lvl">1</b></span>
+      <span>XP <b id="xp">0</b></span>
+      <span>Racha <b id="stk">0</b> 🔥</span>
+      <span>Sueldo semanal: <b id="pay">—</b> <span id="paytag" class="pill mid">meta 20%</span></span>
+      <button class="sw" id="checkin">✅ Check-in de hoy</button>
+      <button id="editMeta">⚙️ Meta semanal</button>
+    </div>
+    <div class="note" id="note"></div>
+  </div>
+
+  <div class="head"><h2>⚔️ Proyectos ACTIVOS (máx 3)</h2><button id="addBtn">➕ Nuevo proyecto</button></div>
+  <div class="grid" id="active"></div>
+
+  <div class="form" id="form">
+    <input id="f_name" placeholder="Nombre del proyecto">
+    <input id="f_why" placeholder="FINALIDAD — POR QUÉ (tu misión raíz)">
+    <input id="f_cost" placeholder="COSTO — qué PIERDES si lo dejas a medias (el miedo)">
+    <select id="f_w"><option value="5">Peso 5 (crítico)</option><option value="4" selected>Peso 4</option><option value="3">Peso 3</option><option value="2">Peso 2</option><option value="1">Peso 1</option></select>
+    <textarea id="f_tasks" rows="3" placeholder="Tareas, una por línea (ej: Definir rúbrica · Generar 100 ideas)"></textarea>
+    <div class="row"><button class="sw" id="saveBtn">Guardar activo</button><button id="cancelBtn">Cancelar</button></div>
+  </div>
+
+  <div class="head"><h2>🗄️ Bóveda (en pausa)</h2><button id="seedBtn">↺ Re-sembrar</button></div>
+  <div class="grid" id="vault"></div>
+  <div class="note">Se guarda en este navegador (localStorage). El 4º activo exige mandar uno a la Bóveda: foco forzado.</div>
+</div>
+
+<script>
+var SEED = [
+ {id:'s1', nombre:'Seawolf Agent', estado:'ACTIVO', peso:5,
+  finalidad:'Producto principal → ingreso recurrente (CSO).',
+  costo:'Semanas perdidas = mes sin facturar. Se apaga el sueño de los míos.',
+  tareas:[{t:"Definir 3 capas (filtro→automat→dashboard)",pts:3,h:true},{t:"Multi-tenant + RBAC",pts:4,h:false},{t:"Audit SHA-256",pts:2,h:false},{t:"Onboarding 1-click",pts:3,h:false}]},
+ {id:'s2', nombre:'Círculo Publicitario', estado:'ACTIVO', peso:4,
+  finalidad:'Capa 1 de Seawolf: captar clientes.',
+  costo:'Sin captación no hay clientes → Capa 3 no existe.',
+  tareas:[{t:"Piloto USB-llavero (100→10)",pts:4,h:false},{t:"Montar mixpost en VPS",pts:3,h:false},{t:"Bucle de métricas",pts:3,h:false}]},
+ {id:'s3', nombre:'NEREUS / LOBO', estado:'ACTIVO', peso:4,
+  finalidad:'Producto personal de marca Seawolf.',
+  costo:'Inversión de semanas tirada si queda a medias.',
+  tareas:[{t:"Fases 0-4 (base+motor)",pts:4,h:true},{t:"Conectores/onboarding",pts:3,h:false},{t:"Cobro",pts:3,h:false}]},
+ {id:'s4', nombre:'Smart Courses', estado:'BOVEDA', peso:3, finalidad:'Línea de ingresos educativa.', costo:'—', tareas:[{t:"Curso piloto",pts:5,h:false}]},
+ {id:'s5', nombre:'Web Presence Seawolf', estado:'BOVEDA', peso:2, finalidad:'Vitrina de marca.', costo:'—', tareas:[{t:"Landing",pts:3,h:false}]}
+];
+var KEY='seawolf_panel_v1';
+var st = load() || {projects:JSON.parse(JSON.stringify(SEED)), xp:0, streak:0, last:'', meta:20};
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+
+function pct(p){ var tot=0,done=0; p.tareas.forEach(function(t){ tot+=t.pts; if(t.h)done+=t.pts; }); return tot?Math.round(100*done/tot):0; }
+function total(){ var act=st.projects.filter(function(p){return p.estado==='ACTIVO';}); var w=0,s=0; act.forEach(function(p){ w+=p.peso; s+=p.peso*pct(p); }); return w?Math.round(s/w):0; }
+function xpFromTasks(){ var x=0; st.projects.forEach(function(p){ p.tareas.forEach(function(t){ if(t.h)x+=t.pts; }); }); return x*10; }
+
+function render(){
+  var col={ok:'var(--ok)',mid:'var(--warn)',bad:'var(--bad)'};
+  st.xp = xpFromTasks();
+  var t=total();
+  document.getElementById('tpct').textContent=t+'%';
+  document.getElementById('tbar').style.width=Math.min(100,t*4)+'%';
+  document.getElementById('lvl').textContent=1+Math.floor(st.xp/100);
+  document.getElementById('xp').textContent=st.xp;
+  document.getElementById('stk').textContent=st.streak;
+  var pg = t>=st.meta?'ok':(t>=st.meta/2?'mid':'bad');
+  var tag=document.getElementById('paytag');
+  tag.className='pill '+pg;
+  tag.textContent = t>=st.meta? '✅ CUMPLIDO (+recompensa)' : (t>=st.meta/2? '⚠️ a medio — no lo dejes' : '🔴 DÉFICIT (pierdes)');
+  document.getElementById('pay').textContent = t+'% / '+st.meta+'%';
+  document.getElementById('note').textContent = t>=st.meta? 'Vas bien. Cobra tu sueldo y sube la meta.' : ('Te faltan '+(st.meta-t)+' puntos para cobrar. Si no lo haces, pagas el costo pactado.');
+
+  var A=document.getElementById('active'), V=document.getElementById('vault');
+  A.innerHTML=''; V.innerHTML='';
+  st.projects.forEach(function(p){
+    var d=document.createElement('div'); d.className='card'+(p.estado==='ACTIVO'?'':' vault');
+    var h='<h3>'+esc(p.nombre)+'</h3><div class="why">🎯 '+esc(p.finalidad)+'</div>'+(p.estado==='ACTIVO'?'<div class="cost">💀 '+esc(p.costo)+'</div>':'');
+    h+='<div class="mini"><i style="width:'+pct(p)+'%"></i></div>';
+    h+='<div class="note">'+pct(p)+'% · peso '+p.peso+'</div>';
+    p.tareas.forEach(function(tk,i){ h+='<label class="task'+(tk.h?' done':'')+'"><input type="checkbox" data-p="'+p.id+'" data-i="'+i+'" '+(tk.h?'checked':'')+'><span>'+esc(tk.t)+'</span></label>'; });
+    h+='<div class="row"><button data-act="'+(p.estado==='ACTIVO'?'boveda':'activo')+'" data-p="'+p.id+'">'+(p.estado==='ACTIVO'?'🗄️ A Bóveda':'⚔️ Activar')+'</button></div>';
+    d.innerHTML=h; (p.estado==='ACTIVO'?A:V).appendChild(d);
+  });
+  save();
+}
+function esc(s){ return (s||'').replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); }
+
+document.addEventListener('change',function(e){
+  if(e.target.matches('input[type=checkbox]')){
+    var p=st.projects.find(function(x){return x.id===e.target.dataset.p;}); var i=+e.target.dataset.i;
+    p.tareas[i].h=e.target.checked; render();
+  }
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.act==='activo'){
+    var act=st.projects.filter(function(p){return p.estado==='ACTIVO';});
+    if(act.length>=3){ alert('Máximo 3 activos. Manda uno a la Bóveda primero — foco forzado.'); return; }
+    st.projects.find(function(p){return p.id===b.dataset.p;}).estado='ACTIVO';
+  } else if(b.dataset.act==='boveda'){
+    st.projects.find(function(p){return p.id===b.dataset.p;}).estado='BOVEDA';
+  } else if(b.id==='addBtn'){ document.getElementById('form').classList.toggle('on'); }
+  else if(b.id==='cancelBtn'){ document.getElementById('form').classList.remove('on'); }
+  else if(b.id==='saveBtn'){
+    var n=document.getElementById('f_name').value.trim(); if(!n){alert('Pon un nombre');return;}
+    var tk=document.getElementById('f_tasks').value.split('\n').map(function(s){return s.trim();}).filter(Boolean).map(function(s){return {t:s,pts:2,h:false};});
+    if(!tk.length) tk=[{t:'Primera tarea',pts:2,h:false}];
+    var act=st.projects.filter(function(p){return p.estado==='ACTIVO';}).length;
+    st.projects.push({id:'p'+Date.now(), nombre:n, estado: act<3?'ACTIVO':'BOVEDA', peso:+document.getElementById('f_w').value,
+      finalidad:document.getElementById('f_why').value||'(define tu por qué)', costo:document.getElementById('f_cost').value||'(define tu costo)', tareas:tk});
+    document.getElementById('form').classList.remove('on');
+    ['f_name','f_why','f_cost','f_tasks'].forEach(function(id){document.getElementById(id).value='';});
+  }
+  else if(b.id==='checkin'){
+    var today=new Date().toISOString().slice(0,10);
+    if(st.last!==today){ st.streak++; st.last=today; alert('Check-in ✅  Racha: '+st.streak+' días'); }
+    else alert('Ya hiciste check-in hoy.');
+  }
+  else if(b.id==='editMeta'){ var v=prompt('Meta semanal de % TOTAL:',st.meta); if(v&&!isNaN(v)) st.meta=+v; }
+  else if(b.id==='seedBtn'){ if(confirm('¿Re-sembrar proyectos de ejemplo? (borra tus cambios)')){ st=st; st.projects=JSON.parse(JSON.stringify(SEED)); } }
+  render();
+});
+render();
+</script>
+</body>
+</html>

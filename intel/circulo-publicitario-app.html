@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Círculo Publicitario — Control</title>
+<style>
+  :root{ --sw:#4CE8E7; --sw2:#48E8D8; --dark:#121E1E; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; color:var(--foreground); font-family:inherit; background:transparent; }
+  .wrap{ width:960px; max-width:96vw; padding:18px 20px 28px; }
+  h1{ font-size:22px; margin:0 0 2px; letter-spacing:.3px; }
+  .sub{ color:var(--muted-foreground); font-size:13px; margin-bottom:4px; }
+  .brand{ color:var(--sw); }
+  .tabs{ display:flex; gap:6px; margin:16px 0 14px; flex-wrap:wrap; }
+  .tab{ border:1px solid var(--border); background:transparent; color:var(--muted-foreground);
+        padding:7px 13px; border-radius:8px; font-size:12.5px; cursor:pointer; font-family:inherit; }
+  .tab.on{ color:var(--dark); background:var(--sw); border-color:var(--sw); font-weight:600; }
+  .panel{ display:none; } .panel.on{ display:block; }
+  /* estaciones */
+  .flow{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+  .st{ border:1px solid var(--border); border-radius:9px; padding:9px 11px; cursor:pointer;
+       font-size:12px; min-width:118px; background:var(--card); }
+  .st:hover{ border-color:var(--sw); }
+  .st.on{ border-color:var(--sw); box-shadow:0 0 0 1px var(--sw) inset; }
+  .st b{ display:block; font-size:12.5px; margin-bottom:2px; }
+  .st span{ color:var(--muted-foreground); font-size:10.5px; }
+  .arrow{ color:var(--sw); font-size:15px; }
+  .detail{ border:1px solid var(--border); border-radius:10px; padding:14px 16px; background:var(--card); }
+  .detail h3{ margin:0 0 8px; font-size:15px; color:var(--sw); }
+  .kv{ display:grid; grid-template-columns:120px 1fr; gap:6px 12px; font-size:13px; }
+  .kv dt{ color:var(--muted-foreground); }
+  .kv dd{ margin:0; }
+  .badge{ display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:20px; border:1px solid var(--border); }
+  .badge.auto{ color:var(--sw); border-color:var(--sw); }
+  .badge.hum{ color:#ffb86b; border-color:#ffb86b; }
+  /* tablas */
+  table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  th,td{ text-align:left; padding:7px 9px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th{ color:var(--sw); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.4px; }
+  /* embudo */
+  .funnel{ display:flex; flex-direction:column; gap:8px; }
+  .fb{ border:1px solid var(--border); border-radius:9px; padding:11px 13px; background:var(--card); }
+  .fb b{ color:var(--sw); }
+  .bar{ height:7px; border-radius:5px; background:var(--sw); margin-top:6px; }
+  .small{ font-size:12px; color:var(--muted-foreground); }
+  /* bucle */
+  .loop{ border:1px dashed var(--sw); border-radius:10px; padding:13px 15px; margin-top:6px; font-size:13px; }
+  .loop code{ color:var(--sw); }
+  ol{ font-size:13px; line-height:1.65; padding-left:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>El <span class="brand">Círculo</span> Publicitario</h1>
+  <div class="sub">Línea de montaje de impulso de marca · Seawolf Studio · <span class="brand">impulso con métricas</span>, no publicación automática</div>
+
+  <div class="tabs">
+    <button class="tab on" data-t="est">⚙️ Estaciones</button>
+    <button class="tab" data-t="fun">🧪 Embudo 100→10</button>
+    <button class="tab" data-t="mat">🌐 Matriz de Redes</button>
+    <button class="tab" data-t="met">📈 Métricas</button>
+    <button class="tab" data-t="pil">🚀 Piloto USB-llavero</button>
+  </div>
+
+  <!-- ESTACIONES -->
+  <div class="panel on" id="est">
+    <div class="flow" id="flow"></div>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <!-- EMBUDO -->
+  <div class="panel" id="fun">
+    <div class="funnel">
+      <div class="fb"><b>1 · Generar 100 en 6 EJES</b> — dolor · deseo · envidia · miedo · curiosidad · estatus
+        <div class="bar" style="width:100%"></div><div class="small">15–20 ideas por eje → diversidad forzada (no "dame 10 ideas")</div></div>
+      <div class="fb"><b>2 · Filtrar con RÚBRICA (0–5)</b> — Hook · Dolor · Diferenciación · Prueba · Encaje
+        <div class="bar" style="width:60%"></div><div class="small">Suma → ordena → <b>Top 10</b>. Aquí muere ≈80% (diferenciación).</div></div>
+      <div class="fb"><b>3 · Hook primero</b> — 5 hooks por idea ganadora
+        <div class="bar" style="width:35%"></div><div class="small">Se testea el HOOK, no el contenido.</div></div>
+      <div class="fb"><b>4 · Variantes nativas</b> — 3–4 formatos por red
+        <div class="bar" style="width:20%"></div><div class="small">1 ángulo → 30–40 ejecuciones.</div></div>
+    </div>
+  </div>
+
+  <!-- MATRIZ -->
+  <div class="panel" id="mat">
+    <table>
+      <thead><tr><th>Red</th><th>Comportamiento</th><th>Formato</th><th>Hook</th><th>Cadencia</th></tr></thead>
+      <tbody>
+        <tr><td>TikTok</td><td>descubrimiento, ocio</td><td>9:16</td><td>1s, crudo &gt; pulido</td><td>1–3/día</td></tr>
+        <tr><td>IG Reels</td><td>estética, aspiración</td><td>9:16</td><td>visual+texto</td><td>3–5/sem</td></tr>
+        <tr><td>YouTube Shorts</td><td>ocio+búsqueda</td><td>9:16</td><td>título importa</td><td>3–5/sem</td></tr>
+        <tr><td>X/Twitter</td><td>opinión, tiempo real</td><td>texto/hilo</td><td>1ª línea</td><td>3–10/día</td></tr>
+        <tr><td>LinkedIn</td><td>profesional, valor</td><td>texto+doc</td><td>insight</td><td>3–5/sem</td></tr>
+        <tr><td>Facebook</td><td>comunidad/grupos</td><td>video+texto</td><td>historia</td><td>3–5/sem</td></tr>
+        <tr><td>Pinterest</td><td>intención de compra</td><td>2:3</td><td>imagen fuerte</td><td>5+/sem</td></tr>
+        <tr><td>Threads/Bluesky</td><td>conversación, nicho</td><td>texto</td><td>pregunta</td><td>diario</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Ganchos "modo Temu": <b>precio · urgencia · demostración visual</b>. Funciona por volumen + iteración, no por pieza perfecta.</p>
+  </div>
+
+  <!-- METRICAS -->
+  <div class="panel" id="met">
+    <div class="loop">
+      Publicar N variantes → medir <code>48–72h</code> →<br>
+      &nbsp;&nbsp;├─ CTR alto + conversión → <b>ESCALAR</b> (más del mismo ángulo)<br>
+      &nbsp;&nbsp;└─ CTR bajo → <b>MATAR</b> (cambiar ángulo, no formato)
+    </div>
+    <p class="small">Se mide: alcance · retención (video) · CTR · guardados · comentarios · conversión.
+    Decisión semanal: el presupuesto de creativos va a los ángulos ganadores.</p>
+  </div>
+
+  <!-- PILOTO -->
+  <div class="panel" id="pil">
+    <ol>
+      <li><b>Ángulo raíz:</b> "chico que cabe en tu llave, pero guarda una biblioteca".</li>
+      <li><b>6 ejes → 100 ideas</b> (LLM + marketingskills).</li>
+      <li><b>Rúbrica → Top 10.</b></li>
+      <li><b>Creativos:</b> 10 piezas (antes/después, demo de capacidad, unboxing).</li>
+      <li><b>Variantes nativas</b> por red (9:16, hilo X, doc LinkedIn…).</li>
+      <li><b>Publicar vía mixpost</b> en calendario.</li>
+      <li><b>Medir 72h</b> → escalar top 2, matar el resto.</li>
+    </ol>
+    <p class="small">Meta: probar el sistema con UN producto antes de venderlo.</p>
+  </div>
+</div>
+
+<script>
+  var STATIONS = [
+    {n:"1 · Concepto", s:"Producto + datos → 100 ideas (6 ejes)", a:"semi",
+     d:{ "Entrada":"Producto X + datos/investigación", "Proceso":"Angles por 6 ejes", "Salida":"100 ideas",
+         "Herramienta":"LLM (OpenRouter) + marketingskills", "Automático":"Semi — tú apruebas", "Clave":"Diversidad forzada, no 'dame 10 ideas'" }},
+    {n:"2 · Hooks", s:"100 ideas → Top 10 (rúbrica)", a:"auto",
+     d:{ "Entrada":"100 ideas", "Proceso":"Rúbrica 0–5 × 5 criterios", "Salida":"Top 10 + hooks",
+         "Herramienta":"LLM + rúbrica", "Automático":"Sí", "Clave":"Diferenciación mata ≈80%" }},
+    {n:"3 · Creativos", s:"Top 10 → copy+imagen+video", a:"auto",
+     d:{ "Entrada":"Top 10", "Proceso":"Copy + imagen + video", "Salida":"10 piezas",
+         "Herramienta":"LLM + LocalAI + MoneyPrinterTurbo + autoclip", "Automático":"Sí", "Clave":"Crudo > pulido en TikTok" }},
+    {n:"4 · Variantes", s:"1 pieza → 3–4 por red", a:"auto",
+     d:{ "Entrada":"10 piezas", "Proceso":"Reencuadre por plataforma", "Salida":"30–40 variantes",
+         "Herramienta":"LLM + plantillas + FFmpeg", "Automático":"Sí", "Clave":"Nativo de cada red" }},
+    {n:"5 · Publicación", s:"Calendario multi-cuenta", a:"auto",
+     d:{ "Entrada":"Variantes", "Proceso":"Calendarización", "Salida":"Posteado",
+         "Herramienta":"mixpost (centro, API oficial)", "Automático":"Sí", "Clave":"API > navegador (anti-ban)" }},
+    {n:"6 · Métricas", s:"Medir → kill / scale", a:"hum",
+     d:{ "Entrada":"Resultados 48–72h", "Proceso":"Alcance/CTR/conversión", "Salida":"Kill / Scale",
+         "Herramienta":"analytics + monitor", "Automático":"Sí, con tu juicio", "Clave":"Los números SON el producto" }}
+  ];
+  var flow=document.getElementById('flow'), detail=document.getElementById('detail');
+  STATIONS.forEach(function(st,i){
+    var b=document.createElement('button'); b.className='st'+(i===0?' on':'');
+    b.innerHTML='<b>'+st.n+'</b><span>'+st.s+'</span>';
+    b.onclick=function(){ show(i); };
+    flow.appendChild(b);
+    if(i<STATIONS.length-1){ var a=document.createElement('span'); a.className='arrow'; a.textContent='→'; flow.appendChild(a); }
+  });
+  function show(i){
+    var btns=flow.querySelectorAll('.st'); btns.forEach(function(x,j){ x.classList.toggle('on', j===i); });
+    var st=STATIONS[i], h='<h3>'+st.n+'</h3><dl class="kv">';
+    for(var k in st.d){ h+='<dt>'+k+'</dt><dd>'+st.d[k]+'</dd>'; }
+    h+='</dl>';
+    detail.innerHTML=h;
+  }
+  show(0);
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.onclick=function(){
+      document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+      document.querySelectorAll('.panel').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on'); document.getElementById(t.dataset.t).classList.add('on');
+    };
+  });
+</script>
+</body>
+</html>

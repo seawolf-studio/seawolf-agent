@@ -1,0 +1,8 @@
+{
+ "_nota": "PLANTILLA. Copia como castigo-config.json. El sistema saca 1 archivo AL AZAR de estas carpetas (no eliges tú).",
+ "_recomendacion": "Usa 'trastero' con dias_bloqueo largo. 'borrar' exige --backup-ok y es IRREVERSIBLE.",
+ "zonas": ["C:\\Users\\Admin\\Downloads"],
+ "modo": "trastero",
+ "dias_bloqueo": 14,
+ "backup_verificado": false
+}

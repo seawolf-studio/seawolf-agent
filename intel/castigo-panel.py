@@ -26,7 +26,7 @@ CONFIG = os.path.join(HERE, "castigo-config.json")
 TRASTERO = r"C:\Users\Admin\Seawolf_Trastero"
 MANIFEST = os.path.join(TRASTERO, "_trastero.json")
 
-DEF = {"zonas": [], "modo": "trastero", "dias_bloqueo": 7}
+DEF = {"zonas": [], "modo": "trastero", "dias_bloqueo": 7, "backup_verificado": False, "min_bytes": 200000}
 
 def cfg():
     if os.path.exists(CONFIG):
@@ -39,21 +39,26 @@ def cfg():
     return dict(DEF)
 def save_cfg(c): json.dump(c, open(CONFIG, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
-def files_in(zona):
+def files_in(zona, cap=4000, minb=200000):
     out = []
     if not os.path.isdir(zona): return out
     for root, dirs, fs in os.walk(zona):
         dirs[:] = [d for d in dirs if not d.startswith((".", "_"))]
         for n in fs:
             if n.startswith((".", "_")) or n.lower() in ("desktop.ini", "thumbs.db"): continue
-            out.append(os.path.join(root, n))
+            p = os.path.join(root, n)
+            try:
+                if os.path.getsize(p) < minb: continue
+            except OSError: continue
+            out.append(p)
+            if len(out) >= cap: return out
     return out
 
 def gather(c):
     zones = [z for z in c["zonas"] if os.path.isdir(z)]
     pool = []
     for z in zones:
-        for f in files_in(z):
+        for f in files_in(z, minb=int(c.get("min_bytes", 200000))):
             if os.path.abspath(f).lower().startswith(os.path.abspath(z).lower()+os.sep.lower()):
                 pool.append(f)
     return zones, pool
@@ -78,6 +83,11 @@ def ejecutar(real):
         print("[!] Las carpetas estan vacias. Nada que saquear."); return
     pick = random.choice(pool)
     modo = c["modo"]
+    if modo == "borrar" and not c.get("backup_verificado"):
+        print("[!] CANDADO DE RESPALDO: el modo 'borrar' exige backup verificado.")
+        print("    1) Respalda estas carpetas fuera del disco (Bunker/VPS).")
+        print("    2) Luego: python castigo-panel.py --backup-ok")
+        return
     if not real:
         print(f"[i] SIMULACRO ({modo}): se tomaria -> {pick}")
         print(f"    ({len(pool)} archivos en {len(zones)} carpeta(s))")
@@ -129,6 +139,8 @@ if __name__ == "__main__":
         print(f"  modo actual: {c['modo']} · bloqueo: {c['dias_bloqueo']} dias")
     elif "--modo" in a:
         c["modo"] = a[a.index("--modo")+1]; save_cfg(c); print(f"[i] modo = {c['modo']}")
+    elif "--backup-ok" in a:
+        c["backup_verificado"] = True; save_cfg(c); print("[i] Respaldo marcado como verificado. Modo 'borrar' habilitado.")
     elif "--ejecutar" in a: ejecutar(True)
     elif "--listar" in a: listar()
     elif "--rescatar" in a:

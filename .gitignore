@@ -13,3 +13,4 @@ __pycache__/
 *.log
 .DS_Store
 seawolf-webui/
+intel/castigo-config.json

@@ -93,7 +93,7 @@
 
   <div class="head"><h2>🎁 Recompensa · 💀 Castigo</h2></div>
   <div class="card">
-    <div class="why">🎁 Recompensa (por definir): <span id="rewardTxt">— sin definir —</span></div>
+    <div class="why">🎁 Recompensa: <span id="rewardTxt">— sin definir —</span></div>
     <div class="cost">💀 Castigo (3 ausencias): mueve 1 archivo aleatorio de tu <b>Zona de Sacrificio</b> al Trastero.
       Ejecutar: <code style="color:var(--sw)">python castigo-panel.py --ejecutar</code></div>
     <div class="note">El miedo sin premio quema. Define la recompensa pronto.</div>
@@ -102,25 +102,25 @@
 
 <script>
 var SEED = [
- {id:'a1', nombre:'Seawolf Agent', peso:5, finalidad:'Producto principal → ingreso recurrente (CSO).', costo:'Semana perdida = mes sin facturar.', tareas:[{t:"3 capas (filtro→automat→dashboard)",pts:3,h:true},{t:"Multi-tenant + RBAC",pts:4,h:false},{t:"Audit SHA-256",pts:2,h:false},{t:"Onboarding 1-click",pts:3,h:false}]},
- {id:'a2', nombre:'Círculo Publicitario', peso:4, finalidad:'Capa 1: captar clientes.', costo:'Sin captación no hay clientes.', tareas:[{t:"Piloto USB-llavero (100→10)",pts:4,h:false},{t:"mixpost en VPS",pts:3,h:false},{t:"Bucle de métricas",pts:3,h:false}]},
- {id:'a3', nombre:'NEREUS / LOBO', peso:4, finalidad:'Producto personal marca Seawolf.', costo:'Semanas invertidas tiradas.', tareas:[{t:"Fases 0-4",pts:4,h:true},{t:"Conectores/onboarding",pts:3,h:false},{t:"Cobro",pts:3,h:false}]},
- {id:'a4', nombre:'Clientes en frío', peso:4, finalidad:'Capa 1b: atrapar clientes.', costo:'Sin pipeline, nada que atender.', tareas:[{t:"Definir herramienta",pts:4,h:false},{t:"Piloto outreach",pts:3,h:false}]},
- {id:'a5', nombre:'Smart Courses', peso:3, finalidad:'Línea educativa.', costo:'—', tareas:[{t:"Curso piloto",pts:5,h:false}]},
- {id:'a6', nombre:'Web Presence Seawolf', peso:2, finalidad:'Vitrina de marca.', costo:'—', tareas:[{t:"Landing",pts:3,h:false}]},
- {id:'a7', nombre:'Kaelen Avatar (presentador)', peso:3, finalidad:'Presentador de contenido.', costo:'—', tareas:[{t:"Pipeline HyperFrames",pts:4,h:false},{t:"Voz Piper",pts:2,h:false}]},
- {id:'a8', nombre:'HyperFrames Content', peso:3, finalidad:'Motor de video/contenido.', costo:'—', tareas:[{t:"Plantillas",pts:3,h:false}]},
- {id:'a9', nombre:'WhatsApp Bridge (WAHA)', peso:4, finalidad:'Canal de entrada de clientes.', costo:'—', tareas:[{t:"Deploy VPS",pts:3,h:true}]},
- {id:'a10', nombre:'Dropi API', peso:2, finalidad:'Integración catálogo.', costo:'—', tareas:[{t:"Extracción",pts:2,h:false}]},
- {id:'a11', nombre:'kmoviezone (streaming)', peso:2, finalidad:'Sitio estático + TMDB.', costo:'—', tareas:[{t:"Deploy",pts:3,h:false}]},
- {id:'a12', nombre:'WordPress MCPs', peso:2, finalidad:'Automatización WordPress.', costo:'—', tareas:[{t:"Conectar",pts:2,h:false}]}
+ {id:'a1', nombre:'Tiendas (Dropi propio)', estado:'ACTIVO', peso:5, finalidad:'Dinero YA — Seawolf se sostiene con un trabajo que odio.', costo:'Sigo atado al trabajo que odio; pierdo independencia.', tareas:[{t:"Catálogo Dropi",pts:4,h:false},{t:"Montar la tienda",pts:4,h:false},{t:"Primera venta",pts:5,h:false}]},
+ {id:'a2', nombre:'Seawolf Agent', estado:'ACTIVO', peso:5, finalidad:'El verdadero dinero; acerca el día de renunciar.', costo:'Pierdo la ventana y codearme con gente como yo.', tareas:[{t:"3 capas (filtro→automat→dashboard)",pts:3,h:true},{t:"Multi-tenant + RBAC",pts:4,h:false},{t:"Onboarding 1-click",pts:3,h:false}]},
+ {id:'a3', nombre:'kmoviezone', estado:'ACTIVO', peso:4, finalidad:'Me lo debo; es mi afición; dinero a largo plazo.', costo:'Pierdo exposición fuera del platanal.', tareas:[{t:"Deploy static + TMDB",pts:3,h:false},{t:"Dominio y SEO",pts:3,h:false}]},
+ {id:'a4', nombre:'Círculo Publicitario', estado:'BOVEDA', peso:4, finalidad:'Capa 1: captar clientes.', costo:'Sin captación no hay clientes.', tareas:[{t:"Piloto USB-llavero (100→10)",pts:4,h:false},{t:"mixpost en VPS",pts:3,h:false}]},
+ {id:'a5', nombre:'Clientes en frío', estado:'BOVEDA', peso:4, finalidad:'Capa 1b: atrapar clientes.', costo:'Sin pipeline, nada que atender.', tareas:[{t:"Definir herramienta",pts:4,h:false}]},
+ {id:'a6', nombre:'NEREUS / LOBO', estado:'BOVEDA', peso:3, finalidad:'Producto personal marca Seawolf.', costo:'—', tareas:[{t:"Conectores/onboarding",pts:3,h:false}]},
+ {id:'a7', nombre:'Smart Courses', estado:'BOVEDA', peso:3, finalidad:'Línea educativa.', costo:'—', tareas:[{t:"Curso piloto",pts:5,h:false}]},
+ {id:'a8', nombre:'Web Presence Seawolf', estado:'BOVEDA', peso:2, finalidad:'Vitrina de marca.', costo:'—', tareas:[{t:"Landing",pts:3,h:false}]},
+ {id:'a9', nombre:'WhatsApp Bridge (WAHA)', estado:'BOVEDA', peso:3, finalidad:'Canal de entrada de clientes.', costo:'—', tareas:[{t:"Deploy VPS",pts:3,h:false}]},
+ {id:'a10', nombre:'Kaelen Avatar', estado:'BOVEDA', peso:3, finalidad:'Presentador de contenido.', costo:'—', tareas:[{t:"Pipeline HyperFrames",pts:4,h:false}]},
+ {id:'a11', nombre:'HyperFrames Content', estado:'BOVEDA', peso:3, finalidad:'Motor de video/contenido.', costo:'—', tareas:[{t:"Plantillas",pts:3,h:false}]},
+ {id:'a12', nombre:'WordPress MCPs', estado:'BOVEDA', peso:2, finalidad:'Automatización WordPress.', costo:'—', tareas:[{t:"Conectar",pts:2,h:false}]}
 ];
-var KEY='seawolf_panel_v2', FOCUS=3;
+var KEY='seawolf_panel_v3', FOCUS=3;
 function dstr(d){ return d.toISOString().slice(0,10); }
 function today(){ return dstr(new Date()); }
 function shift(dateStr,n){ var d=new Date(dateStr+'T00:00:00'); d.setDate(d.getDate()+n); return dstr(d); }
 function dateList(a,b){ var out=[],c=a,g=0; while(c<=b&&g++<2000){ out.push(c); if(c===b)break; c=shift(c,1);} return out; }
-var st = load() || {projects:JSON.parse(JSON.stringify(SEED)), meta:20, dailyMin:2, days:{}, penalized:{}, penaltyPending:0, rotDate:'', rotOrder:[], reward:'', startDate:today()};
+var st = load() || {projects:JSON.parse(JSON.stringify(SEED)), meta:20, dailyMin:2, days:{}, penalized:{}, penaltyPending:0, rotDate:'', rotOrder:[], reward:'Día libre PROGRAMADO por ti (fecha a tu elección) — ACUMULABLE mes a mes', startDate:today()};
 if(!st.startDate) st.startDate=today();
 function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }

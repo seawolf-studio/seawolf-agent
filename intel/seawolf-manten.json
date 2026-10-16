@@ -1,0 +1,28 @@
+{
+ "tareas": [
+  {
+   "id": "temporales",
+   "nombre": "Temporales viejos",
+   "activo": true,
+   "dias": 7,
+   "horario": "semanal · lunes 09:00",
+   "desc": "Mueve a Papelera archivos de %TEMP% con +N dias"
+  },
+  {
+   "id": "logs_hermes",
+   "nombre": "Logs de Hermes viejos",
+   "activo": true,
+   "dias": 30,
+   "horario": "mensual · dia 1, 09:00",
+   "desc": "Logs de ~/.hermes/logs con +N dias"
+  },
+  {
+   "id": "papelera",
+   "nombre": "Vaciar Papelera Seawolf",
+   "activo": false,
+   "dias": 30,
+   "horario": "mensual · dia 1, 10:00",
+   "desc": "BORRA de verdad lo que lleva +N dias en papelera"
+  }
+ ]
+}

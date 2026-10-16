@@ -5,9 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PANEL KAMIKAZE — Seawolf Studio</title>
 <style>
-  :root{ --sw:#4CE8E7; --sw2:#48E8D8; --ok:#48E8A0; --bad:#ff4d4d; --warn:#ffb86b; --fire:#ff8a3d; }
+  :root{ --sw:#4CE8E7; --sw2:#48E8D8; --ok:#48E8A0; --bad:#ff4d4d; --warn:#ffb86b; --fire:#ff8a3d;
+         --background:#0b1414; --foreground:#e6fbfb; --muted-foreground:#7fa8a8; --border:#1e3434; --card:#101d1d; --accent:#4CE8E7; }
   *{ box-sizing:border-box; }
-  body{ margin:0; color:var(--foreground); font-family:inherit; background:transparent; }
+  html{ background:#0b1414; }
+  body{ margin:0; min-height:100vh; color:var(--foreground);
+        font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+        background:radial-gradient(1200px 620px at 50% -8%, #122b2b 0%, #0b1414 58%, #070f0f 100%); background-attachment:fixed; }
+  body:before{ content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+        background:
+          radial-gradient(700px 400px at 12% 20%, rgba(76,232,231,.10), transparent 70%),
+          radial-gradient(700px 400px at 88% 80%, rgba(72,232,216,.08), transparent 70%);
+        animation:drift 18s ease-in-out infinite alternate; }
+  @keyframes drift{ from{ transform:translate3d(-2%,-1%,0) scale(1.02);} to{ transform:translate3d(2%,1%,0) scale(1.06);} }
   .aura{ position:fixed; inset:0; z-index:-1; background:radial-gradient(60% 50% at 50% 0%, rgba(76,232,231,.10), transparent 70%); pointer-events:none; }
   .wrap{ width:1120px; max-width:97vw; padding:16px 20px 34px; position:relative; }
   h1{ font-size:22px; margin:0; letter-spacing:.4px; }
@@ -33,7 +43,7 @@
   @keyframes shimmer{ 0%{ transform:translateX(-100%);} 100%{ transform:translateX(100%);} }
   .stats{ display:flex; gap:16px; flex-wrap:wrap; font-size:13px; align-items:center; }
   .stats b{ color:var(--sw); } .flame{ color:var(--fire); animation:flick .6s infinite alternate; } @keyframes flick{ from{opacity:.6;} to{opacity:1;} }
-  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; align-items:start; }
   .card{ border:1px solid var(--border); border-radius:12px; padding:12px 13px; background:var(--card); transition:transform .2s, box-shadow .2s; }
   .card:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.25); }
   .card.vault{ opacity:.5; } .card.today{ border-color:var(--sw); box-shadow:0 0 0 1px var(--sw) inset, 0 0 22px rgba(76,232,231,.25); }

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOBO CAZADOR — Línea de Producción · Seawolf Studio</title>
+<style>
+  :root{
+    --bg:#0b1414; --panel:#101c1c; --card:#132222; --ink:#e8f6f6; --muted:#8fb0b0;
+    --accent:#4CE8E7; --accent2:#48E8D8; --border:#1e3232;
+    --bad:#ff6b6b; --warn:#ffb86b; --ok:#48E8A0; --propio:#b39ddb;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;}
+  .wrap{width:1000px;max-width:97vw;padding:18px 20px 40px;margin:0;}
+  h1{font-size:19px;margin:0;}
+  .brand{color:var(--accent);}
+  .sub{color:var(--muted);font-size:12.5px;margin:4px 0 14px;}
+  .stats{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px;}
+  .stat{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:7px 12px;font-size:12.5px;}
+  .stat b{color:var(--accent);font-size:16px;}
+  .entradas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .ent{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:11px 14px;}
+  .ent h3{margin:0 0 3px;font-size:13.5px;}
+  .ent.frio h3{color:var(--bad);}
+  .ent.propio h3{color:var(--propio);}
+  .ent p{margin:0;font-size:11.5px;color:var(--muted);}
+  .ent b{color:var(--ink);font-size:15px;}
+  .ruta{font-size:11px;color:var(--accent);margin-top:5px;}
+  .sec{font-size:12px;letter-spacing:.4px;color:var(--accent);margin:16px 0 8px;}
+  .board4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .board2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .col{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:10px;min-height:170px;}
+  .col h2{font-size:12px;margin:0 0 8px;color:var(--accent);letter-spacing:.2px;}
+  .col .cnt{color:var(--muted);font-weight:400;}
+  .presa{border:1px solid var(--border);border-radius:9px;background:var(--card);padding:8px 9px;margin-bottom:8px;cursor:pointer;}
+  .presa:hover{border-color:var(--accent);}
+  .presa .nm{font-size:12.5px;font-weight:600;}
+  .presa .mt{font-size:10.5px;color:var(--muted);}
+  .tag{font-size:9.5px;border:1px solid var(--border);border-radius:5px;padding:0 5px;margin-right:5px;}
+  .tag.frio{color:var(--bad);border-color:var(--bad);}
+  .tag.propio{color:var(--propio);border-color:var(--propio);}
+  .pill{display:inline-block;font-size:10px;border:1px solid var(--border);border-radius:20px;padding:1px 8px;margin-top:5px;}
+  .pill.caliente{color:var(--bad);border-color:var(--bad);}
+  .pill.tibia{color:var(--warn);border-color:var(--warn);}
+  .pill.fria{color:var(--muted);}
+  .pill.ok{color:var(--ok);border-color:var(--ok);}
+  .foco{background:var(--accent);color:#0b1414;border:none;border-radius:7px;font-size:10.5px;font-weight:700;padding:4px 8px;cursor:pointer;margin-top:6px;}
+  button{font-family:inherit;}
+  .detail{margin-top:16px;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:14px 16px;display:none;}
+  .detail.on{display:block;}
+  .detail h3{margin:0 0 2px;font-size:15px;}
+  .dt{color:var(--muted);font-size:12px;margin:2px 0 8px;}
+  .dsec{font-size:11.5px;letter-spacing:.4px;color:var(--accent);margin:10px 0 4px;}
+  .sig{font-size:12.5px;list-style:none;padding:0;margin:0;}
+  .sig li{padding:2px 0;}
+  .sig .hit{color:var(--bad);}
+  .sig .miss{color:var(--ok);}
+  .tl{font-size:12px;color:var(--muted);border-left:2px solid var(--border);padding-left:10px;margin-top:4px;}
+  .tl div{padding:2px 0;}
+  .actions{margin-top:12px;display:flex;gap:7px;flex-wrap:wrap;}
+  .actions button{border:1px solid var(--border);background:transparent;color:var(--ink);border-radius:8px;font-size:11.5px;padding:6px 10px;cursor:pointer;}
+  .actions button.sw{background:var(--accent);color:#0b1414;border-color:var(--accent);font-weight:600;}
+  .note{font-size:11px;color:var(--muted);margin-top:12px;}
+  .newbtn{margin-top:12px;border:1px dashed var(--border);background:transparent;color:var(--accent);border-radius:8px;font-size:12px;padding:6px 12px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐺 <span class="brand">LOBO CAZADOR</span> — Línea de Producción · Seawolf Studio</h1>
+  <div class="sub">2 entradas (frío + propio) → un solo riel (La Madriguera) → cacería → producción. Clic en una pieza para ver su dossier.</div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="entradas">
+    <div class="ent">
+      <div class="ent frio"><h3>🔥 ENTRADA 1 — Clientes en frío</h3></div>
+      <p><b id="nFrio">0</b> en el riel</p>
+      <div class="ruta">Pasada por la jauría: buscar · atrapar · mantener</div>
+    </div>
+    <div class="ent">
+      <div class="ent propio"><h3>🤝 ENTRADA 2 — Clientes propios</h3></div>
+      <p><b id="nPropio">0</b> en el riel</p>
+      <div class="ruta">Llegan por tu influencia → entran directo a producción</div>
+    </div>
+  </div>
+
+  <div class="sec">🔍 LA CACERÍA — clientes en frío (4 lobos)</div>
+  <div class="board4" id="board4"></div>
+
+  <div class="sec">🏭 LÍNEA DE PRODUCCIÓN — clientes atendidos (ambas entradas)</div>
+  <div class="board2" id="board2"></div>
+
+  <div class="detail" id="detail"></div>
+
+  <button class="newbtn" id="newbtn">+ Añadir pieza (demo)</button>
+  <div class="note">Prototipo local (localStorage). El motor real — scraper, email con warm-up, WAHA — llega tras tu palabra. La manada al servicio: Kaisel · Jima · Igris · Tank · Beru.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var STATIONS=[
+  {id:'vigia',     nombre:'🐾 VIGÍA (rastreador)', caza:true},
+  {id:'acechador', nombre:'🐾 ACECHADOR (perfilador)', caza:true},
+  {id:'ejecutor',  nombre:'🐾 EJECUTOR (FOCO TOTAL)', caza:true},
+  {id:'escarbador',nombre:'🐾 ESCARBADOR (mantener/archivo)', caza:true},
+  {id:'servir',    nombre:'🛠️ SERVIR (producción)', caza:false},
+  {id:'finanzas',  nombre:'💰 FINANZAS (cobro/reinversión)', caza:false}
+];
+var SEED=[
+  {id:'p1',origen:'frio',nombre:'Conjunto Valle del Refous II',sector:'Propiedad horizontal',ciudad:'Bogotá',etapa:'acechador',score:92,
+   contacto:{tel:'+57 312 ...',web:'vallefous.co (obsoleta)',email:'admin@vallefous.co'},
+   senales:[{t:'Sin WhatsApp Business',hit:true},{t:'500-700 mensajes/día (ruido)',hit:true},{t:'Web no responsive',hit:true},{t:'Reseñas sin responder',hit:true}],
+   timeline:['Vigía: hallada vía RUES','Acechador: OSINT + señales de dolor','Score 92 → CALIENTE']},
+  {id:'p2',origen:'frio',nombre:'Distribuidora La 80',sector:'Comercio',ciudad:'Medellín',etapa:'vigia',score:0,
+   contacto:{tel:'+57 604 ...',web:'distrila80.com',email:'—'},senales:[],timeline:['Vigía: hallada en Google Places']},
+  {id:'p3',origen:'frio',nombre:'Panadería Doña Rosa',sector:'Alimentos',ciudad:'Cali',etapa:'vigia',score:0,
+   contacto:{tel:'+57 315 ...',web:'—',email:'—'},senales:[],timeline:['Vigía: hallada en directorio sectorial']},
+  {id:'p4',origen:'frio',nombre:'Clínica El Prado',sector:'Salud',ciudad:'Barranquilla',etapa:'vigia',score:0,
+   contacto:{tel:'+57 605 ...',web:'clinicaprado.co',email:'contacto@clinicaprado.co'},senales:[],timeline:['Vigía: hallada en Google Places']},
+  {id:'p5',origen:'frio',nombre:'Taller Mecánico J&J',sector:'Automotriz',ciudad:'Bucaramanga',etapa:'escarbador',score:40,resultado:'MANTENER',
+   contacto:{tel:'+57 317 ...',web:'—',email:'—'},senales:[{t:'Sin web',hit:true}],timeline:['Cerró por precio','Re-llamada programada: +60 días']},
+  {id:'p6',origen:'propio',nombre:"Club Wonder's Voley — Kennya",sector:'Deporte (hermana)',ciudad:'Madrid',etapa:'servir',score:0,
+   contacto:{tel:'—',web:'clubwonders.example',email:'—'},senales:[],timeline:['Cliente propio (influencia del Monarca)','Entró directo a producción']},
+  {id:'p7',origen:'propio',nombre:'Seawolf — proyectos propios',sector:'Interno',ciudad:'—',etapa:'servir',score:0,
+   contacto:{tel:'—',web:'—',email:'—'},senales:[],timeline:['Cliente propio','Entró directo a producción']}
+];
+var KEY='seawolf_lobo_cazador_v2';
+function load(){try{return JSON.parse(localStorage.getItem(KEY));}catch(e){return null;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+var st=load()||{presas:JSON.parse(JSON.stringify(SEED)),sel:null};
+
+function semaforo(s){ if(s>=80)return{t:'CALIENTE',c:'caliente'}; if(s>=50)return{t:'TIBIA',c:'tibia'}; return{t:'FRÍA',c:'fria'}; }
+function byEtapa(e){ return st.presas.filter(function(p){return p.etapa===e;}); }
+function esc(s){ return (s||'').replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); }
+function limpiarN(n){ return n.replace(/^[^ ]+ /,''); }
+function etapaNombre(id){ var e=STATIONS.filter(function(x){return x.id===id;})[0]; return e?limpiarN(e.nombre):id; }
+function tagOrigen(o){ return o==='propio'?'<span class="tag propio">🤝 propio</span>':'<span class="tag frio">🔥 frío</span>'; }
+
+function renderStats(){
+  var tot=st.presas.length, frio=st.presas.filter(function(p){return p.origen!=='propio';}).length,
+      propio=st.presas.filter(function(p){return p.origen==='propio';}).length,
+      foco=byEtapa('ejecutor').length, prod=byEtapa('servir').length+byEtapa('finanzas').length;
+  document.getElementById('nFrio').textContent=frio;
+  document.getElementById('nPropio').textContent=propio;
+  document.getElementById('stats').innerHTML=
+    '<div class="stat">Piezas totales: <b>'+tot+'</b></div>'+
+    '<div class="stat">En la mira (FOCO TOTAL): <b>'+foco+'</b></div>'+
+    '<div class="stat">En producción: <b>'+prod+'</b></div>'+
+    '<div class="stat">Archivadas/mantener: <b>'+byEtapa('escarbador').length+'</b></div>';
+}
+function card(p,et){
+  var d=document.createElement('div'); d.className='presa';
+  var pill='';
+  if(et.id==='vigia') pill='<span class="pill fria">sin perfil</span>';
+  else if(et.id==='acechador'){var sm=semaforo(p.score); pill='<span class="pill '+sm.c+'">'+sm.t+' · '+p.score+'</span>';}
+  else if(et.id==='ejecutor') pill='<span class="pill caliente">FOCO TOTAL</span>';
+  else if(et.id==='escarbador') pill='<span class="pill ok">'+esc(p.resultado||'mantener')+'</span>';
+  else pill='<span class="pill ok">en producción</span>';
+  d.innerHTML=tagOrigen(p.origen)+'<div class="nm">'+esc(p.nombre)+'</div><div class="mt">'+esc(p.sector)+' · '+esc(p.ciudad)+'</div>'+pill+
+    ((et.id==='acechador'&&p.score>=80)?'<div><button class="foco" data-foco="'+p.id+'">🎯 FOCO TOTAL</button></div>':'');
+  d.addEventListener('click',function(ev){
+    if(ev.target.dataset.foco){ ev.stopPropagation(); foco(ev.target.dataset.foco); return; }
+    st.sel=p.id; save(); renderDetail();
+  });
+  return d;
+}
+function renderBoard(){
+  var b4=document.getElementById('board4'), b2=document.getElementById('board2');
+  b4.innerHTML=''; b2.innerHTML='';
+  STATIONS.forEach(function(et){
+    var list=byEtapa(et.id);
+    var col=document.createElement('div'); col.className='col';
+    col.innerHTML='<h2>'+et.nombre+' <span class="cnt">('+list.length+')</span></h2>';
+    list.forEach(function(p){ col.appendChild(card(p,et)); });
+    (et.caza?b4:b2).appendChild(col);
+  });
+}
+function foco(id){
+  var p=st.presas.filter(function(x){return x.id===id;})[0]; if(!p) return;
+  p.etapa='ejecutor'; p.timeline.push('FOCO TOTAL activado: la manada entera apunta a esta pieza');
+  st.sel=id; save(); renderAll();
+}
+function renderDetail(){
+  var box=document.getElementById('detail');
+  var p=st.sel?st.presas.filter(function(x){return x.id===st.sel;})[0]:null;
+  if(!p){ box.className='detail'; box.innerHTML=''; return; }
+  box.className='detail on';
+  var html='<h3>'+tagOrigen(p.origen)+esc(p.nombre)+'</h3>';
+  html+='<div class="dt">'+esc(p.sector)+' · '+esc(p.ciudad)+' · estación: '+etapaNombre(p.etapa)+'</div>';
+  html+='<div class="dsec">CONTACTO</div><div class="dt">Tel: '+esc(p.contacto.tel)+' · Web: '+esc(p.contacto.web)+' · Email: '+esc(p.contacto.email)+'</div>';
+  html+='<div class="dsec">SEÑALES DE DOLOR</div><ul class="sig">';
+  if(p.senales&&p.senales.length){ p.senales.forEach(function(s){ html+='<li class="'+(s.hit?'hit':'miss')+'">'+(s.hit?'🔴':'🟢')+' '+esc(s.t)+'</li>'; }); }
+  else html+='<li class="miss">— sin perfilar (o cliente propio: no requiere caza)</li>';
+  html+='</ul>';
+  html+='<div class="dsec">LÍNEA DE TIEMPO</div><div class="tl">'+(p.timeline||[]).map(function(t){return '<div>» '+esc(t)+'</div>';}).join('')+'</div>';
+  html+='<div class="actions" id="acts"></div>';
+  box.innerHTML=html;
+  var acts=document.getElementById('acts');
+  STATIONS.forEach(function(et){
+    if(et.id===p.etapa) return;
+    var btn=document.createElement('button');
+    btn.textContent='→ '+limpiarN(et.nombre);
+    if(et.id==='ejecutor') btn.className='sw';
+    btn.addEventListener('click',function(){
+      p.etapa=et.id; p.timeline.push('Movida a '+limpiarN(et.nombre));
+      if(et.id==='ejecutor') p.timeline.push('FOCO TOTAL activado');
+      save(); renderAll();
+    });
+    acts.appendChild(btn);
+  });
+}
+function renderAll(){ renderStats(); renderBoard(); renderDetail(); }
+
+document.getElementById('newbtn').addEventListener('click',function(){
+  var n=prompt('Nombre de la pieza:'); if(!n) return;
+  var o=(prompt('Origen: escribe "frio" o "propio":','frio')||'frio').trim();
+  if(o!=='propio') o='frio';
+  st.presas.push({id:'p'+Date.now(),origen:o,nombre:n,sector:'(por definir)',ciudad:'(por definir)',
+    etapa:(o==='propio'?'servir':'vigia'),score:0,contacto:{tel:'—',web:'—',email:'—'},senales:[],
+    timeline:[(o==='propio'?'Cliente propio (influencia) → producción':'Vigía: añadida manualmente')]});
+  save(); renderAll();
+});
+renderAll();
+})();
+</script>
+</body>
+</html>

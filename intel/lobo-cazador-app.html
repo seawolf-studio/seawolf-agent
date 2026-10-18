@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOBO CAZADOR — Panel de Caza · Seawolf Studio</title>
+<style>
+  :root{
+    --bg:#0b1414; --panel:#101c1c; --card:#132222; --ink:#e8f6f6; --muted:#8fb0b0;
+    --accent:#4CE8E7; --accent2:#48E8D8; --border:#1e3232;
+    --bad:#ff6b6b; --warn:#ffb86b; --ok:#48E8A0;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;}
+  .wrap{width:1000px;max-width:97vw;padding:18px 20px 40px;margin:0;}
+  h1{font-size:20px;margin:0;}
+  .brand{color:var(--accent);}
+  .sub{color:var(--muted);font-size:12.5px;margin:4px 0 14px;}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .stat{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:8px 12px;font-size:12.5px;}
+  .stat b{color:var(--accent);font-size:16px;}
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .col{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:10px;min-height:240px;}
+  .col h2{font-size:12.5px;margin:0 0 8px;color:var(--accent);letter-spacing:.2px;}
+  .col .cnt{color:var(--muted);font-weight:400;}
+  .presa{border:1px solid var(--border);border-radius:9px;background:var(--card);padding:8px 9px;margin-bottom:8px;cursor:pointer;}
+  .presa:hover{border-color:var(--accent);}
+  .presa .nm{font-size:13px;font-weight:600;}
+  .presa .mt{font-size:11px;color:var(--muted);}
+  .pill{display:inline-block;font-size:10px;border:1px solid var(--border);border-radius:20px;padding:1px 8px;margin-top:5px;}
+  .pill.caliente{color:var(--bad);border-color:var(--bad);}
+  .pill.tibia{color:var(--warn);border-color:var(--warn);}
+  .pill.fria{color:var(--muted);}
+  .pill.ok{color:var(--ok);border-color:var(--ok);}
+  .foco{background:var(--accent);color:#0b1414;border:none;border-radius:7px;font-size:10.5px;font-weight:700;padding:4px 8px;cursor:pointer;margin-top:6px;}
+  button{font-family:inherit;}
+  .detail{margin-top:16px;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:14px 16px;display:none;}
+  .detail.on{display:block;}
+  .detail h3{margin:0 0 2px;font-size:15px;}
+  .dt{color:var(--muted);font-size:12px;margin:2px 0 8px;}
+  .sec{font-size:11.5px;letter-spacing:.4px;color:var(--accent);margin:10px 0 4px;}
+  .sig{font-size:12.5px;list-style:none;padding:0;margin:0;}
+  .sig li{padding:2px 0;}
+  .sig .hit{color:var(--bad);}
+  .sig .miss{color:var(--ok);}
+  .tl{font-size:12px;color:var(--muted);border-left:2px solid var(--border);padding-left:10px;margin-top:4px;}
+  .tl div{padding:2px 0;}
+  .actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+  .actions button{border:1px solid var(--border);background:transparent;color:var(--ink);border-radius:8px;font-size:12px;padding:6px 11px;cursor:pointer;}
+  .actions button.sw{background:var(--accent);color:#0b1414;border-color:var(--accent);font-weight:600;}
+  .note{font-size:11px;color:var(--muted);margin-top:12px;}
+  .newbtn{margin-top:12px;border:1px dashed var(--border);background:transparent;color:var(--accent);border-radius:8px;font-size:12px;padding:6px 12px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐺 <span class="brand">LOBO CAZADOR</span> — Panel de Caza · Seawolf Studio</h1>
+  <div class="sub">La manada de 4 lobos: Vigía → Acechador → Ejecutor (FOCO TOTAL) → Escarbador · clic en una presa para ver su dossier</div>
+
+  <div class="stats" id="stats"></div>
+  <div class="board" id="board"></div>
+
+  <div class="detail" id="detail"></div>
+
+  <button class="newbtn" id="newbtn">+ Añadir presa (demo)</button>
+  <div class="note">Prototipo local (guarda en el navegador). El motor real — scraper, email con warm-up, WAHA — llega tras tu palabra. La manada al servicio: Kaisel · Jima · Igris · Tank · Beru.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var ETAPAS=[
+  {id:'vigia',     nombre:'🐾 VIGÍA (rastreador)'},
+  {id:'acechador', nombre:'🐾 ACECHADOR (perfilador)'},
+  {id:'ejecutor',  nombre:'🐾 EJECUTOR (FOCO TOTAL)'},
+  {id:'escarbador',nombre:'🐾 ESCARBADOR (archivo)'}
+];
+var SEED=[
+  {id:'p1',nombre:'Conjunto Valle del Refous II',sector:'Propiedad horizontal',ciudad:'Bogotá',etapa:'acechador',score:92,
+   contacto:{tel:'+57 312 ...',web:'vallefous.co (obsoleta)',email:'admin@vallefous.co'},
+   senales:[{t:'Sin WhatsApp Business',hit:true},{t:'500-700 mensajes/día (ruido)',hit:true},{t:'Web no responsive',hit:true},{t:'Reseñas sin responder',hit:true}],
+   timeline:['Vigía: hallada vía RUES','Acechador: OSINT + señales de dolor','Score 92 → CALIENTE']},
+  {id:'p2',nombre:'Distribuidora La 80',sector:'Comercio',ciudad:'Medellín',etapa:'vigia',score:0,
+   contacto:{tel:'+57 604 ...',web:'distrila80.com',email:'—'},senales:[],timeline:['Vigía: hallada en Google Places']},
+  {id:'p3',nombre:'Panadería Doña Rosa',sector:'Alimentos',ciudad:'Cali',etapa:'vigia',score:0,
+   contacto:{tel:'+57 315 ...',web:'—',email:'—'},senales:[],timeline:['Vigía: hallada en directorio sectorial']},
+  {id:'p4',nombre:'Clínica El Prado',sector:'Salud',ciudad:'Barranquilla',etapa:'vigia',score:0,
+   contacto:{tel:'+57 605 ...',web:'clinicaprado.co',email:'contacto@clinicaprado.co'},senales:[],timeline:['Vigía: hallada en Google Places']},
+  {id:'p5',nombre:'Taller Mecánico J&J',sector:'Automotriz',ciudad:'Bucaramanga',etapa:'escarbador',score:40,resultado:'NO AHORA',
+   contacto:{tel:'+57 317 ...',web:'—',email:'—'},senales:[{t:'Sin web',hit:true}],timeline:['Cerró por precio','Re-llamada programada: +60 días']}
+];
+var KEY='seawolf_lobo_cazador_v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY));}catch(e){return null;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+var st=load()||{presas:JSON.parse(JSON.stringify(SEED)),sel:null};
+
+function semaforo(s){ if(s>=80)return{t:'CALIENTE',c:'caliente'}; if(s>=50)return{t:'TIBIA',c:'tibia'}; return{t:'FRÍA',c:'fria'}; }
+function byEtapa(e){ return st.presas.filter(function(p){return p.etapa===e;}); }
+function esc(s){ return (s||'').replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); }
+function limpiarN(n){ return n.replace(/^🐾\s*/,''); }
+function etapaNombre(id){ var e=ETAPAS.filter(function(x){return x.id===id;})[0]; return e?limpiarN(e.nombre):id; }
+
+function renderStats(){
+  var tot=st.presas.length, cal=byEtapa('ejecutor').length, ace=byEtapa('acechador').length,
+      vig=byEtapa('vigia').length, arc=byEtapa('escarbador').length;
+  document.getElementById('stats').innerHTML=
+    '<div class="stat">Presas: <b>'+tot+'</b></div>'+
+    '<div class="stat">En la mira (FOCO TOTAL): <b>'+cal+'</b></div>'+
+    '<div class="stat">En acecho: <b>'+ace+'</b></div>'+
+    '<div class="stat">Crudas (vigía): <b>'+vig+'</b></div>'+
+    '<div class="stat">Archivadas: <b>'+arc+'</b></div>';
+}
+function renderBoard(){
+  var b=document.getElementById('board'); b.innerHTML='';
+  ETAPAS.forEach(function(et){
+    var list=byEtapa(et.id);
+    var col=document.createElement('div'); col.className='col';
+    col.innerHTML='<h2>'+et.nombre+' <span class="cnt">('+list.length+')</span></h2>';
+    list.forEach(function(p){
+      var d=document.createElement('div'); d.className='presa';
+      var pill='';
+      if(et.id==='vigia') pill='<span class="pill fria">sin perfil</span>';
+      else if(et.id==='acechador'){var sm=semaforo(p.score); pill='<span class="pill '+sm.c+'">'+sm.t+' · '+p.score+'</span>';}
+      else if(et.id==='ejecutor') pill='<span class="pill caliente">FOCO TOTAL</span>';
+      else pill='<span class="pill ok">'+esc(p.resultado||'archivada')+'</span>';
+      d.innerHTML='<div class="nm">'+esc(p.nombre)+'</div><div class="mt">'+esc(p.sector)+' · '+esc(p.ciudad)+'</div>'+pill+
+        ((et.id==='acechador'&&p.score>=80)?'<div><button class="foco" data-foco="'+p.id+'">🎯 FOCO TOTAL</button></div>':'');
+      d.addEventListener('click',function(ev){
+        if(ev.target.dataset.foco){ ev.stopPropagation(); foco(ev.target.dataset.foco); return; }
+        st.sel=p.id; save(); renderDetail();
+      });
+      col.appendChild(d);
+    });
+    b.appendChild(col);
+  });
+}
+function foco(id){
+  var p=st.presas.filter(function(x){return x.id===id;})[0]; if(!p) return;
+  p.etapa='ejecutor'; p.timeline.push('FOCO TOTAL activado: la manada entera apunta a esta presa');
+  st.sel=id; save(); renderAll();
+}
+function renderDetail(){
+  var box=document.getElementById('detail');
+  var p=st.sel?st.presas.filter(function(x){return x.id===st.sel;})[0]:null;
+  if(!p){ box.className='detail'; box.innerHTML=''; return; }
+  box.className='detail on';
+  var html='<h3>'+esc(p.nombre)+'</h3>';
+  html+='<div class="dt">'+esc(p.sector)+' · '+esc(p.ciudad)+' · etapa: '+etapaNombre(p.etapa)+'</div>';
+  html+='<div class="sec">CONTACTO</div><div class="dt">Tel: '+esc(p.contacto.tel)+' · Web: '+esc(p.contacto.web)+' · Email: '+esc(p.contacto.email)+'</div>';
+  html+='<div class="sec">SEÑALES DE DOLOR</div><ul class="sig">';
+  if(p.senales&&p.senales.length){ p.senales.forEach(function(s){ html+='<li class="'+(s.hit?'hit':'miss')+'">'+(s.hit?'🔴':'🟢')+' '+esc(s.t)+'</li>'; }); }
+  else html+='<li class="miss">— aún sin perfil general (pasa al Acechador)</li>';
+  html+='</ul>';
+  html+='<div class="sec">LÍNEA DE TIEMPO</div><div class="tl">'+(p.timeline||[]).map(function(t){return '<div>» '+esc(t)+'</div>';}).join('')+'</div>';
+  html+='<div class="actions" id="acts"></div>';
+  box.innerHTML=html;
+  var acts=document.getElementById('acts');
+  ETAPAS.forEach(function(et){
+    if(et.id===p.etapa) return;
+    var btn=document.createElement('button');
+    btn.textContent='→ '+limpiarN(et.nombre);
+    if(et.id==='ejecutor') btn.className='sw';
+    btn.addEventListener('click',function(){
+      p.etapa=et.id; p.timeline.push('Movida a '+limpiarN(et.nombre));
+      if(et.id==='ejecutor') p.timeline.push('FOCO TOTAL activado');
+      save(); renderAll();
+    });
+    acts.appendChild(btn);
+  });
+}
+function renderAll(){ renderStats(); renderBoard(); renderDetail(); }
+
+document.getElementById('newbtn').addEventListener('click',function(){
+  var n=prompt('Nombre de la presa:'); if(!n) return;
+  st.presas.push({id:'p'+Date.now(),nombre:n,sector:'(por definir)',ciudad:'(por definir)',etapa:'vigia',score:0,
+    contacto:{tel:'—',web:'—',email:'—'},senales:[],timeline:['Vigía: añadida manualmente']});
+  save(); renderAll();
+});
+renderAll();
+})();
+</script>
+</body>
+</html>

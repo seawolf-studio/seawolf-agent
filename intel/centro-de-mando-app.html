@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centro de Mando — Seawolf Studio</title>
+<style>
+  :root{
+    --bg:#0b1414; --panel:#101c1c; --card:#132222; --ink:#e8f6f6; --muted:#8fb0b0;
+    --accent:#4CE8E7; --accent2:#48E8D8; --border:#1e3232;
+    --bad:#ff6b6b; --warn:#ffb86b; --ok:#48E8A0; --propio:#b39ddb;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{margin:0;color:var(--ink);font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;}
+  .wrap{width:1000px;max-width:97vw;padding:18px 20px 40px;margin:0;}
+  h1{font-size:19px;margin:0;}
+  .brand{color:var(--accent);}
+  .sub{color:var(--muted);font-size:12.5px;margin:4px 0 12px;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px;}
+  .tab{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;font-size:12px;padding:6px 11px;cursor:pointer;}
+  .tab.active{color:#0b1414;background:var(--accent);border-color:var(--accent);font-weight:600;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .grid{display:grid;gap:10px;}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g2{grid-template-columns:1fr 1fr;}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  .box{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:12px 14px;}
+  .box h2{margin:0 0 8px;font-size:13px;color:var(--accent);}
+  .stat{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:9px 12px;font-size:12px;}
+  .stat b{color:var(--accent);font-size:18px;display:block;}
+  .alerta{border-left:3px solid var(--warn);background:var(--card);border-radius:8px;padding:8px 11px;font-size:12.5px;margin-bottom:7px;}
+  .alerta.bad{border-left-color:var(--bad);}
+  .alerta.ok{border-left-color:var(--ok);}
+  .row{border:1px solid var(--border);border-radius:9px;background:var(--card);padding:8px 10px;margin-bottom:7px;font-size:12.5px;}
+  .row .mt{font-size:10.5px;color:var(--muted);}
+  .tag{font-size:9.5px;border:1px solid var(--border);border-radius:5px;padding:0 5px;margin-right:5px;}
+  .tag.frio{color:var(--bad);border-color:var(--bad);}
+  .tag.propio{color:var(--propio);border-color:var(--propio);}
+  .tag.ok{color:var(--ok);border-color:var(--ok);}
+  .mini{font-size:11px;color:var(--muted);}
+  .bar{height:8px;border-radius:5px;border:1px solid var(--border);overflow:hidden;margin-top:6px;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+  button{font-family:inherit;}
+  .add{display:flex;gap:6px;margin:10px 0;}
+  .add input{flex:1;background:transparent;border:1px solid var(--border);color:var(--ink);border-radius:8px;padding:7px 10px;font-size:12.5px;}
+  .add button{background:var(--accent);color:#0b1414;border:none;border-radius:8px;font-size:12px;font-weight:600;padding:7px 12px;cursor:pointer;}
+  .triage{background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:7px;font-size:11px;padding:3px 9px;cursor:pointer;margin-top:5px;}
+  .note{font-size:11px;color:var(--muted);margin-top:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐺 <span class="brand">CENTRO DE MANDO</span> — Seawolf Studio</h1>
+  <div class="sub">Una sola verdad (La Madriguera) · mirada desde todas partes · la fábrica no se detiene aunque no mires</div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="resumen">📊 Resumen</button>
+    <button class="tab" data-tab="produccion">🏭 Producción</button>
+    <button class="tab" data-tab="jauria">🐾 La Jauría</button>
+    <button class="tab" data-tab="buzon">📥 Buzón <span id="buzonN"></span></button>
+    <button class="tab" data-tab="agenda">📅 Agenda</button>
+    <button class="tab" data-tab="finanzas">💰 Finanzas</button>
+  </div>
+
+  <div class="view active" id="v-resumen"></div>
+  <div class="view" id="v-produccion"></div>
+  <div class="view" id="v-jauria"></div>
+  <div class="view" id="v-buzon"></div>
+  <div class="view" id="v-agenda"></div>
+  <div class="view" id="v-finanzas"></div>
+
+  <div class="note">Prototipo v1 (datos en este navegador). Para que esté <b>en todas partes y en vivo</b>: se despliega en el VPS y lee de La Madriguera (PostgreSQL). El buzón recibe de cualquier canal (WhatsApp personal, hermana, form). El motor real llega tras tu palabra.</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var KEY='seawolf_centro_mando_v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY));}catch(e){return null;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function esc(s){return (s||'').replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];});}
+
+var SEED={
+  entradas:[
+    {id:'e1',canal:'🤝 Vía tu hermana (España)',texto:'Un amigo quiere un SmartWeb — lo necesita para pasado mañana',estado:'nuevo',cuando:'Lun 8:15'},
+    {id:'e2',canal:'🤝 WhatsApp personal',texto:'Un amigo necesita un SmartShop para vender productos de Dropi (al terminar tu SmartCourse local)',estado:'nuevo',cuando:'Lun 10:30'},
+    {id:'e3',canal:'🐾 Jauría (turno de fin de semana)',texto:'Vie 7-5 y Sáb medio día: 12 presas rastreadas, 3 calientes para FOCO TOTAL',estado:'triajeado',cuando:'Dom 23:59'}
+  ],
+  frio:[
+    {id:'f1',nombre:'Conjunto Valle del Refous II',etapa:'acechador',score:92,ciudad:'Bogotá'},
+    {id:'f2',nombre:'Distribuidora La 80',etapa:'vigia',score:0,ciudad:'Medellín'},
+    {id:'f3',nombre:'Panadería Doña Rosa',etapa:'vigia',score:0,ciudad:'Cali'},
+    {id:'f4',nombre:'Clínica El Prado',etapa:'vigia',score:0,ciudad:'Barranquilla'},
+    {id:'f5',nombre:'Taller Mecánico J&J',etapa:'escarbador',score:40,ciudad:'Bucaramanga'},
+    {id:'f6',nombre:'Hotel Casa Loma',etapa:'acechador',score:84,ciudad:'Cartagena'},
+    {id:'f7',nombre:'Gimnasio Titan',etapa:'acechador',score:78,ciudad:'Pereira'}
+  ],
+  propios:[
+    {id:'c1',nombre:"Club Wonder's Voley — Kennya",tipo:'Deporte',etapa:'servir'},
+    {id:'c2',nombre:'Seawolf — proyectos propios',tipo:'Interno',etapa:'servir'}
+  ],
+  agenda:[
+    {id:'a1',titulo:'SmartWeb (amigo de Kennya — España)',dias:2,urgente:true},
+    {id:'a2',titulo:'SmartShop Dropi (amigo WhatsApp)',dias:7,urgente:false},
+    {id:'a3',titulo:'Refous II — seguimiento de evaluación',dias:3,urgente:true},
+    {id:'a4',titulo:'Cierre de semana: liquidar producción',dias:5,urgente:false}
+  ],
+  finanzas:{mrr:0, cobros:[{c:'+$0 aún',d:'por definir precios'}], reinversion:'—'}
+};
+var st=load()||JSON.parse(JSON.stringify(SEED));
+
+function stats(){
+  var nuevo=st.entradas.filter(function(e){return e.estado==='nuevo';}).length;
+  var calientes=st.frio.filter(function(p){return p.score>=80;}).length;
+  var totalFrio=st.frio.length, prod=st.propios.length;
+  var prox=st.agenda.filter(function(a){return a.urgente;}).length;
+  return {nuevo:nuevo,calientes:calientes,totalFrio:totalFrio,prod:prod,prox:prox};
+}
+function renderResumen(){
+  var s=stats();
+  var alertas='';
+  st.agenda.forEach(function(a){ if(a.urgente) alertas+='<div class="alerta bad">🔴 <b>'+esc(a.titulo)+'</b> — vence en '+a.dias+' día'+(a.dias===1?'':'s')+'</div>'; });
+  if(s.nuevo>0) alertas+='<div class="alerta">🟡 <b>'+s.nuevo+' entrada'+(s.nuevo===1?'':'s')+' nueva'+(s.nuevo===1?'':'s')+'</b> en el buzón sin clasificar</div>';
+  if(s.calientes>0) alertas+='<div class="alerta">🎯 <b>'+s.calientes+' presa'+(s.calientes===1?'':'s')+' CALIENTE'+(s.calientes===1?'':'s')+'</b> esperando FOCO TOTAL</div>';
+  if(!alertas) alertas='<div class="alerta ok">🟢 Todo en orden. La fábrica avanza.</div>';
+
+  var html='<div class="box"><h2>🔔 Requiere tu atención</h2>'+alertas+'</div>';
+  html+='<div class="grid g4" style="margin-top:10px;">'+
+    '<div class="stat">Presas en frío<b>'+s.totalFrio+'</b></div>'+
+    '<div class="stat">Calientes<b>'+s.calientes+'</b></div>'+
+    '<div class="stat">Clientes propios<b>'+s.prod+'</b></div>'+
+    '<div class="stat">Entradas sin clasificar<b>'+s.nuevo+'</b></div>'+
+  '</div>';
+  html+='<div class="grid g2" style="margin-top:10px;">'+
+    '<div class="box"><h2>🐾 La Jauría (último turno: fin de semana)</h2>'+
+      '<div class="mini">Viernes 7-5 · Sábado medio día · 12 presas rastreadas, 3 calientes</div>'+
+      '<div class="bar"><i style="width:70%"></i></div>'+
+      '<div class="mini" style="margin-top:6px;">Trabaja sin ti: los resultados te esperan en la mañana.</div></div>'+
+    '<div class="box"><h2>📅 Próximos compromisos</h2>'+
+      st.agenda.slice(0,3).map(function(a){return '<div class="row">'+esc(a.titulo)+'<div class="mt">en '+a.dias+' día'+(a.dias===1?'':'s')+'</div></div>';}).join('')+
+    '</div>'+
+  '</div>';
+  document.getElementById('v-resumen').innerHTML=html;
+}
+function renderProduccion(){
+  var cola=[{k:'vigia',n:'🐾 Vigía'},{k:'acechador',n:'🐾 Acechador'},{k:'ejecutor',n:'🐾 Ejecutor (FOCO TOTAL)'},{k:'escarbador',n:'🐾 Escarbador'}];
+  var html='<div class="box"><h2>🏭 Línea de producción — 2 entradas</h2>'+
+    '<div class="grid g2"><div class="row"><span class="tag frio">🔥 frío</span>'+st.frio.length+' piezas — pasan por la jauría</div>'+
+    '<div class="row"><span class="tag propio">🤝 propio</span>'+st.propios.length+' piezas — directo a producción</div></div>'+
+    '<div class="mini" style="margin-top:8px;">Riel: La Madriguera (PostgreSQL) — todas las estaciones escriben y leen aquí.</div></div>';
+  html+='<div class="grid g4" style="margin-top:10px;">';
+  cola.forEach(function(c){ var n=st.frio.filter(function(p){return p.etapa===c.k;}).length; html+='<div class="box"><h2>'+c.n+' <span class="mini">('+n+')</span></h2><div class="mini">—</div></div>'; });
+  html+='</div>';
+  document.getElementById('v-produccion').innerHTML=html;
+}
+function renderJauria(){
+  var out=st.frio.filter(function(p){return p.etapa!=='escarbador';}).sort(function(a,b){return b.score-a.score;});
+  var html='<div class="box"><h2>🐾 Presas en la mira (ordenadas por score)</h2>';
+  out.forEach(function(p){
+    var pill = p.score>=80?'<span class="tag frio">CALIENTE '+p.score+'</span>': (p.score>=50?'<span class="tag">TIBIA '+p.score+'</span>':'<span class="tag">sin perfil</span>');
+    html+='<div class="row">'+pill+esc(p.nombre)+'<div class="mt">'+esc(p.ciudad)+' · '+p.etapa+'</div></div>';
+  });
+  html+='</div>';
+  document.getElementById('v-jauria').innerHTML=html;
+}
+function renderBuzon(){
+  var html='<div class="box"><h2>📥 Buzón — entradas de cualquier canal</h2>'+
+    '<div class="mini">Aquí cae TODO lo que llega por donde sea (tu WhatsApp personal, tu hermana, un formulario) para que no pierdas un detalle.</div>'+
+    '<div class="add"><input id="addInp" placeholder="Captura rápida: pega o escribe lo que llegó..."><button id="addBtn">+ Capturar</button></div>';
+  st.entradas.forEach(function(e){
+    var tg = e.estado==='nuevo'?'<span class="tag frio">NUEVO</span>':'<span class="tag ok">clasificado</span>';
+    html+='<div class="row">'+tg+'<b>'+esc(e.canal)+'</b><div>' +esc(e.texto)+'</div><div class="mt">'+esc(e.cuando)+'</div>'+
+      (e.estado==='nuevo'?'<button class="triage" data-tri="'+e.id+'">→ Mover a la línea</button>':'')+'</div>';
+  });
+  html+='</div>';
+  document.getElementById('v-buzon').innerHTML=html;
+}
+function renderAgenda(){
+  var html='<div class="box"><h2>📅 Agenda / compromisos</h2>';
+  st.agenda.sort(function(a,b){return a.dias-b.dias;}).forEach(function(a){
+    html+='<div class="row">'+(a.urgente?'<span class="tag frio">URGENTE</span>':'<span class="tag">normal</span>')+esc(a.titulo)+'<div class="mt">en '+a.dias+' día'+(a.dias===1?'':'s')+'</div></div>';
+  });
+  html+='</div>';
+  document.getElementById('v-agenda').innerHTML=html;
+}
+function renderFinanzas(){
+  var html='<div class="box"><h2>💰 Finanzas — cobro, ahorro, reinversión</h2>'+
+    '<div class="grid g3">'+
+    '<div class="stat">MRR<b>$'+st.finanzas.mrr+'</b></div>'+
+    '<div class="stat">Cobros<b>'+st.finanzas.cobros.length+'</b></div>'+
+    '<div class="stat">Reinversión<b>'+esc(st.finanzas.reinversion)+'</b></div>'+
+    '</div>'+
+    '<div class="mini" style="margin-top:8px;">Cada peso que entra vuelve a la Estación A (captación). El ciclo no se abre: gira.</div>'+
+    '<div class="mini" style="margin-top:8px;">Arma de cobro: pasarela COP (Wompi/Epayco). Facturación electrónica DIAN: trámite único.</div></div>';
+  document.getElementById('v-finanzas').innerHTML=html;
+}
+function renderTabs(){
+  document.getElementById('buzonN').textContent='('+st.entradas.filter(function(e){return e.estado==='nuevo';}).length+')';
+}
+function renderAll(){ renderTabs(); renderResumen(); renderProduccion(); renderJauria(); renderBuzon(); renderAgenda(); renderFinanzas(); }
+
+document.getElementById('tabs').addEventListener('click',function(ev){
+  var b=ev.target.closest('.tab'); if(!b) return;
+  var id=b.getAttribute('data-tab');
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('active');});
+  Array.prototype.forEach.call(document.querySelectorAll('.view'),function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  document.getElementById('v-'+id).classList.add('active');
+});
+document.addEventListener('click',function(ev){
+  if(ev.target.id==='addBtn'){
+    var inp=document.getElementById('addInp'); var v=inp.value.trim(); if(!v) return;
+    st.entradas.unshift({id:'e'+Date.now(),canal:'📥 Captura rápida',texto:v,estado:'nuevo',cuando:'ahora'});
+    save(); renderAll(); document.getElementById('addInp')&&(document.getElementById('addInp').value='');
+  }
+  if(ev.target.dataset && ev.target.dataset.tri){
+    var e=st.entradas.filter(function(x){return x.id===ev.target.dataset.tri;})[0]; if(e){ e.estado='triajeado'; save(); renderAll(); }
+  }
+});
+renderAll();
+})();
+</script>
+</body>
+</html>

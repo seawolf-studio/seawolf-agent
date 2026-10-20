@@ -7,7 +7,7 @@ import os, zipfile, re, base64, datetime
 import urllib.request, urllib.parse
 
 OUT = "C:/Users/Admin/intel/piloto-smartwebs"
-ASSISTANT_ENDPOINT = "https://mando.sw-st.net/asistente"
+ASSISTANT_ENDPOINT = "https://agente.sw-st.net/asistente"
 QR_TARGET = "https://sw-st.net"
 YEAR = datetime.date.today().year
 

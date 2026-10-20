@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seawolf Studio — Ingeniería Invisible. Impacto Inevitable.</title>
+<meta property="og:title" content="Seawolf Studio — Ingeniería Invisible. Impacto Inevitable.">
+<meta property="og:description" content="Automatización inteligente, arquitectura de sistemas y presencia web. Transformamos negocios con ingeniería invisible.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sw-st.net">
+<meta property="og:image" content="https://sw-st.net/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Seawolf Studio — Ingeniería Invisible. Impacto Inevitable.">
+<meta name="twitter:description" content="Automatización inteligente, arquitectura de sistemas y presencia web. Transformamos negocios con ingeniería invisible.">
+<meta name="description" content="Agencia de Tecnología y Automatización. Desarrollo web, automatización de procesos y arquitectura de sistemas B2B.">
+<link rel="canonical" href="https://sw-st.net/">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* ================================================================
+   CSS VARIABLES — TEMA DARK (por defecto) + LIGHT
+   ================================================================ */
+:root {
+  /* Dark mode (default) — incluye color-scheme para renderizado nativo oscuro */
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --bg-alt: #131313;
+  --surface: #0d0d0d;
+  --card: #151515;
+  --card2: #1a1a1a;
+  --accent: #00d4aa;
+  --accent-2: #6c5ce7;
+  --violet: #6c5ce7;
+  --text: #f0f0f0;
+  --muted: #8b8b8b;
+  --ink: #f0f0f0;
+  --mute: #8b8b8b;
+  --border: #232323;
+  --line: #232323;
+  --shadow-color: rgba(0,0,0,.55);
+  --nav-bg: rgba(10,10,10,.7);
+  --nav-border: #232323;
+  --glow-1: rgba(0,212,170,.14);
+  --glow-2: rgba(108,92,231,.1);
+  --glow-3: rgba(0,212,170,.07);
+  --grid-line: rgba(255,255,255,.025);
+  --navbg: rgba(10,10,10,.7);
+  --term-bg: #0a0a0a;
+  --terminal-border: #00d4aa;
+  --glow: 0 0 30px -4px rgba(0,212,170,.3);
+  --term-line: #111;
+  --amber: #f0b400;
+  --bg-card: #151515;
+}
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f8f8f8;
+  --bg-alt: #ffffff;
+  --surface: #fafafa;
+  --card: #ffffff;
+  --card2: #f0f0f0;
+  --accent: #00b894;
+  --accent-2: #6c5ce7;
+  --text: #111111;
+  --muted: #666666;
+  --ink: #111111;
+  --mute: #666666;
+  --border: #e0e0e0;
+  --line: #e0e0e0;
+  --shadow-color: rgba(0,0,0,.08);
+  --nav-bg: rgba(255,255,255,.75);
+  --nav-border: #e0e0e0;
+  --glow-1: rgba(0,212,170,.08);
+  --glow-2: rgba(108,92,231,.06);
+  --glow-3: rgba(0,212,170,.04);
+  --grid-line: rgba(0,0,0,.025);
+  --navbg: rgba(255,255,255,.75);
+  --term-bg: #111;
+  --terminal-border: #111;
+  --glow: 0 0 30px -4px rgba(0,212,170,.2);
+  --term-line: #1a1a1a;
+  --amber: #cc8800;
+  --bg-card: #ffffff;
+}
+
+/* ================================================================
+   FUENTE GLOBAL Y RESET — modo oscuro forzado en html y body
+   ================================================================ */
+html {
+  scroll-behavior: smooth;
+  background-color: #0a0a0a;
+  min-height: 100%;
+}
+html[data-theme="light"] {
+  background-color: #f8f8f8;
+}
+body {
+  font-family: 'Arvo', Georgia, serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .35s ease, color .35s ease;
+  min-height: 100vh;
+}
+::selection { background: var(--accent); color: #0a0a0a; }
+html[data-theme="light"] ::selection { color: #ffffff; }
+section[id], footer[id] { scroll-margin-top: 5.5rem; }
+
+/* Utilidades temáticas */
+.bg-body   { background-color: var(--bg); }
+.bg-alt    { background-color: var(--bg-alt); }
+.bg-surface{ background-color: var(--surface); }
+.bg-base   { background-color: var(--bg); }
+.bg-card   { background-color: var(--card); }
+.bg-card2  { background-color: var(--card2); }
+.text-body { color: var(--ink); }
+.text-muted{ color: var(--muted); }
+.text-mute { color: var(--mute); }
+.text-accent { color: var(--accent); }
+.text-accent2{ color: var(--accent-2); }
+.text-violet { color: var(--violet); }
+.text-ink  { color: var(--ink); }
+.border-soft{ border-color: var(--border); }
+.border-line{ border-color: var(--line); }
+.bg-accent { background-color: var(--accent); }
+.bg-violet\/10 { background-color: rgba(108,92,231,.1); }
+
+/* Iconos tema */
+html[data-theme="dark"]  .icon-sun  { display: none; }
+html[data-theme="light"] .icon-moon { display: none; }
+
+/* ================================================================
+   NAVBAR
+   ================================================================ */
+#navbar {
+  position: fixed; inset: 0 0 auto 0; z-index: 60;
+  transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+#navbar.nav-solid {
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow: 0 10px 34px -12px var(--shadow-color);
+}
+.nav-link {
+  position: relative;
+  color: var(--mute);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: color 0.25s ease;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -6px;
+  width: 100%; height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  color: var(--mute);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+.icon-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg-alt); }
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.6rem;
+  border: 1px solid transparent;
+  color: var(--mute);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+.lang-btn:hover { opacity: 0.9; border-color: var(--border); }
+.lang-btn.active {
+  opacity: 1;
+  border-color: var(--accent);
+  background: var(--bg-alt);
+  color: var(--ink);
+}
+
+/* ================================================================
+   HERO
+   ================================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.badge .dot {
+  width: 0.5rem; height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--accent);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+.text-gradient {
+  background: linear-gradient(94deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.2rem;
+  border-radius: 9999px;
+  font-family: 'Arvo', Georgia, serif;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  box-shadow: 0 10px 30px -8px rgba(0, 212, 170, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 42px -10px rgba(108, 92, 231, 0.55);
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.2rem;
+  border-radius: 9999px;
+  font-family: 'Arvo', Georgia, serif;
+  font-weight: 700;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-alt); }
+
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.blob-1 { width: 38rem; height: 38rem; background: var(--glow-1); top: -8rem; left: -10rem; animation: floatBlob1 18s ease-in-out infinite; }
+.blob-2 { width: 34rem; height: 34rem; background: var(--glow-2); bottom: -10rem; right: -8rem; animation: floatBlob2 22s ease-in-out infinite; }
+.blob-3 { width: 26rem; height: 26rem; background: var(--glow-3); top: 30%; left: 60%; animation: floatBlob1 26s ease-in-out infinite reverse; }
+@keyframes floatBlob1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(40px, -30px) scale(1.08); }
+  66%      { transform: translate(-30px, 24px) scale(0.95); }
+}
+@keyframes floatBlob2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-50px, 40px) scale(1.1); }
+  66%      { transform: translate(30px, -20px) scale(0.92); }
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 25%, transparent 78%);
+}
+.hero-fade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 6rem;
+  background: linear-gradient(to top, var(--bg), transparent);
+  pointer-events: none;
+}
+
+/* Scroll reveal */
+html.js .reveal {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+html.js .reveal.visible { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: .08s; }
+.reveal.d2 { transition-delay: .16s; }
+.reveal.d3 { transition-delay: .24s; }
+.reveal.d4 { transition-delay: .32s; }
+.reveal.d5 { transition-delay: .40s; }
+
+.wheel {
+  width: 1.6rem; height: 2.6rem;
+  border: 2px solid var(--muted);
+  border-radius: 9999px;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.4rem;
+}
+.wheel span {
+  width: 0.28rem; height: 0.55rem;
+  border-radius: 9999px;
+  background: var(--accent);
+  animation: wheelDot 1.8s ease-in-out infinite;
+}
+@keyframes wheelDot {
+  0%   { transform: translateY(0); opacity: 1; }
+  70%  { transform: translateY(0.7rem); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* ================================================================
+   SERVICIOS (Parte 2) — PREFIJO svc- (sin colisiones)
+   ================================================================ */
+.svc-section{ position:relative; overflow:hidden; background:var(--surface); }
+.svc-blob{ position:absolute; border-radius:50%; pointer-events:none;
+  filter:blur(90px); opacity:.09; animation:svcBlob 20s ease-in-out infinite; }
+@keyframes svcBlob{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  33%{ transform:translate(25px,-25px) scale(1.06); }
+  66%{ transform:translate(-20px,20px) scale(.96); }
+}
+.svc-chip{ display:inline-flex; align-items:center; gap:.6rem;
+  padding:.6rem 1.2rem; border-radius:9999px; border:1px solid var(--border);
+  background:var(--bg-alt); color:var(--mute); font-size:.7rem;
+  letter-spacing:.22em; text-transform:uppercase; font-weight:700; }
+.svc-dotp{ width:.42rem;height:.42rem;border-radius:9999px;
+  background:var(--accent,#00d4aa);animation:svcPulse 2s ease-in-out infinite; }
+@keyframes svcPulse{
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.3; transform:scale(.75); }
+}
+.svc-grad{ background:linear-gradient(94deg,var(--accent,#00d4aa) 0%,var(--accent-2,#6c5ce7) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent; }
+.svc-sub{ color:var(--mute);font-size:1.05rem;line-height:1.7; }
+.svc-grid{ display:grid;grid-template-columns:1fr;gap:1.5rem; }
+@media(min-width:768px){ .svc-grid{ grid-template-columns:repeat(3,1fr); } }
+.svc-card{
+  position:relative;background:linear-gradient(135deg,var(--card) 30%,var(--card2) 100%);
+  border:1px solid var(--border);border-radius:1.25rem;padding:2rem 1.5rem;
+  overflow:hidden;transition:transform .4s cubic-bezier(.22,1,.36,1),
+    box-shadow .4s ease,border-color .4s ease;
+  cursor:default;
+}
+.svc-card::before{ content:'';position:absolute;inset:0;border-radius:1.25rem;
+  background:radial-gradient(500px circle at 30% 20%,var(--glow),transparent 70%);
+  opacity:0;transition:opacity .5s ease;pointer-events:none; }
+.svc-card:hover{ transform:translateY(-7px) scale(1.015);
+  box-shadow:0 20px 50px -8px var(--glow2,var(--glow));
+  border-color:var(--ac,#00d4aa); }
+.svc-card:hover::before{ opacity:1; }
+@supports(backdrop-filter:blur(18px)){
+  .svc-card{ backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px); }
+}
+.svc-num{ position:absolute;top:.6rem;right:1rem;
+  font-size:4rem;font-weight:700;line-height:1;opacity:.05;
+  color:var(--ac,#00d4aa);user-select:none;pointer-events:none; }
+.svc-ico{ width:2.6rem;height:2.6rem;margin-bottom:1.2rem;
+  color:var(--ac,#00d4aa);transition:transform .35s ease; }
+.svc-card:hover .svc-ico{ transform:scale(1.08) rotate(-4deg); }
+.svc-card:hover .svc-ico{ animation:svcIcoTilt .6s ease; }
+@keyframes svcIcoTilt{ 0%,100%{ transform:scale(1) rotate(0); }
+  25%{ transform:scale(1.12) rotate(-6deg); } }
+.svc-title{ font-size:1.15rem;font-weight:700;line-height:1.4;
+  color:var(--ink);margin-top:.25rem; }
+.svc-tag{ display:inline-block;margin-top:.5rem;
+  padding:.2rem .85rem;border-radius:9999px;
+  background:var(--ac,#00d4aa);color:#0a0a0a;
+  font-size:.65rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase; }
+.svc-diagram{ margin-top:1rem;width:100%;display:flex;justify-content:center;
+  min-height:84px; }
+.svc-diagram svg{ width:100%;max-width:280px;height:auto; }
+.svc-box{ fill:rgba(255,255,255,.03);stroke:var(--bac, var(--dac, var(--ac,#00d4aa)));
+  stroke-opacity:.5;stroke-width:1.1;transition:stroke-opacity .4s, fill .4s, filter .4s; }
+.svc-box-icon{ stroke:var(--bac, var(--dac, var(--ac,#00d4aa)));fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round; }
+.svc-box-t1{ fill:#f4f4f4;font-size:9.5px;font-weight:700;letter-spacing:.02em; }
+.svc-box-t2{ fill:rgba(255,255,255,.6);font-size:8.5px;letter-spacing:.03em; }
+.svc-box-hub{ fill:rgba(0,212,170,.07);stroke-opacity:1;
+  animation:svcHub 2.6s ease-in-out infinite; }
+@keyframes svcHub{
+  0%,100%{ filter:drop-shadow(0 0 3px rgba(0,212,170,.35)); }
+  50%{ filter:drop-shadow(0 0 10px rgba(0,212,170,.8)); }
+}
+.svc-card:hover .svc-box{ stroke-opacity:1; fill:rgba(255,255,255,.07);
+  filter:drop-shadow(0 0 5px var(--bac, var(--dac, var(--ac,#00d4aa)))); }
+.svc-card:hover .svc-box-hub{ animation-duration:1.2s; }
+.svc-flow{ stroke:var(--dac, var(--ac,#00d4aa));stroke-width:1.6;stroke-linecap:round;
+  stroke-dasharray:4 12;opacity:.85;animation:svcFlow 1.1s linear infinite; }
+@keyframes svcFlow{ to{ stroke-dashoffset:-16; } }
+.svc-flow-head{ fill:var(--dac, var(--ac,#00d4aa));
+  filter:drop-shadow(0 0 3px var(--dac, var(--ac,#00d4aa))); }
+.svc-flow-dot{ fill:var(--dac, var(--ac,#00d4aa));
+  filter:drop-shadow(0 0 4px var(--dac, var(--ac,#00d4aa))); }
+.svc-card:hover .svc-flow{ animation-duration:.4s; opacity:1; }
+.svc-desc{ color:var(--mute);font-size:.9rem;line-height:1.7;margin-top:1rem; }
+.svc-cta{ display:inline-flex;align-items:center;gap:.45rem;margin-top:1.1rem;
+  color:var(--ac,#00d4aa);font-weight:700;font-size:.82rem;letter-spacing:.03em;text-decoration:none; }
+.svc-cta svg.arr{ width:14px;height:14px;transition:transform .35s; }
+.svc-card:hover .svc-cta svg.arr{ transform:translateX(4px); }
+
+/* ================================================================
+   PROTOCOLO + TIMELINE
+   ================================================================ */
+.tl-dot {
+  position: absolute; top: 1.4rem; left: calc(50% - 15px);
+  width: 30px; height: 30px; border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 700;
+  background: var(--accent); color: #0a0a0a;
+  box-shadow: 0 0 0 5px var(--bg), 0 0 0 6px var(--border);
+  z-index: 2;
+}
+.timeline-line {
+  position: absolute; top: .5rem; bottom: .5rem; left: 50%;
+  width: 2px; transform: translateX(-1px);
+  background: linear-gradient(180deg, var(--accent) 0%, var(--violet) 70%, transparent 100%);
+}
+@media (max-width: 1023px) {
+  .tl-dot { left: 15px; }
+  .timeline-line { left: 30px; transform: none; }
+}
+
+/* ================================================================
+   TERMINAL
+   ================================================================ */
+#terminalBox {
+  background: var(--term-bg);
+  border: 2px solid var(--terminal-border);
+  box-shadow: var(--glow);
+  transition: border-color .35s ease, box-shadow .35s ease;
+}
+#termHeader {
+  background: var(--term-line);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+#termOutput { scrollbar-width: thin; scrollbar-color: #2f3336 transparent; }
+#termOutput::-webkit-scrollbar { width: 8px; }
+#termOutput::-webkit-scrollbar-track { background: transparent; }
+#termOutput::-webkit-scrollbar-thumb { background: #2f3336; border-radius: 8px; }
+#termOutput::-webkit-scrollbar-thumb:hover { background: rgba(0,212,170,.55); }
+
+.term-line { line-height: 1.65; word-break: break-word; }
+.t-cmd  { color: #00d4aa; font-weight: 700; }
+.t-sys  { color: #8b949e; }
+.t-ink  { color: #e6edf3; }
+.t-dim  { color: #6e7681; }
+.t-ok   { color: #3fb950; }
+.t-err  { color: #ff6b6b; }
+.t-head { color: #e6edf3; font-weight: 700; }
+.t-key  { display: inline-block; width: 13ch; color: #00d4aa; }
+.t-sep  { color: #2f3336; }
+
+.caret {
+  display: inline-block; width: 9px; height: 17px;
+  background: var(--amber); vertical-align: text-bottom;
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+/* Estado abierto/cerrado */
+.status-pill { transition: background-color .35s ease, color .35s ease; }
+.status-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(63,185,80,.5); }
+  50%      { opacity: .75; box-shadow: 0 0 0 5px rgba(63,185,80,0); }
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+.footer-link { color: var(--mute); transition: color 0.25s ease; }
+.footer-link:hover { color: var(--accent); }
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; height: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  color: var(--mute);
+  transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+.social-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg); }
+
+/* ================================================================
+   HAMBURGER MENU
+   ================================================================ */
+#hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--ink); border-radius: 2px;
+  transition: transform .3s ease, opacity .3s ease;
+}
+#hamburger span + span { margin-top: 5px; }
+#hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#hamburger.open span:nth-child(2) { opacity: 0; }
+#hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+#mobileMenu {
+  max-height: 0; overflow: hidden;
+  transition: max-height .35s ease;
+}
+#mobileMenu.open { max-height: 480px; }
+
+/* ================================================================
+   REDUCIR MOVIMIENTO
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .svc-reveal { transition: none; opacity: 1; transform: none; }
+  .blob, .hero-grid, .wheel span, .badge .dot, .svc-flow, .svc-flow-dot, .svc-blob, .svc-box-hub,
+  .svc-dotp { animation: none !important; }
+  .svc-card, .svc-ico, .svc-cta svg.arr { transition: none; }
+}
+</style>
+</head>
+<body class="bg-base text-ink antialiased overflow-x-hidden">
+
+<!-- ============================================================
+     NAVBAR — fija, con menú hamburguesa (mobile-first)
+     ============================================================ -->
+<header id="navbar">
+  <nav class="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4" aria-label="Principal">
+    <!-- Logo -->
+    <a href="#inicio" class="flex items-center gap-3 group shrink-0">
+      <svg class="w-9 h-9" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#00d4aa"/>
+            <stop offset="1" stop-color="#6c5ce7"/>
+          </linearGradient>
+        </defs>
+        <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+        <path d="M12 28 L20 12 L28 28 Z" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M17 22 L23 22" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <span class="font-arvo font-bold tracking-[0.18em] text-base sm:text-lg leading-none">
+        SEAWOLF<span class="text-accent"> STUDIO</span>
+      </span>
+    </a>
+
+    <!-- Enlaces (desktop) -->
+    <div class="hidden lg:flex items-center gap-9">
+      <a class="nav-link" href="#inicio" data-i18n="nav.inicio">Inicio</a>
+      <a class="nav-link" href="#servicios" data-i18n="nav.servicios">Servicios</a>
+      <a class="nav-link" href="#protocolo" data-i18n="nav.protocolo">Protocolo</a>
+      <a class="nav-link" href="#terminal" data-i18n="nav.terminal">Terminal</a>
+      <a class="nav-link" href="#contacto" data-i18n="nav.contacto">Contacto</a>
+    </div>
+
+    <!-- Selectores: idioma + tema -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div class="flex items-center gap-1 p-1 rounded-xl border border-soft bg-alt/60" role="group" aria-label="Selector de idioma">
+        <button class="lang-btn active" data-lang="es" type="button" onclick="window.switchLang('es')" title="Español" aria-label="Cambiar a español">
+          <svg class="w-6 h-4 rounded-[3px] shadow-sm" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="60" height="40" fill="#F1BF00"/>
+            <rect width="60" height="13.34" fill="#AA151B"/>
+            <rect y="26.66" width="60" height="13.34" fill="#AA151B"/>
+          </svg>
+          <span class="text-[11px] font-bold tracking-wider">ES</span>
+        </button>
+        <button class="lang-btn" data-lang="en" type="button" onclick="window.switchLang('en')" title="English" aria-label="Switch to English">
+          <svg class="w-6 h-4 rounded-[3px] shadow-sm" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <clipPath id="flagUkClip"><rect width="60" height="40" rx="3"/></clipPath>
+            </defs>
+            <g clip-path="url(#flagUkClip)">
+              <rect width="60" height="40" fill="#012169"/>
+              <path d="M0 0 L60 40 M60 0 L0 40" stroke="#ffffff" stroke-width="9"/>
+              <path d="M0 0 L60 40 M60 0 L0 40" stroke="#C8102E" stroke-width="5"/>
+              <path d="M30 0 V40 M0 20 H60" stroke="#ffffff" stroke-width="12"/>
+              <path d="M30 0 V40 M0 20 H60" stroke="#C8102E" stroke-width="6"/>
+            </g>
+          </svg>
+          <span class="text-[11px] font-bold tracking-wider">EN</span>
+        </button>
+      </div>
+
+      <!-- Tema dark/light -->
+      <button id="themeToggle" class="icon-btn" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+        <svg class="icon-sun w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.5"/>
+          <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>
+        </svg>
+        <svg class="icon-moon w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+
+      <!-- Hamburger (mobile) -->
+      <button id="hamburger" type="button" aria-label="Menú" aria-expanded="false" class="lg:hidden p-2 -mr-2">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Menú móvil -->
+  <div id="mobileMenu" class="lg:hidden bg-body border-t border-soft overflow-hidden" style="max-height:0">
+    <div class="px-5 py-6 flex flex-col gap-4">
+      <a class="nav-link" href="#inicio" data-i18n="nav.inicio" data-mobile-link>Inicio</a>
+      <a class="nav-link" href="#servicios" data-i18n="nav.servicios" data-mobile-link>Servicios</a>
+      <a class="nav-link" href="#protocolo" data-i18n="nav.protocolo" data-mobile-link>Protocolo</a>
+      <a class="nav-link" href="#terminal" data-i18n="nav.terminal" data-mobile-link>Terminal</a>
+      <a class="nav-link" href="#contacto" data-i18n="nav.contacto" data-mobile-link>Contacto</a>
+      <a href="#contacto" class="btn-primary justify-center mt-2 text-sm" data-mobile-link>
+        <span data-i18n="hero.cta">Solicitar Auditoría</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============================================================
+     HERO — 100vh, slogan, CTA, partículas + gradientes
+     ============================================================ -->
+<section id="inicio" class="relative flex min-h-screen items-center justify-center overflow-hidden">
+  <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="blob blob-3" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="relative z-10 max-w-5xl mx-auto px-6 text-center pt-32 pb-24">
+    <span class="badge reveal">
+      <span class="dot"></span>
+      <span data-i18n="hero.badge">Agencia de Tecnología &amp; Automatización</span>
+    </span>
+
+    <h1 class="reveal d1 mt-8 font-arvo font-bold leading-[1.06] text-4xl sm:text-6xl lg:text-7xl">
+      <span class="block" data-i18n="hero.slogan1">Ingeniería Invisible.</span>
+      <span class="block text-gradient" data-i18n="hero.slogan2">Impacto Inevitable.</span>
+    </h1>
+
+    <p class="reveal d2 mt-7 max-w-2xl mx-auto text-mute text-base sm:text-lg leading-relaxed" data-i18n="hero.subtitle">
+      Diseñamos y automatizamos la tecnología que impulsa tu negocio mientras tú te concentras en crecer.
+    </p>
+
+    <div class="reveal d3 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="#contacto" class="btn-primary group w-full sm:w-auto justify-center">
+        <span data-i18n="hero.cta">Solicitar Auditoría</span>
+        <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1.5">&rarr;</span>
+      </a>
+      <a href="#servicios" class="btn-ghost w-full sm:w-auto justify-center" data-i18n="hero.cta2">Explorar Soluciones</a>
+    </div>
+  </div>
+
+  <div class="reveal d4 absolute bottom-7 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2.5">
+    <div class="wheel"><span></span></div>
+    <span class="text-mute text-[10px] uppercase tracking-[0.24em] font-bold" data-i18n="hero.scroll">Descubre más</span>
+  </div>
+  <div class="hero-fade z-[5]" aria-hidden="true"></div>
+</section>
+
+<!-- ============================================================
+     SERVICIOS + DIAGRAMAS VISUALES (Parte 2)
+     ============================================================ -->
+<section id="servicios" class="svc-section py-20 md:py-28 px-5 sm:px-8">
+  <div class="svc-blob" style="background:#00d4aa;width:460px;height:460px;top:-140px;left:-120px;opacity:.15"></div>
+  <div class="svc-blob" style="background:#6c5ce7;width:540px;height:540px;bottom:-220px;right:-150px;opacity:.17;animation-delay:-7s"></div>
+  <div class="svc-blob" style="background:#00d4aa;width:300px;height:300px;top:42%;left:58%;opacity:.06;animation-delay:-4s"></div>
+
+  <div class="max-w-6xl mx-auto relative z-10">
+    <!-- Encabezado -->
+    <div class="text-center mb-14 md:mb-16">
+      <span class="svc-chip" style="--ac:#00d4aa">
+        <span class="svc-dotp"></span>
+        <span data-i18n="services_chip">SW.ST · SERVICIOS</span>
+      </span>
+      <h2 class="mt-5 mb-3 text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+        <span class="text-ink" data-i18n="services_title1">Nuestros</span>
+        <span class="svc-grad" data-i18n="services_title2">Servicios</span>
+      </h2>
+      <p class="svc-sub mt-4 max-w-2xl mx-auto" data-i18n="services_sub">Arquitectura digital completa: presencia web, automatización inteligente y control total de tus sistemas.</p>
+    </div>
+
+    <!-- Tarjetas -->
+    <div class="svc-grid">
+      <!-- 01 · WaaS -->
+      <div class="reveal d1">
+        <article class="svc-card" style="--ac:#00d4aa;--glow:rgba(0,212,170,.38);--glow2:rgba(0,212,170,.2)">
+          <span class="svc-num" aria-hidden="true">01</span>
+          <div class="svc-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8.5"/>
+              <ellipse cx="12" cy="12" rx="3.5" ry="8.5"/>
+              <path d="M3.5 12h17"/>
+              <circle cx="17.4" cy="6.8" r="1.1" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h3 class="svc-title" data-i18n="service1_title">Digitalización &amp; Presencia Web</h3>
+          <span class="svc-tag" data-i18n="service1_tag">WaaS</span>
+          <div id="svc-diag-1" class="svc-diagram" style="--dac:#00d4aa" role="img"></div>
+          <p class="svc-desc" data-i18n="service1_desc">Llevamos tu negocio tradicional a la nube: sitio web profesional, identidad digital y una estructura que atrae clientes automáticamente, 24/7.</p>
+          <a class="svc-cta" href="#contacto" style="--ac:#00d4aa">
+            <span data-i18n="service_cta">Explorar servicio</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </article>
+      </div>
+
+      <!-- 02 · n8n / WhatsApp AI -->
+      <div class="reveal d2">
+        <article class="svc-card" style="--ac:#6c5ce7;--glow:rgba(108,92,231,.4);--glow2:rgba(108,92,231,.22)">
+          <span class="svc-num" aria-hidden="true">02</span>
+          <div class="svc-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4.5 18.5 13M18.5 13 12 20M12 20 5.5 13M5.5 13 12 4.5M5.5 13h13"/>
+              <circle cx="12" cy="4.5" r="2.3"/>
+              <circle cx="18.5" cy="13" r="2.3"/>
+              <circle cx="12" cy="20" r="2.3"/>
+              <circle cx="5.5" cy="13" r="2.3"/>
+            </svg>
+          </div>
+          <h3 class="svc-title" data-i18n="service2_title">Automatización de Procesos &amp; Flujos Inteligentes</h3>
+          <span class="svc-tag" data-i18n="service2_tag">n8n · WhatsApp AI</span>
+          <div id="svc-diag-2" class="svc-diagram" style="--dac:#6c5ce7" role="img"></div>
+          <p class="svc-desc" data-i18n="service2_desc">Conectamos tus aplicaciones con inteligencia artificial para que las tareas del día a día se hagan solas: responder clientes, dar seguimiento a pedidos y hasta vender mientras duermes.</p>
+          <a class="svc-cta" href="#contacto" style="--ac:#6c5ce7">
+            <span data-i18n="service_cta">Explorar servicio</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </article>
+      </div>
+
+      <!-- 03 · B2B -->
+      <div class="reveal d3">
+        <article class="svc-card" style="--ac:#6c5ce7;--glow:rgba(108,92,231,.4);--glow2:rgba(0,212,170,.28)">
+          <span class="svc-num" aria-hidden="true">03</span>
+          <div class="svc-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 12 12 17 22 12"/>
+              <polyline points="2 17 12 22 22 17"/>
+            </svg>
+          </div>
+          <h3 class="svc-title" data-i18n="service3_title">Conexión Total de tus Sistemas</h3>
+          <span class="svc-tag" data-i18n="service3_tag">CRM · Ventas · Datos</span>
+          <div id="svc-diag-3" class="svc-diagram" style="--dac:#6c5ce7" role="img"></div>
+          <p class="svc-desc" data-i18n="service3_desc">Conectamos todas tus herramientas en un solo lugar: tu negocio habla solo, los datos viajan solos y tú ves todo en tiempo real, sin mover un dedo.</p>
+          <a class="svc-cta" href="#contacto" style="--ac:#6c5ce7">
+            <span data-i18n="service_cta">Explorar servicio</span>
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROTOCOLO DE TRABAJO / WORK PROTOCOL
+     ============================================================ -->
+<section id="protocolo" class="relative py-20 md:py-28 overflow-hidden">
+  <div class="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-20 blur-3xl" style="background: radial-gradient(circle, var(--violet), transparent 70%);"></div>
+  <div class="pointer-events-none absolute top-1/3 -right-40 w-[28rem] h-[28rem] rounded-full opacity-15 blur-3xl" style="background: radial-gradient(circle, var(--accent), transparent 70%);"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center max-w-2xl mx-auto">
+      <span class="reveal inline-block text-xs font-bold uppercase tracking-[0.25em] text-accent mb-4" data-i18n="protocol.kicker">Protocolo de Trabajo</span>
+      <h2 class="reveal d1 text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="protocol.title">Cómo trabajamos</h2>
+      <p class="reveal d2 text-mute leading-relaxed" data-i18n="protocol.subtitle">Un proceso claro, ágil y sin vueltas: desde la primera consulta hasta el soporte continuo.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-6 mt-14">
+      <div class="reveal lg:col-span-3 bg-card border border-line rounded-2xl p-6 md:p-8 relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background: linear-gradient(180deg, var(--accent), var(--violet));"></div>
+        <div class="flex items-start gap-4">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-accent/15 text-accent flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </span>
+          <div>
+            <h3 class="text-lg md:text-xl font-bold mb-2" data-i18n="protocol.directTitle">Atención directa, ejecución sin burocracia</h3>
+            <p class="text-mute leading-relaxed" data-i18n="protocol.directDesc">Hablas directo con quien ejecuta. Sin intermediarios, sin tickets eternos: respuesta rápida y resultados concretos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal d1 lg:col-span-2 bg-card2 border border-line rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-mute" data-i18n="protocol.scheduleLabel">Jornada</span>
+          <span id="scheduleStatus" class="status-pill inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold border">
+            <span class="status-dot w-2 h-2 rounded-full bg-[#3fb950]"></span>
+            <span data-i18n="protocol.openNow">Abierto ahora</span>
+          </span>
+        </div>
+        <div>
+          <p class="text-2xl md:text-3xl font-bold leading-tight" data-i18n="protocol.schedule">Lunes a Viernes · 7:00 AM – 5:00 PM</p>
+          <p class="text-sm text-mute mt-2 flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span data-i18n="protocol.scheduleTz">Hora del Pacífico · UTC-5</span>
+          </p>
+        </div>
+        <div class="text-sm text-mute leading-relaxed" data-i18n="protocol.scheduleNote">Respondemos dentro de la jornada: consultas y auditorías en menos de 24 h hábiles.</div>
+      </div>
+    </div>
+
+    <!-- Timeline del proceso -->
+    <div class="mt-20">
+      <h3 class="reveal text-center text-sm font-bold uppercase tracking-[0.25em] text-accent mb-12" data-i18n="protocol.stepsTitle">Proceso de trabajo</h3>
+      <div class="relative max-w-4xl mx-auto">
+        <div class="timeline-line"></div>
+
+        <div class="tl-item relative mb-10 lg:mb-12 lg:grid lg:grid-cols-2 lg:gap-20">
+          <span class="tl-dot">1</span>
+          <div class="reveal pl-14 lg:pl-0 lg:col-start-1 lg:pr-4 lg:text-right">
+            <div class="bg-card border border-line rounded-2xl p-6 hover:border-accent transition-colors duration-300">
+              <div class="text-3xl font-bold text-accent/25 select-none">01</div>
+              <h4 class="font-bold text-lg mt-1" data-i18n="protocol.steps.0.t">Consulta inicial</h4>
+              <p class="text-mute text-sm mt-2 leading-relaxed" data-i18n="protocol.steps.0.d">Conversamos sobre tu proyecto por llamada, WhatsApp o mail. Sin costo y sin compromiso.</p>
+              <span class="inline-block mt-4 text-xs font-bold uppercase tracking-wider text-violet bg-violet/10 rounded-full px-3 py-1" data-i18n="protocol.steps.0.time">~30 min</span>
+            </div>
+          </div>
+          <div class="hidden lg:block lg:col-start-2"></div>
+        </div>
+
+        <div class="tl-item relative mb-10 lg:mb-12 lg:grid lg:grid-cols-2 lg:gap-20">
+          <span class="tl-dot">2</span>
+          <div class="hidden lg:block lg:col-start-1"></div>
+          <div class="reveal d1 pl-14 lg:pl-0 lg:col-start-2 lg:pl-4 lg:text-left">
+            <div class="bg-card border border-line rounded-2xl p-6 hover:border-accent transition-colors duration-300">
+              <div class="text-3xl font-bold text-accent/25 select-none">02</div>
+              <h4 class="font-bold text-lg mt-1" data-i18n="protocol.steps.1.t">Diagnóstico</h4>
+              <p class="text-mute text-sm mt-2 leading-relaxed" data-i18n="protocol.steps.1.d">Auditamos tu situación actual: web, SEO, rendimiento y oportunidades de crecimiento.</p>
+              <span class="inline-block mt-4 text-xs font-bold uppercase tracking-wider text-violet bg-violet/10 rounded-full px-3 py-1" data-i18n="protocol.steps.1.time">1–2 días</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item relative mb-10 lg:mb-12 lg:grid lg:grid-cols-2 lg:gap-20">
+          <span class="tl-dot">3</span>
+          <div class="reveal pl-14 lg:pl-0 lg:col-start-1 lg:pr-4 lg:text-right">
+            <div class="bg-card border border-line rounded-2xl p-6 hover:border-accent transition-colors duration-300">
+              <div class="text-3xl font-bold text-accent/25 select-none">03</div>
+              <h4 class="font-bold text-lg mt-1" data-i18n="protocol.steps.2.t">Propuesta</h4>
+              <p class="text-mute text-sm mt-2 leading-relaxed" data-i18n="protocol.steps.2.d">Plan claro, alcance definido y presupuesto transparente. Sin letra chica ni sorpresas.</p>
+              <span class="inline-block mt-4 text-xs font-bold uppercase tracking-wider text-violet bg-violet/10 rounded-full px-3 py-1" data-i18n="protocol.steps.2.time">24–48 h</span>
+            </div>
+          </div>
+          <div class="hidden lg:block lg:col-start-2"></div>
+        </div>
+
+        <div class="tl-item relative mb-10 lg:mb-12 lg:grid lg:grid-cols-2 lg:gap-20">
+          <span class="tl-dot">4</span>
+          <div class="hidden lg:block lg:col-start-1"></div>
+          <div class="reveal d1 pl-14 lg:pl-0 lg:col-start-2 lg:pl-4 lg:text-left">
+            <div class="bg-card border border-line rounded-2xl p-6 hover:border-accent transition-colors duration-300">
+              <div class="text-3xl font-bold text-accent/25 select-none">04</div>
+              <h4 class="font-bold text-lg mt-1" data-i18n="protocol.steps.3.t">Ejecución</h4>
+              <p class="text-mute text-sm mt-2 leading-relaxed" data-i18n="protocol.steps.3.d">Implementación ágil con entregas parciales. Seguís el avance en vivo, sin cajas negras.</p>
+              <span class="inline-block mt-4 text-xs font-bold uppercase tracking-wider text-violet bg-violet/10 rounded-full px-3 py-1" data-i18n="protocol.steps.3.time">Según alcance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item relative lg:grid lg:grid-cols-2 lg:gap-20">
+          <span class="tl-dot">5</span>
+          <div class="reveal pl-14 lg:pl-0 lg:col-start-1 lg:pr-4 lg:text-right">
+            <div class="bg-card border border-line rounded-2xl p-6 hover:border-accent transition-colors duration-300">
+              <div class="text-3xl font-bold text-accent/25 select-none">05</div>
+              <h4 class="font-bold text-lg mt-1" data-i18n="protocol.steps.4.t">Soporte continuo</h4>
+              <p class="text-mute text-sm mt-2 leading-relaxed" data-i18n="protocol.steps.4.d">Mantenimiento, mejoras y acompañamiento post-lanzamiento. Tu proyecto sigue creciendo.</p>
+              <span class="inline-block mt-4 text-xs font-bold uppercase tracking-wider text-violet bg-violet/10 rounded-full px-3 py-1" data-i18n="protocol.steps.4.time">Continuo</span>
+            </div>
+          </div>
+          <div class="hidden lg:block lg:col-start-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TERMINAL / AUDITOR INTERACTIVO
+     ============================================================ -->
+<section id="terminal" class="bg-surface border-y border-line py-20 md:py-28">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="reveal inline-block text-xs font-bold uppercase tracking-[0.25em] text-accent mb-4" data-i18n="terminal.kicker">Terminal Interactivo</span>
+      <h2 class="reveal d1 text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="terminal.title">Auditor interactivo</h2>
+      <p class="reveal d2 text-mute leading-relaxed" data-i18n="terminal.subtitle">Escribí un comando y recibí respuesta al instante. Así de directo trabajamos: sin formularios eternos.</p>
+    </div>
+
+    <div class="reveal d1 max-w-3xl mx-auto">
+      <div id="terminalBox" class="rounded-xl overflow-hidden">
+        <div id="termHeader" class="flex items-center gap-2 px-4 py-3">
+          <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
+          <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+          <span class="flex-1 text-center font-mono text-xs text-[#8b949e] truncate">auditor@seawolf-studio: ~</span>
+          <span class="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#3fb950]">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#3fb950] animate-pulse"></span>
+            <span data-i18n="terminal.online">online</span>
+          </span>
+        </div>
+        <div id="termOutput" class="h-72 md:h-80 overflow-y-auto px-4 py-4 font-mono text-[13px] leading-relaxed text-[#e6edf3] space-y-1" role="log" aria-live="polite"></div>
+        <div class="flex items-center gap-2 px-4 py-3 border-t border-white/10 bg-[#0a0a0a]">
+          <span class="font-mono text-sm text-[#00d4aa] whitespace-nowrap">guest@sw-st:~$</span>
+          <span class="caret" aria-hidden="true"></span>
+          <input id="termInput" type="text" autocomplete="off" spellcheck="false"
+                 class="flex-1 bg-transparent outline-none font-mono text-sm text-[#e6edf3] placeholder-[#5c6670]"
+                 placeholder="Escribí un comando… (help)">
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-2 mt-5">
+        <button type="button" data-term-cmd="help"     class="px-3 py-1.5 text-xs font-mono rounded-full border border-accent/40 text-accent hover:bg-accent hover:text-[#0a0a0a] transition-colors">help</button>
+        <button type="button" data-term-cmd="services" class="px-3 py-1.5 text-xs font-mono rounded-full border border-accent/40 text-accent hover:bg-accent hover:text-[#0a0a0a] transition-colors">services</button>
+        <button type="button" data-term-cmd="audit"    class="px-3 py-1.5 text-xs font-mono rounded-full border border-accent/40 text-accent hover:bg-accent hover:text-[#0a0a0a] transition-colors">audit</button>
+        <button type="button" data-term-cmd="contact"  class="px-3 py-1.5 text-xs font-mono rounded-full border border-accent/40 text-accent hover:bg-accent hover:text-[#0a0a0a] transition-colors">contact</button>
+        <button type="button" data-term-cmd="about"    class="px-3 py-1.5 text-xs font-mono rounded-full border border-accent/40 text-accent hover:bg-accent hover:text-[#0a0a0a] transition-colors">about</button>
+      </div>
+      <p class="text-center text-xs text-mute mt-5" data-i18n="terminal.note">Terminal de demostración — no envía datos reales. Para una auditoría real, usá el comando audit o escribinos.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================================================
+     FOOTER + CONTACTO
+     ============================================================ -->
+<footer id="contacto" class="pt-16 md:pt-20 pb-0">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="bg-card border border-line rounded-2xl p-8 md:p-12 text-center max-w-3xl mx-auto reveal">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.25em] text-accent mb-4" data-i18n="footer.kicker">Configuración final</span>
+      <h2 class="text-2xl md:text-4xl font-bold leading-tight mb-4" data-i18n="footer.title">¿Empezamos con tu proyecto?</h2>
+      <p class="text-mute leading-relaxed mb-8" data-i18n="footer.subtitle">Atención directa, ejecución sin burocracia. Escribinos y te respondemos dentro de la jornada.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="mailto:hola@sw-st.net" class="inline-flex items-center gap-2 bg-accent text-[#0a0a0a] font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          hola@sw-st.net
+        </a>
+        <span class="inline-flex items-center gap-2 text-sm text-mute">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span data-i18n="protocol.schedule">Lunes a Viernes · 7:00 AM – 5:00 PM</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-alt border-t border-soft mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-14 grid gap-10 md:grid-cols-3">
+      <div>
+        <a href="#inicio" class="flex items-center gap-3">
+          <svg class="w-8 h-8" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+            <path d="M12 28 L20 12 L28 28 Z" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 22 L23 22" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="font-arvo font-bold tracking-[0.18em] leading-none">SEAWOLF<span class="text-accent"> STUDIO</span></span>
+        </a>
+        <p class="mt-5 text-sm text-mute leading-relaxed max-w-xs" data-i18n="footer.tagline">Automatización, desarrollo y estrategia tecnológica que trabajan en silencio.</p>
+        <div class="mt-6 flex items-center gap-3">
+          <a class="social-btn" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 2.87-.39c.97 0 1.95.13 2.87.39 2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          </a>
+          <a class="social-btn" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+          </a>
+          <a class="social-btn" href="https://x.com" target="_blank" rel="noopener" aria-label="X">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <p class="font-bold tracking-[0.18em] uppercase text-xs text-mute mb-5" data-i18n="footer.linksTitle">Enlaces</p>
+        <nav class="flex flex-col gap-3 text-sm" aria-label="Enlaces del sitio">
+          <a class="footer-link" href="#inicio" data-i18n="nav.inicio">Inicio</a>
+          <a class="footer-link" href="#servicios" data-i18n="nav.servicios">Servicios</a>
+          <a class="footer-link" href="#protocolo" data-i18n="nav.protocolo">Protocolo</a>
+          <a class="footer-link" href="#terminal" data-i18n="nav.terminal">Terminal</a>
+          <a class="footer-link" href="#contacto" data-i18n="nav.contacto">Contacto</a>
+        </nav>
+      </div>
+
+      <div>
+        <p class="font-bold tracking-[0.18em] uppercase text-xs text-mute mb-5" data-i18n="footer.legalTitle">Legal</p>
+        <nav class="flex flex-col gap-3 text-sm" aria-label="Enlaces legales">
+          <a class="footer-link" href="#" data-i18n="footer.terms">Términos y condiciones</a>
+          <a class="footer-link" href="#" data-i18n="footer.privacy">Política de privacidad</a>
+          <span class="pt-2 text-sm">
+            <span class="text-mute" data-i18n="footer.contact">Contacto</span>:
+            <a class="footer-link" href="mailto:hola@sw-st.net">hola@sw-st.net</a>
+          </span>
+        </nav>
+      </div>
+    </div>
+
+    <div class="border-t border-soft">
+      <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-mute">
+        <p>&copy; <span id="year">2026</span> Seawolf Studio &middot; sw-st.net &mdash; <span data-i18n="footer.rights">Todos los derechos reservados.</span></p>
+        <p class="flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-accent"></span>
+          <span>Ingeniería Invisible. Impacto Inevitable.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JS FINAL UNIFICADO — traducciones, tema, idioma,
+     partículas, navbar, hamburguesa, animaciones,
+     diagramas SVG de servicios y terminal interactiva
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================
+     1) TRADUCCIONES GLOBALES (unificadas Parte 1 + 2 + 3)
+     ================================================================ */
+  var TRANSLATIONS = {
+    es: {
+      nav: { inicio: 'Inicio', servicios: 'Servicios', protocolo: 'Protocolo', terminal: 'Terminal', contacto: 'Contacto' },
+      hero: {
+        badge: 'Agencia de Tecnología & Automatización',
+        slogan1: 'Ingeniería Invisible.',
+        slogan2: 'Impacto Inevitable.',
+        subtitle: 'Diseñamos y automatizamos la tecnología que impulsa tu negocio mientras tú te concentras en crecer.',
+        cta: 'Solicitar Auditoría',
+        cta2: 'Explorar Soluciones',
+        scroll: 'Descubre más'
+      },
+      common: { lang: 'Idioma', theme: 'Tema' },
+      protocol: {
+        kicker: 'Protocolo de Trabajo',
+        title: 'Cómo trabajamos',
+        subtitle: 'Un proceso claro, ágil y sin vueltas: desde la primera consulta hasta el soporte continuo.',
+        directTitle: 'Atención directa, ejecución sin burocracia',
+        directDesc: 'Hablas directo con quien ejecuta. Sin intermediarios, sin tickets eternos: respuesta rápida y resultados concretos.',
+        scheduleLabel: 'Jornada',
+        schedule: 'Lunes a Viernes · 7:00 AM – 5:00 PM',
+        scheduleTz: 'Hora del Pacífico · UTC-5',
+        scheduleNote: 'Respondemos dentro de la jornada: consultas y auditorías en menos de 24 h hábiles.',
+        openNow: 'Abierto ahora',
+        closedNow: 'Cerrado ahora',
+        stepsTitle: 'Proceso de trabajo',
+        steps: [
+          { t: 'Consulta inicial', d: 'Conversamos sobre tu proyecto por llamada, WhatsApp o mail. Sin costo y sin compromiso.', time: '~30 min' },
+          { t: 'Diagnóstico', d: 'Auditamos tu situación actual: web, SEO, rendimiento y oportunidades de crecimiento.', time: '1–2 días' },
+          { t: 'Propuesta', d: 'Plan claro, alcance definido y presupuesto transparente. Sin letra chica ni sorpresas.', time: '24–48 h' },
+          { t: 'Ejecución', d: 'Implementación ágil con entregas parciales. Seguís el avance en vivo, sin cajas negras.', time: 'Según alcance' },
+          { t: 'Soporte continuo', d: 'Mantenimiento, mejoras y acompañamiento post-lanzamiento. Tu proyecto sigue creciendo.', time: 'Continuo' }
+        ]
+      },
+      terminal: {
+        kicker: 'Terminal Interactivo',
+        title: 'Auditor interactivo',
+        subtitle: 'Escribí un comando y recibí respuesta al instante. Así de directo trabajamos: sin formularios eternos.',
+        online: 'online',
+        placeholder: 'Escribí un comando… (help)',
+        hint: 'Tip: probá los comandos help, services, audit, contact o about.',
+        note: 'Terminal de demostración — no envía datos reales. Para una auditoría real, usá el comando audit o escribinos.',
+        welcome: ['Bienvenido a Seawolf Studio.', 'Soy el auditor interactivo. Escribí help para ver los comandos disponibles.'],
+        langNotice: 'Idioma cambiado a Español.',
+        helpTitle: 'Comandos disponibles:',
+        help: [
+          ['help', 'Muestra esta lista de comandos'],
+          ['services', 'Lista los servicios de Seawolf Studio'],
+          ['audit', 'Solicita una auditoría gratuita (simulada)'],
+          ['contact', 'Información de contacto y canales directos'],
+          ['about', 'Sobre Seawolf Studio'],
+          ['clear', 'Limpia la terminal']
+        ],
+        servicesTitle: 'Servicios de Seawolf Studio:',
+        services: [
+          ['Desarrollo Web', 'Sitios rápidos, modernos y enfocados en conversión'],
+          ['Branding & UI/UX', 'Identidad visual y experiencias que venden'],
+          ['SEO & Performance', 'Posicionamiento y velocidad de carga'],
+          ['Automatización & IA', 'Procesos y asistentes que ahorran horas'],
+          ['Auditorías', 'Diagnóstico claro de tu presencia digital']
+        ],
+        audit: [
+          'Iniciando auditoría gratuita…',
+          '✔ Web / rendimiento .......... analizado',
+          '✔ SEO / estructura ............ revisado',
+          '✔ UX / conversión ............. evaluado',
+          '✔ Seguridad / SSL ............. verificado',
+          '──',
+          'Auditoría registrada. Te contactamos en menos de 24 h hábiles — atención directa, sin burocracia.'
+        ],
+        contact: [
+          'Seawolf Studio — canales directos:',
+          '✉ hola@sw-st.net',
+          '🕐 Lunes a Viernes · 7:00 AM – 5:00 PM (UTC-5)',
+          '⚡ Respuesta en menos de 24 h hábiles',
+          '──',
+          'Escribinos por mail o desde el footer y te respondemos directo.'
+        ],
+        about: [
+          'Seawolf Studio es un estudio digital boutique que combina diseño, desarrollo y estrategia.',
+          'Creamos productos web que convierten: rápidos, accesibles y pensados para escalar.',
+          'Trabajamos con atención directa: hablás con quien ejecuta, de principio a fin.'
+        ],
+        unknown: 'Comando no reconocido: "{cmd}". Escribí help para ver los comandos disponibles.',
+        expired: 'La terminal aún está procesando. Esperá un segundo…'
+      },
+      footer: {
+        kicker: 'Configuración final',
+        title: '¿Empezamos con tu proyecto?',
+        subtitle: 'Atención directa, ejecución sin burocracia. Escribinos y te respondemos dentro de la jornada.',
+        tagline: 'Automatización, desarrollo y estrategia tecnológica que trabajan en silencio.',
+        linksTitle: 'Enlaces',
+        legalTitle: 'Legal',
+        terms: 'Términos y condiciones',
+        privacy: 'Política de privacidad',
+        contact: 'Contacto',
+        rights: 'Todos los derechos reservados.'
+      },
+      services_chip: 'SW.ST · SERVICIOS',
+      services_title1: 'Nuestros',
+      services_title2: 'Servicios',
+      services_sub: 'Arquitectura digital completa: presencia web, automatización inteligente y control total de tus sistemas.',
+      service1_title: 'Digitalización & Presencia Web',
+      service1_tag: 'WaaS',
+      service1_desc: 'Llevamos tu negocio tradicional a la nube: sitio web profesional, identidad digital y una estructura que atrae clientes automáticamente, 24/7.',
+      service2_title: 'Automatización de Procesos & Flujos Inteligentes',
+      service2_tag: 'n8n · WhatsApp AI',
+      service2_desc: 'Conectamos tus aplicaciones con inteligencia artificial para que las tareas del día a día se hagan solas: responder clientes, dar seguimiento a pedidos y hasta vender mientras duermes.',
+      service3_title: 'Conexión Total de tus Sistemas',
+      service3_tag: 'CRM · Ventas · Datos',
+      service3_desc: 'Conectamos todas tus herramientas en un solo lugar: tu negocio habla solo, los datos viajan solos y tú ves todo en tiempo real, sin mover un dedo.',
+      service_cta: 'Explorar servicio',
+      d1a: 'Negocio Tradicional', d1b: 'Estructura Cloud', d1c: 'Clientes Automáticos',
+      d2a: 'Tareas Repetitivas', d2b: 'Motor IA / Sombras', d2c: 'Ventas 24/7',
+      d3a: 'Datos Dispersos', d3b: 'Orquestador Seawolf', d3c: 'Control Total'
+    },
+    en: {
+      nav: { inicio: 'Home', servicios: 'Services', protocolo: 'Protocol', terminal: 'Terminal', contacto: 'Contact' },
+      hero: {
+        badge: 'Technology & Automation Agency',
+        slogan1: 'Invisible Engineering.',
+        slogan2: 'Inevitable Impact.',
+        subtitle: 'We design and automate the technology that powers your business while you focus on growing.',
+        cta: 'Request Audit',
+        cta2: 'Explore Solutions',
+        scroll: 'Discover more'
+      },
+      common: { lang: 'Language', theme: 'Theme' },
+      protocol: {
+        kicker: 'Work Protocol',
+        title: 'How we work',
+        subtitle: 'A clear, agile process with no red tape: from the first call to ongoing support.',
+        directTitle: 'Direct attention, bureaucracy-free execution',
+        directDesc: 'You talk straight to the people doing the work. No middlemen, no endless tickets: fast answers, concrete results.',
+        scheduleLabel: 'Working hours',
+        schedule: 'Monday to Friday · 7:00 AM – 5:00 PM',
+        scheduleTz: 'Pacific time · UTC-5',
+        scheduleNote: 'We reply within working hours: inquiries and audits in under 24 business hours.',
+        openNow: 'Open now',
+        closedNow: 'Closed now',
+        stepsTitle: 'Workflow',
+        steps: [
+          { t: 'Initial consultation', d: 'We talk about your project by call, WhatsApp or email. Free and no commitment.', time: '~30 min' },
+          { t: 'Diagnosis', d: 'We audit your current situation: web, SEO, performance and growth opportunities.', time: '1–2 days' },
+          { t: 'Proposal', d: 'Clear plan, defined scope and transparent pricing. No fine print, no surprises.', time: '24–48 h' },
+          { t: 'Execution', d: 'Agile implementation with incremental deliveries. Track progress live — no black boxes.', time: 'By scope' },
+          { t: 'Ongoing support', d: 'Maintenance, improvements and post-launch support. Your project keeps growing.', time: 'Ongoing' }
+        ]
+      },
+      terminal: {
+        kicker: 'Interactive Terminal',
+        title: 'Interactive auditor',
+        subtitle: "Type a command and get an instant answer. That's how direct we work: no endless forms.",
+        online: 'online',
+        placeholder: 'Type a command… (help)',
+        hint: 'Tip: try the commands help, services, audit, contact or about.',
+        note: 'Demo terminal — it does not send real data. For a real audit, use the audit command or write to us.',
+        welcome: ['Welcome to Seawolf Studio.', "I'm the interactive auditor. Type help to see the available commands."],
+        langNotice: 'Language changed to English.',
+        helpTitle: 'Available commands:',
+        help: [
+          ['help', 'Shows this list of commands'],
+          ['services', 'Lists Seawolf Studio services'],
+          ['audit', 'Requests a free audit (simulated)'],
+          ['contact', 'Contact info and direct channels'],
+          ['about', 'About Seawolf Studio'],
+          ['clear', 'Clears the terminal']
+        ],
+        servicesTitle: 'Seawolf Studio services:',
+        services: [
+          ['Web Development', 'Fast, modern sites built for conversion'],
+          ['Branding & UI/UX', 'Visual identity and experiences that sell'],
+          ['SEO & Performance', 'Rankings and loading speed'],
+          ['Automation & AI', 'Processes and assistants that save hours'],
+          ['Audits', 'Clear diagnosis of your digital presence']
+        ],
+        audit: [
+          'Starting free audit…',
+          '✔ Web / performance ........... analyzed',
+          '✔ SEO / structure .............. reviewed',
+          '✔ UX / conversion .............. evaluated',
+          '✔ Security / SSL ............... verified',
+          '──',
+          'Audit registered. We\'ll contact you within 24 business hours — direct attention, no bureaucracy.'
+        ],
+        contact: [
+          'Seawolf Studio — direct channels:',
+          '✉ hola@sw-st.net',
+          '🕐 Monday to Friday · 7:00 AM – 5:00 PM (UTC-5)',
+          '⚡ Reply within 24 business hours',
+          '──',
+          'Email us or use the footer — we answer directly.'
+        ],
+        about: [
+          'Seawolf Studio is a boutique digital studio combining design, development and strategy.',
+          'We build web products that convert: fast, accessible and built to scale.',
+          'We work with direct attention: you talk to the people executing, from start to finish.'
+        ],
+        unknown: 'Unknown command: "{cmd}". Type help to see the available commands.',
+        expired: 'The terminal is still processing. Give it a second…'
+      },
+      footer: {
+        kicker: 'Final setup',
+        title: 'Ready to start your project?',
+        subtitle: 'Direct attention, bureaucracy-free execution. Write to us and we\'ll reply within working hours.',
+        tagline: 'Automation, development and tech strategy that work quietly in the background.',
+        linksTitle: 'Links',
+        legalTitle: 'Legal',
+        terms: 'Terms & conditions',
+        privacy: 'Privacy policy',
+        contact: 'Contact',
+        rights: 'All rights reserved.'
+      },
+      services_chip: 'SW.ST · SERVICES',
+      services_title1: 'Our',
+      services_title2: 'Services',
+      services_sub: 'Complete digital architecture: web presence, smart automation and total control of your systems.',
+      service1_title: 'Digitalization & Web Presence',
+      service1_tag: 'WaaS',
+      service1_desc: 'Take your traditional business to the cloud: professional website, digital identity and a structure that attracts customers automatically, 24/7.',
+      service2_title: 'Process Automation & Smart Workflows',
+      service2_tag: 'n8n · WhatsApp AI',
+      service2_desc: 'We connect your apps with AI so everyday tasks run themselves: reply to customers, follow up on orders and even sell while you sleep.',
+      service3_title: 'Total System Connection',
+      service3_tag: 'CRM · Sales · Data',
+      service3_desc: 'We connect all your tools in one place: your business runs itself, data flows automatically and you see everything in real time — without lifting a finger.',
+      service_cta: 'Explore service',
+      d1a: 'Traditional Business', d1b: 'Cloud Structure', d1c: 'Automatic Customers',
+      d2a: 'Repetitive Tasks', d2b: 'AI Engine / Shadows', d2c: 'Sales 24/7',
+      d3a: 'Scattered Data', d3b: 'Seawolf Orchestrator', d3c: 'Total Control'
+    }
+  };
+
+  window.translations = TRANSLATIONS;
+
+  function t(lang, path) {
+    var node = TRANSLATIONS[lang] || TRANSLATIONS.es;
+    var parts = path.split('.');
+    for (var i = 0; i < parts.length; i++) {
+      if (node == null) return path;
+      node = node[parts[i]];
+    }
+    return node == null ? path : node;
+  }
+
+  function applyLang() {
+    var lang = state.lang;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      var val = t(lang, key);
+      if (typeof val === 'string' && val !== key) el.textContent = val;
+    });
+  }
+
+  /* ================================================================
+     2) ESTADO (persistido): tema + idioma
+     ================================================================ */
+  var state = {
+    lang: localStorage.getItem('sw-lang') || 'es',
+    theme: localStorage.getItem('sw-theme') || 'dark'
+  };
+  if (['es', 'en'].indexOf(state.lang) < 0) state.lang = 'es';
+  if (['dark', 'light'].indexOf(state.theme) < 0) state.theme = 'dark';
+
+  function setTheme(th) {
+    state.theme = th;
+    document.documentElement.setAttribute('data-theme', th);
+    localStorage.setItem('sw-theme', th);
+    refreshPalette();
+  }
+  function setLang(lg) {
+    state.lang = lg;
+    document.documentElement.lang = lg;
+    localStorage.setItem('sw-lang', lg);
+    applyLang();
+    updateActiveLang();
+    syncTerminalLang();
+  }
+
+  function updateActiveLang() {
+    var lang = state.lang;
+    document.querySelectorAll('[data-lang]').forEach(function (btn) {
+      var active = btn.getAttribute('data-lang') === lang;
+      btn.classList.toggle('active', active);
+      btn.classList.toggle('text-mute', !active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  /* ================================================================
+     3) WINDOW EXPORTS (onclick compat) + HANDLERS
+     ================================================================ */
+  window.switchLang = function (lg) { setLang(lg); };
+  window.switchTheme = function () { setTheme(state.theme === 'dark' ? 'light' : 'dark'); };
+
+  document.querySelectorAll('[data-theme-toggle], #themeToggle').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      setTheme(state.theme === 'dark' ? 'light' : 'dark');
+    });
+  });
+  document.querySelectorAll('[data-lang]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var l = btn.getAttribute('data-lang');
+      if (l !== state.lang) setLang(l);
+    });
+  });
+
+  /* ================================================================
+     4) NAVBAR: scroll + hamburguesa
+     ================================================================ */
+  var nav = document.getElementById('navbar');
+  function onScroll() {
+    if (nav) nav.classList.toggle('nav-solid', window.scrollY > 24);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', function () {
+      var open = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mobileMenu.style.maxHeight = open ? mobileMenu.scrollHeight + 'px' : '0';
+    });
+    mobileMenu.querySelectorAll('[data-mobile-link]').forEach(function (link) {
+      link.addEventListener('click', function () {
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileMenu.style.maxHeight = '0';
+      });
+    });
+  }
+
+  /* ================================================================
+     5) PARTÍCULAS (canvas en Hero)
+     ================================================================ */
+  var canvas = document.getElementById('heroCanvas');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+  var particles = [];
+  var W = 0, H = 0;
+  var mouse = { x: -9999, y: -9999 };
+  var PALETTE = [];
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rafId = null;
+  var running = true;
+
+  function hexToRgb(hex) {
+    hex = (hex || '').trim().replace('#', '');
+    if (hex.length === 3) hex = hex.replace(/(.)/g, '$1$1');
+    var n = parseInt(hex, 16);
+    if (isNaN(n)) return [0, 212, 170];
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function readVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
+  }
+  function refreshPalette() {
+    PALETTE = [
+      hexToRgb(readVar('--accent')),
+      hexToRgb(readVar('--accent-2')),
+      hexToRgb(readVar('--ink'))
+    ];
+  }
+
+  function spawnParticles() {
+    var target = Math.max(40, Math.min(110, Math.floor((W * H) / 14000)));
+    particles = [];
+    for (var i = 0; i < target; i++) {
+      var c = Math.random();
+      particles.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+        r: 0.6 + Math.random() * 1.8,
+        color: c < 0.45 ? 0 : (c < 0.85 ? 1 : 2),
+        alpha: 0.25 + Math.random() * 0.5,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 1.2
+      });
+    }
+  }
+
+  function resizeCanvas() {
+    if (!canvas || !ctx) return;
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    spawnParticles();
+    if (reducedMotion) drawFrame(0, true);
+  }
+
+  function drawFrame(t, staticOnly) {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, W, H);
+    var i, j, p, q, dx, dy, d, alpha, tw, sp, f;
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+      if (!staticOnly) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20; else if (p.y > H + 20) p.y = -20;
+        dx = p.x - mouse.x; dy = p.y - mouse.y;
+        d = dx * dx + dy * dy;
+        if (d < 16900 && d > 0) {
+          f = (130 - Math.sqrt(d)) / 130 * 0.6;
+          p.vx += (dx / Math.sqrt(d)) * f;
+          p.vy += (dy / Math.sqrt(d)) * f;
+        }
+        sp = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (sp > 1.4) { p.vx = (p.vx / sp) * 1.4; p.vy = (p.vy / sp) * 1.4; }
+      }
+      tw = staticOnly ? 0 : Math.sin((t / 1000) * p.speed + p.phase) * 0.22;
+      alpha = Math.max(0.05, Math.min(1, p.alpha + tw));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + PALETTE[p.color].join(',') + ',' + alpha.toFixed(3) + ')';
+      ctx.fill();
+    }
+    for (i = 0; i < particles.length; i++) {
+      p = particles[i];
+      for (j = i + 1; j < particles.length; j++) {
+        q = particles[j]; dx = p.x - q.x; dy = p.y - q.y; d = dx * dx + dy * dy;
+        if (d < 14400) {
+          alpha = (1 - Math.sqrt(d) / 120) * 0.16;
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = 'rgba(' + PALETTE[0].join(',') + ',' + alpha.toFixed(3) + ')';
+          ctx.lineWidth = 1; ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop(ts) { drawFrame(ts || 0, false); rafId = requestAnimationFrame(loop); }
+
+  function startParticles() {
+    if (!canvas || !ctx || reducedMotion) {
+      if (canvas) drawFrame(0, true);
+      return;
+    }
+    refreshPalette();
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCanvas, 150);
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!canvas) return;
+    var r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+  });
+  window.addEventListener('mouseout', function () { mouse.x = -9999; mouse.y = -9999; });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && rafId) { cancelAnimationFrame(rafId); rafId = null; running = false; }
+    else if (!document.hidden && !running) { running = true; rafId = requestAnimationFrame(loop); }
+  });
+
+  /* ================================================================
+     6) SCROLL REVEAL (IntersectionObserver)
+     ================================================================ */
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reducedMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('visible'); });
+  }
+
+  /* ================================================================
+     7) DIAGRAMAS SVG DE SERVICIOS (Parte 2)
+     ================================================================ */
+  var NS = 'http://www.w3.org/2000/svg';
+  var ICONS = {
+    store:  '<path d="M3 9.5 4.2 4h15.6L21 9.5"/><path d="M3 9.5v10h18v-10"/><path d="M9 19.5v-6h6v6"/>',
+    cloud:  '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+    users:  '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    refresh:'<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+    zap:    '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    trend:  '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    db:     '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+    hub:    '<polygon points="12 2 20.5 7 20.5 17 12 22 3.5 17 3.5 7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v7.5M20.5 7l-6.5 3M20.5 17l-6.5-3M12 22v-7.5M3.5 17l6.5-3M3.5 7l6.5 3"/>',
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11.5 11.5 14 15 9.5"/>'
+  };
+
+  function setA(el, name, val) { el.setAttribute(name, val); }
+
+  function wrapLines(s) {
+    var raw = String(s || '');
+    var parts = raw.split('/').filter(function (p) { return p.trim().length > 0; });
+    var partsOk = parts.length > 1 && parts.every(function (p) { return p.trim().length >= 3; });
+    if (!partsOk) parts = [raw.trim()];
+    else parts = parts.map(function (p) { return p.trim(); });
+    var out = [];
+    for (var i = 0; i < parts.length && out.length < 2; i++) {
+      var p = parts[i].trim(), w = p.split(' ');
+      if (w.length === 1 || p.replace(/ /g, '').length <= 12) { out.push(p); continue; }
+      var h = Math.ceil(w.length / 2);
+      out.push(w.slice(0, h).join(' '));
+      if (out.length < 2) out.push(w.slice(h).join(' '));
+    }
+    return out.length ? out : [''];
+  }
+
+  function mkText(x, y, content, cls, size) {
+    var tt = document.createElementNS(NS, 'text');
+    setA(tt, 'x', x); setA(tt, 'y', y); setA(tt, 'text-anchor', 'middle');
+    setA(tt, 'class', cls); if (size) setA(tt, 'font-size', size);
+    tt.textContent = content;
+    return tt;
+  }
+
+  function buildBox(x, y, w, h, icon, label, col, hub) {
+    var g = document.createElementNS(NS, 'g');
+    var r = document.createElementNS(NS, 'rect');
+    setA(r, 'x', x); setA(r, 'y', y); setA(r, 'width', w); setA(r, 'height', h); setA(r, 'rx', 10);
+    setA(r, 'class', 'svc-box' + (hub ? ' svc-box-hub' : ''));
+    if (col) setA(r, 'style', '--bac:' + col);
+    g.appendChild(r);
+    var ic = document.createElementNS(NS, 'g');
+    setA(ic, 'class', 'svc-box-icon');
+    if (col) setA(ic, 'style', '--bac:' + col);
+    ic.innerHTML = ICONS[icon];
+    var ics = 20 / 24;
+    setA(ic, 'transform', 'translate(' + (x + (w - 20) / 2).toFixed(1) + ',' + (y + (h > 60 ? 14 : 8)) + ') scale(' + ics + ')');
+    g.appendChild(ic);
+    var cx = x + w / 2, vertical = h > 60;
+    var lines = wrapLines(label);
+    if (lines.length === 1) { g.appendChild(mkText(cx, y + (vertical ? 48 : 44), lines[0], 'svc-box-t1', 10)); }
+    else { g.appendChild(mkText(cx, y + (vertical ? 40 : 36), lines[0], 'svc-box-t1', 9.5)); g.appendChild(mkText(cx, y + (vertical ? 52 : 48), lines[1], 'svc-box-t2', 8.5)); }
+    return g;
+  }
+
+  function buildArrow(vertical) {
+    var g = document.createElementNS(NS, 'g');
+    var ln = document.createElementNS(NS, 'line');
+    if (vertical) { setA(ln, 'x1', 120); setA(ln, 'y1', 74); setA(ln, 'x2', 120); setA(ln, 'y2', 124); }
+    else { setA(ln, 'x1', 90); setA(ln, 'y1', 52); setA(ln, 'x2', 114); setA(ln, 'y2', 52); }
+    setA(ln, 'class', 'svc-flow');
+    g.appendChild(ln);
+    var head = document.createElementNS(NS, 'polygon');
+    setA(head, 'points', vertical ? '114,124 120,128 126,124' : '114,46 118,52 114,58');
+    setA(head, 'class', 'svc-flow-head');
+    g.appendChild(head);
+    var dot = document.createElementNS(NS, 'circle');
+    setA(dot, 'r', '2.5'); setA(dot, 'class', 'svc-flow-dot');
+    var am = document.createElementNS(NS, 'animateMotion');
+    setA(am, 'dur', '1.15s'); setA(am, 'repeatCount', 'indefinite');
+    setA(am, 'path', vertical ? 'M120 74 L120 124' : 'M90 52 L114 52');
+    dot.appendChild(am);
+    g.appendChild(dot);
+    return g;
+  }
+
+  var DIAG_DEFS = {
+    'svc-diag-1': { dir: 'h', boxes: [['store', 'd1a'], ['cloud', 'd1b'], ['users', 'd1c']] },
+    'svc-diag-2': { dir: 'h', boxes: [['refresh', 'd2a'], ['zap', 'd2b'], ['trend', 'd2c']] },
+    'svc-diag-3': { dir: 'v', boxes: [['db', 'd3a'], ['hub', 'd3b', '#00d4aa', true], ['shield', 'd3c']] }
+  };
+
+  function buildDiagrams() {
+    var lang = state.lang;
+    Object.keys(DIAG_DEFS).forEach(function (id) {
+      var cont = document.getElementById(id);
+      if (!cont) return;
+      cont.innerHTML = '';
+      var d = DIAG_DEFS[id], svg = document.createElementNS(NS, 'svg');
+      setA(svg, 'viewBox', d.dir === 'v' ? '0 0 240 324' : '0 0 320 104');
+      setA(svg, 'data-orient', d.dir);
+      setA(svg, 'role', 'img');
+      setA(svg, 'aria-label', t(lang, d.boxes[0][1]) + ' -> ' + t(lang, d.boxes[2][1]));
+      if (d.dir === 'h') {
+        d.boxes.forEach(function (b, i) {
+          svg.appendChild(buildBox(4 + i * 114, 22, 84, 60, b[0], t(lang, b[1]), b[2], b[3]));
+          if (i < 2) svg.appendChild(buildArrow(false));
+        });
+      } else {
+        d.boxes.forEach(function (b, i) {
+          svg.appendChild(buildBox(60, 4 + i * 124, 120, 68, b[0], t(lang, b[1]), b[2], b[3]));
+          svg.setAttribute('viewBox', '0 0 240 ' + (4 + 2 * 124 + 68 + 4));
+          if (i < 2) svg.appendChild(buildArrow(true));
+        });
+      }
+      cont.appendChild(svg);
+    });
+  }
+
+  /* ================================================================
+     8) TERMINAL / AUDITOR INTERACTIVO
+     ================================================================ */
+  var termOut = document.getElementById('termOutput');
+  var termInp = document.getElementById('termInput');
+  var termBusy = false;
+  var termHistory = [];
+  var histIdx = -1;
+
+  function termLang() { return state.lang; }
+  function termT(path) { return t(termLang(), path); }
+  function termScroll() { if (termOut) termOut.scrollTop = termOut.scrollHeight; }
+
+  function termAdd(cls, html) {
+    if (!termOut) return null;
+    var line = document.createElement('div');
+    line.className = 'term-line ' + (cls || '');
+    line.innerHTML = html;
+    termOut.appendChild(line);
+    termScroll();
+    return line;
+  }
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function termType(line, done) {
+    if (!termOut) { if (done) done(); return; }
+    var el = document.createElement('div');
+    el.className = 'term-line ' + (line.cls || '');
+    termOut.appendChild(el);
+    if (line.html) { el.innerHTML = line.html; termScroll(); if (done) done(); return; }
+    var txt = line.text;
+    var forceInstant = line.instant || reducedMotion;
+    var i = 0;
+    if (forceInstant) { el.textContent = txt; termScroll(); if (done) done(); return; }
+    var iv = setInterval(function () {
+      i++;
+      el.textContent = txt.slice(0, i);
+      termScroll();
+      if (i >= txt.length) { clearInterval(iv); if (done) done(); }
+    }, 7);
+  }
+
+  function termSequence(seq, cb) {
+    var i = 0;
+    function next() {
+      if (i >= seq.length) { if (cb) cb(); return; }
+      var line = seq[i];
+      var wait = line.wait != null ? line.wait : (line.instant ? 0 : 140);
+      termType(line, function () { i++; setTimeout(next, wait); });
+    }
+    next();
+  }
+
+  function termEcho(cmd) {
+    var safe = cmd.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+    termAdd('', '<span class="t-cmd">guest@sw-st:~$</span> <span class="t-ink">' + safe + '</span>');
+    termScroll();
+  }
+
+  function termList(title, rows) {
+    var seq = [{ cls: 't-head', text: title, instant: true }];
+    rows.forEach(function (r) {
+      seq.push({ cls: '', text: '  ' + r[0] + ' ', instant: false,
+        html: '<span class="t-key">' + r[0] + '</span><span class="t-dim">─</span> <span class="t-sys">' + r[1] + '</span>' });
+    });
+    return seq;
+  }
+
+  function termRun(rawCmd) {
+    if (termBusy) { termAdd('t-err', termT('terminal.expired')); return; }
+    var cmd = (rawCmd || '').trim();
+    termEcho(cmd);
+    var lower = cmd.toLowerCase();
+    var seq, after;
+    switch (lower) {
+      case '': return;
+      case 'help': seq = termList(termT('terminal.helpTitle'), termT('terminal.help')); break;
+      case 'services': seq = termList(termT('terminal.servicesTitle'), termT('terminal.services')); break;
+      case 'audit':
+        seq = termT('terminal.audit').map(function (txt) {
+          var cls = txt.indexOf('✔') === 0 ? 't-ok' : (txt === '──' ? 't-sep' : 't-sys');
+          return { cls: cls, text: txt, instant: true, wait: txt.indexOf('analizado') > 0 || txt.indexOf('analyzed') > 0 ? 380 : 120 };
+        });
+        break;
+      case 'contact':
+        seq = termT('terminal.contact').map(function (txt) {
+          var cls = txt === '──' ? 't-sep' : (txt.indexOf('✉') === 0 ? 't-cmd' : 't-ink');
+          return { cls: cls, text: txt, instant: true };
+        });
+        break;
+      case 'about':
+        seq = termT('terminal.about').map(function (txt) { return { cls: 't-ink', text: txt, instant: true, wait: 180 }; });
+        break;
+      case 'clear': if (termOut) termOut.innerHTML = ''; return;
+      default: seq = [{ cls: 't-err', text: termT('terminal.unknown').replace('{cmd}', '"' + lower + '"'), instant: true, wait: 120 }]; break;
+    }
+    if (lower !== 'help' && lower !== 'services' && lower !== 'clear') termBusy = true;
+    termSequence(seq, function () { termBusy = false; });
+    termScroll();
+  }
+
+  function termKeydown(e) {
+    if (e.key === 'Enter') {
+      var val = termInp.value;
+      if (val.trim()) { termHistory.push(val.trim()); histIdx = termHistory.length; }
+      termInp.value = ''; termRun(val);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (termHistory.length) { histIdx = Math.max(0, histIdx - 1); termInp.value = termHistory[histIdx] || ''; }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      histIdx = Math.min(termHistory.length, histIdx + 1);
+      termInp.value = termHistory[histIdx] || '';
+    }
+  }
+
+  function termInit() {
+    if (!termOut || !termInp) return;
+    termOut.innerHTML = '';
+    var seq = [{ cls: 't-cmd', text: 'guest@sw-st:~$ ./seawolf --init', instant: true, wait: 200 }];
+    termT('terminal.welcome').forEach(function (txt, i) { seq.push({ cls: 't-ink', text: txt, instant: false, wait: 220 }); });
+    seq.push({ cls: 't-dim', text: '➜ ' + termT('terminal.hint'), instant: false, wait: 200 });
+    termBusy = true;
+    termSequence(seq, function () { termBusy = false; });
+    termInp.addEventListener('keydown', termKeydown);
+    termInp.setAttribute('placeholder', termT('terminal.placeholder'));
+    document.querySelectorAll('[data-term-cmd]').forEach(function (chip) {
+      chip.addEventListener('click', function () { termRun(chip.getAttribute('data-term-cmd')); if (termInp) termInp.focus(); });
+    });
+    var box = document.getElementById('terminalBox');
+    if (box) box.addEventListener('click', function () { if (termInp) termInp.focus(); });
+  }
+
+  function syncTerminalLang() {
+    if (termInp) termInp.setAttribute('placeholder', termT('terminal.placeholder'));
+    if (termOut) { termAdd('t-sys', '— ' + termT('terminal.langNotice') + ' —'); termScroll(); }
+  }
+
+  /* ================================================================
+     9) ESTADO ABIERTO/CERRADO
+     ================================================================ */
+  function updateScheduleStatus() {
+    var statusEl = document.getElementById('scheduleStatus');
+    if (!statusEl) return;
+    var now = new Date();
+    var day = now.getDay();
+    var hour = now.getHours() + now.getMinutes() / 60;
+    var open = day >= 1 && day <= 5 && hour >= 7 && hour < 17;
+    var labelEl = statusEl.querySelector('[data-i18n]');
+    if (labelEl) labelEl.textContent = open ? t(state.lang, 'protocol.openNow') : t(state.lang, 'protocol.closedNow');
+    statusEl.classList.toggle('bg-[#3fb950]/10', open);
+    statusEl.classList.toggle('text-[#3fb950]', open);
+    statusEl.classList.toggle('border-[#3fb950]/40', open);
+    statusEl.classList.toggle('bg-[#ff6b6b]/10', !open);
+    statusEl.classList.toggle('text-[#ff6b6b]', !open);
+    statusEl.classList.toggle('border-[#ff6b6b]/40', !open);
+    var dot = statusEl.querySelector('.status-dot');
+    if (dot) { dot.classList.toggle('bg-[#3fb950]', open); dot.classList.toggle('bg-[#ff6b6b]', !open); }
+    if (!open) { document.querySelectorAll('.status-dot').forEach(function (d) { d.style.animation = 'none'; }); }
+  }
+
+  /* ================================================================
+     10) INIT / CONFIGURACIÓN FINAL
+     ================================================================ */
+  function init() {
+    /* Tema */
+    setTheme(state.theme);
+    /* Idioma */
+    setLang(state.lang);
+    updateActiveLang();
+    /* Año footer */
+    var y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear() + '';
+    /* Partículas */
+    resizeCanvas();
+    startParticles();
+    /* Navbar */
+    onScroll();
+    /* Diagramas */
+    buildDiagrams();
+    /* Scroll reveal (ya ejecutado arriba con IntersectionObserver) */
+    /* Terminal */
+    termInit();
+    /* Schedule */
+    updateScheduleStatus();
+    setInterval(updateScheduleStatus, 60000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+<!-- ============================================================
+     ASISTENTE SMART SEAWOLF — proactivo + perfilado de venta
+     Endpoint: https://agente.sw-st.net/asistente (Nemotron free -> DeepSeek flash)
+     ============================================================ -->
+<style>
+#swBtn{position:fixed;right:20px;bottom:20px;z-index:9998;background:var(--accent,#00d4aa);color:#04140f;border:none;border-radius:30px;padding:14px 20px;font-weight:800;cursor:pointer;font-size:14px;font-family:inherit;box-shadow:0 10px 40px rgba(0,212,170,.35);transition:transform .2s}
+#swBtn:hover{transform:translateY(-2px)}
+#swChat{position:fixed;right:20px;bottom:20px;width:378px;max-width:93vw;height:548px;max-height:82vh;background:var(--card,#151515);border:1px solid var(--border,#232323);border-radius:16px;z-index:9999;display:none;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.62);font-family:inherit}
+#swChat.on{display:flex}
+#swChat .sw-h{background:var(--bg,#0a0a0a);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border,#232323)}
+#swChat .sw-tit{font-size:14px;font-weight:700;color:var(--text,#f0f0f0)}
+#swChat .sw-st{font-size:10.5px;color:var(--accent,#00d4aa)}
+#swChat .sw-x{background:transparent;border:none;color:var(--muted,#8b8b8b);font-size:18px;cursor:pointer}
+#swMsgs{flex:1;overflow-y:auto;padding:14px}
+.sw-m{margin:8px 0;max-width:86%;font-size:13.5px;line-height:1.45;padding:10px 13px;border-radius:13px;color:var(--text,#f0f0f0)}
+.sw-m.bot{background:var(--surface,#0d0d0d);border:1px solid var(--border,#232323)}
+.sw-m.me{background:var(--accent,#00d4aa);color:#04140f;margin-left:auto}
+.sw-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.sw-chip{background:transparent;border:1px solid var(--accent,#00d4aa);color:var(--accent,#00d4aa);border-radius:20px;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit}
+.sw-chip:hover{background:var(--accent,#00d4aa);color:#04140f}
+#swForm{display:flex;border-top:1px solid var(--border,#232323)}
+#swInp{flex:1;background:transparent;border:none;color:var(--text,#f0f0f0);padding:13px;font-size:13.5px;outline:none;font-family:inherit}
+#swForm button{background:var(--accent,#00d4aa);border:none;color:#04140f;font-weight:800;padding:0 17px;cursor:pointer}
+#swChat.pop{animation:swpop .32s ease}
+@keyframes swpop{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+</style>
+
+<button id="swBtn" aria-label="Abrir asistente de Seawolf Studio">🐺 ¿Te ayudo?</button>
+<div id="swChat" role="dialog" aria-label="Asistente de Seawolf Studio">
+  <div class="sw-h"><div><div class="sw-tit">🐺 Asistente Seawolf</div><div class="sw-st">● en línea · respondo al instante</div></div><button class="sw-x" id="swX" aria-label="Cerrar">✕</button></div>
+  <div id="swMsgs" aria-live="polite"></div>
+  <form id="swForm"><input id="swInp" placeholder="Escribe tu mensaje..." autocomplete="off"><button type="submit" aria-label="Enviar">➤</button></form>
+</div>
+
+<script>
+(function () {
+  var EP = "https://agente.sw-st.net/asistente";
+  var PROMPT = [
+    "Eres el asistente virtual de Seawolf Studio, una agencia de sistemas e IA que trabaja como un solo organismo.",
+    "Hablas en espanol, coloquial, cercano y BREVE (maximo 3 frases). Nunca uses jerga tecnica ni la palabra 'jauria'.",
+    "Tu OBJETIVO es entender que necesita el visitante y guiarlo a contratar. Productos y servicios:",
+    "(1) SmartWeb: pagina web con su propio asistente de IA que atiende clientes 24/7;",
+    "(2) SmartShop: tienda en linea para vender productos;",
+    "(3) SmartCourse: cursos o contenido digital para vender;",
+    "(4) Automatizaciones: que su negocio haga tareas solo (responder, agendar, cobrar);",
+    "(5) Agente de IA: atiende, filtra y organiza todo lo del negocio.",
+    "Flujo: saluda, pregunta por su negocio y su mayor dolor, sugiere el producto que mejor encaje,",
+    "y cierra invitando a escribir por WhatsApp al +57 312 533 0127 o a dejar sus datos. Nunca inventes precios:",
+    "di que se cotiza segun lo que necesite. Si no sabes algo, ofrece contacto humano."
+  ].join(" ");
+  var chat = document.getElementById('swChat'), msgs = document.getElementById('swMsgs'),
+      inp = document.getElementById('swInp'), btn = document.getElementById('swBtn');
+  var opened = false, greeted = false;
+
+  function add(t, cls) {
+    var d = document.createElement('div'); d.className = 'sw-m ' + cls; d.textContent = t;
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d;
+  }
+  function chips(arr) {
+    var w = document.createElement('div'); w.className = 'sw-chips';
+    arr.forEach(function (c) {
+      var b = document.createElement('button'); b.className = 'sw-chip'; b.type = 'button'; b.textContent = c;
+      b.onclick = function () { w.remove(); send(c); };
+      w.appendChild(b);
+    });
+    msgs.appendChild(w); msgs.scrollTop = msgs.scrollHeight;
+  }
+  function open(pop) {
+    chat.classList.add('on'); if (pop) chat.classList.add('pop');
+    opened = true; setTimeout(function () { inp.focus(); }, 120);
+  }
+  function greet() {
+    if (greeted) return; greeted = true;
+    add('¡Hola! 👋 Soy el asistente de Seawolf Studio. Ayudamos a que tu negocio trabaje solo con sistemas e IA.', 'bot');
+    add('¿Qué te trae por acá? Cuéntame de tu negocio y te digo por dónde empezar 👇', 'bot');
+    chips(['Quiero una página web', 'Quiero vender en línea', 'Automatizar mi negocio', 'Solo estoy mirando']);
+  }
+  function send(text) {
+    text = (text || '').trim(); if (!text) return;
+    add(text, 'me'); inp.value = ''; var b = add('…', 'bot');
+    fetch(EP, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: 'sw-st-landing', prompt: PROMPT, msg: text }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { b.textContent = d.reply || 'Escríbenos por WhatsApp al +57 312 533 0127 y te atendemos ya.'; msgs.scrollTop = msgs.scrollHeight; })
+      .catch(function () { b.textContent = 'Escríbenos por WhatsApp al +57 312 533 0127 y te atendemos enseguida. 🙂'; });
+  }
+  btn.onclick = function () { chat.classList.contains('on') ? chat.classList.remove('on') : (open(true), greet()); };
+  document.getElementById('swX').onclick = function () { chat.classList.remove('on'); };
+  document.getElementById('swForm').addEventListener('submit', function (e) { e.preventDefault(); send(inp.value); });
+
+  // PROACTIVO: sale solo a ofrecer ayuda
+  setTimeout(function () { if (!opened) { open(true); greet(); } }, 11000);
+  // exit-intent (escritorio) y scroll profundo
+  document.addEventListener('mouseleave', function (e) { if (e.clientY < 6 && !opened) { open(true); greet(); } });
+  var fired = false;
+  window.addEventListener('scroll', function () {
+    if (fired || opened) return;
+    var p = (window.scrollY + window.innerHeight) / document.body.scrollHeight;
+    if (p > 0.55) { fired = true; open(true); greet(); }
+  });
+})();
+</script>
+
+</body>
+</html>

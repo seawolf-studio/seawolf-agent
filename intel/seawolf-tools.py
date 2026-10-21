@@ -272,11 +272,19 @@ button{font:inherit;cursor:pointer;border-radius:7px;font-size:12px;padding:5px 
 <button class="tab" data-t="dupes">🧬 Duplicados</button><button class="tab" data-t="mant">🛠️ Mantenimiento</button>
 <button class="tab" data-t="rea">🔎 REA</button><button class="tab" data-t="bin">🗑️ Papelera</button>
 <button class="tab" id="rescan">↻ Re-escanear</button></div>
-<div class="tools"><input type="search" id="q" placeholder="Filtrar por nombre, extensión o disco…"><span id="stat" class="sub"></span></div>
+<div class="tools"><input type="search" id="q" placeholder="Filtrar por nombre, extensión o disco…"><span id="selinfo" class="sub"></span><button class="sw" id="b-trash">♻️ Mover marcados</button><button class="bad" id="b-hard">💀 Borrar marcados</button><span id="stat" class="sub"></span></div>
 <div id="view"></div></div><div class="toast" id="toast"></div>
 <script>
-var S={busy:true,heavy:[],dupes:[],bin:[],drives:[],map:[],manten:[],rea:null,tab:'heavy',q:'',sort:'size',desc:true,scanned:0};
+var S={busy:true,heavy:[],dupes:[],bin:[],drives:[],map:[],manten:[],rea:null,tab:'heavy',q:'',sort:'size',desc:true,scanned:0,sel:{}};
 function H(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},1900);}
+function humanaB(n){if(n<1024)return n+' B';var u=['KB','MB','GB','TB'],i=-1;do{n/=1024;i++}while(n>=1024&&i<3);return n.toFixed(1)+' '+u[i];}
+function selInfo(){var n=0,by=0;for(var k in S.sel){n++;var f=S.heavy.find(function(x){return x.p===k;});if(f)by+=f.size;}var e=document.getElementById('selinfo');if(e)e.innerHTML=n?('<b style="color:var(--sw)">'+n+'</b> marcados · <b style="color:var(--sw)">'+humanaB(by)+'</b>'):'';}
+async function enviarSel(hard){var ps=Object.keys(S.sel);if(!ps.length){H('Nada marcado');return;}
+ if(hard&&!confirm('BORRADO PERMANENTE de '+ps.length+' archivos. Sin vuelta atrás. ¿Confirmas?'))return;
+ if(!hard&&!confirm('Mover '+ps.length+' archivos a la Papelera Seawolf?'))return;
+ H(hard?'Borrando…':'Moviendo…');
+ await fetch('/mover-muchos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paths:ps,hard:hard})});
+ S.sel={};H('Hecho');refrescar();}
 async function refrescar(){try{var r=await fetch('/api/state');var j=await r.json();Object.assign(S,j);draw();if(S.busy)setTimeout(refrescar,1500);}catch(e){}}
 function draw(){
  document.getElementById('chips').innerHTML='<div class="chip">Analizados <b>'+S.scanned+'</b></div><div class="chip">Total <b>'+(S.totalH||'—')+'</b></div><div class="chip">Desperdicio <b style="color:var(--warn)">'+(S.wasteH||'—')+'</b></div><div class="chip">'+(S.busy?'<span class="spin"></span> analizando…':'✔ listo')+'</div>';
@@ -285,9 +293,10 @@ function draw(){
  var v=document.getElementById('view'),q=S.q.toLowerCase();
  if(S.tab==='heavy'){var a=S.heavy.filter(function(f){return !q||f.p.toLowerCase().indexOf(q)>=0;});
   a.sort(function(x,y){var k=S.sort,r=(k==='name')?x.p.localeCompare(y.p):(x.size-y.size);return S.desc?-r:r;});
-  var h='<table><thead><tr><th data-s="size">Tamaño</th><th>Disco</th><th data-s="name">Archivo</th><th></th></tr></thead><tbody>';
-  a.slice(0,400).forEach(function(f){h+='<tr><td class="size">'+f.h+'</td><td class="dv">'+f.drv+'</td><td class="path">'+f.p+'</td><td><button data-p="'+encodeURIComponent(f.p)+'">Mover</button></td></tr>';});
-  v.innerHTML=h+'</tbody></table>';
+  var h='<table><thead><tr><th style="width:30px"><input type="checkbox" id="ck-all" title="Marcar visibles"></th><th data-s="size">Tamaño</th><th>Disco</th><th data-s="name">Archivo</th></tr></thead><tbody>';
+  a.slice(0,400).forEach(function(f){h+='<tr><td><input type="checkbox" class="ck" data-p="'+encodeURIComponent(f.p)+'"'+(S.sel[f.p]?' checked':'')+'></td><td class="size">'+f.h+'</td><td class="dv">'+f.drv+'</td><td class="path">'+f.p+'</td></tr>';});
+  h+='</tbody></table>';
+  v.innerHTML=h;selInfo();
  } else if(S.tab==='map'){
   if(!S.map.length){v.innerHTML='<div class="empty">Sin datos (o aún analizando…).</div>';return;}
   var h='';S.map.forEach(function(d){h+='<div class="card"><h3 style="margin:0 0 8px;color:var(--sw2)">'+d.root+' — '+d.totalH+'</h3><div class="tree">';
@@ -313,6 +322,10 @@ function draw(){
   S.bin.forEach(function(e,i){h+='<tr><td>'+(i+1)+'</td><td class="path">'+(e.archivo||e.path)+'</td><td class="path">'+e.fecha+'</td><td>'+(e.accion==='papelera'?'<button data-r="'+(i+1)+'">Rescatar</button>':'—')+'</td></tr>';});
   v.innerHTML=h+'</tbody></table>';}
  document.querySelectorAll('button[data-p]').forEach(function(b){b.onclick=async function(){if(!confirm('¿Mover a la Papelera Seawolf?'))return;await fetch('/mover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({p:decodeURIComponent(b.dataset.p)})});b.textContent='✔';H('Movido');refrescar();};});
+ document.querySelectorAll('input.ck').forEach(function(c){c.onchange=function(){var p=decodeURIComponent(c.dataset.p);if(c.checked)S.sel[p]=1;else delete S.sel[p];selInfo();};});
+ var cka=document.getElementById('ck-all');if(cka)cka.onchange=function(){document.querySelectorAll('input.ck').forEach(function(c){c.checked=cka.checked;var p=decodeURIComponent(c.dataset.p);if(cka.checked)S.sel[p]=1;else delete S.sel[p];});selInfo();};
+ var btr=document.getElementById('b-trash');if(btr)btr.onclick=function(){enviarSel(false);};
+ var bhd=document.getElementById('b-hard');if(bhd)bhd.onclick=function(){enviarSel(true);};
  document.querySelectorAll('button[data-keep]').forEach(function(b){b.onclick=async function(){var g=S.dupes[+b.dataset.keep];if(!confirm('Mover '+(g.files.length-1)+' copias y dejar 1?'))return;await fetch('/mover-grupo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({files:g.files})});H('Copias movidas');refrescar();};});
  document.querySelectorAll('button[data-r]').forEach(function(b){b.onclick=async function(){await fetch('/rescatar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:+b.dataset.r})});H('Rescatado');refrescar();};});
  document.querySelectorAll('button[data-toggle]').forEach(function(b){b.onclick=async function(){await fetch('/manten',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.toggle,toggle:true})});H('Cambiado');refrescar();};});
@@ -375,8 +388,11 @@ def serve(targets, port):
             else:
                 self._send(HTML.encode(), "text/html; charset=utf-8")
         def do_POST(self):
-            n = int(self.headers.get("Content-Length", 0)); d = json.loads(self.rfile.read(n) or b"{}")
-            if self.path.startswith("/mover-grupo"): limpiar(d.get("files", [])[1:])
+            n = int(self.headers.get("Content-Length", 0))
+            try: d = json.loads(self.rfile.read(n) or b"{}")
+            except Exception: d = {}
+            if self.path.startswith("/mover-muchos"): limpiar(d.get("paths", []), bool(d.get("hard")))
+            elif self.path.startswith("/mover-grupo"): limpiar(d.get("files", [])[1:])
             elif self.path.startswith("/mover"): limpiar([d.get("p", "")])
             elif self.path.startswith("/rescatar"): rescatar(int(d.get("n", 0)))
             elif self.path.startswith("/manten-run"):

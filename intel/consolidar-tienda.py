@@ -53,6 +53,8 @@ def main():
         w=csv.DictWriter(f,fieldnames=campos,extrasaction="ignore"); w.writeheader()
         for r in todos:
             r2=dict(r); r2["categoria"]=r.get("_cat","")
+            pm = r.get("precio_mayorista") or 0
+            r2["precio_venta"] = int(round(pm*(1+margen)/1000)*1000) if pm else 0
             w.writerow(r2)
 
     # arbitraje: mismo marca+modelo en >1 grupo con precios distintos

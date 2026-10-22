@@ -1,6 +1,6 @@
 # INFORME DE TIENDA — barrido de grupos de proveedores
 
-Generado por Bellion · margen asumido **35%**
+Generado por Bellion · margen asumido **40%**
 
 ## 1. Grupos barridos
 

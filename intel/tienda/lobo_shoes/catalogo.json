@@ -2790,21 +2790,6 @@
   "precio_venta": 0
  },
  {
-  "archivo": "187.jpg",
-  "caption": "*💥CALIDAD 💯💥*\n*SECCION KIDS🧒🏻👧🏻*\n*🐺LOBO STORE SHOES🐺*\n*3122021174*\n*3126010394*",
-  "marca": "",
-  "modelo": "",
-  "color": "negro",
-  "tipo": "sneaker",
-  "genero": "unisex",
-  "descripcion": "Zapatillas deportivas negras y blancas con texto neón LLEGO MERCANCIA DE NIÑO",
-  "tallas": "",
-  "notas": "",
-  "precio_mayorista": 0,
-  "precio_origen": "",
-  "precio_venta": 0
- },
- {
   "archivo": "188.jpg",
   "caption": "🔥*JORDAN RETRO 1*🔥\n🔥*NIÑ@S*🔥\n🔥*EURO 28 al 35*🔥*110.000*🔥",
   "marca": "",
@@ -2998,5 +2983,20 @@
   "precio_mayorista": 110000,
   "precio_origen": "caption",
   "precio_venta": 148000
+ },
+ {
+  "archivo": "187.jpg",
+  "caption": "*💥CALIDAD 💯💥*\n*SECCION KIDS🧒🏻👧🏻*\n*🐺LOBO STORE SHOES🐺*\n*3122021174*\n*3126010394*",
+  "marca": "",
+  "modelo": "",
+  "color": "negro",
+  "tipo": "sneaker",
+  "genero": "unisex",
+  "descripcion": "Zapatillas deportivas negras y blancas con texto neón LLEGO MERCANCIA DE NIÑO",
+  "tallas": "",
+  "notas": "",
+  "precio_mayorista": 0,
+  "precio_origen": "",
+  "precio_venta": 0
  }
 ]

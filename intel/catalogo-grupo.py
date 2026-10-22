@@ -28,8 +28,17 @@ def key():
     sys.exit("falta OPENROUTER_API_KEY")
 
 def vision(path, api):
-    mt = mimetypes.guess_type(path)[0] or "image/jpeg"
-    b64 = base64.b64encode(open(path,"rb").read()).decode()
+    mt = "image/jpeg"
+    try:
+        from PIL import Image
+        import io
+        im = Image.open(path).convert("RGB")
+        im.thumbnail((1024, 1024))
+        buf = io.BytesIO(); im.save(buf, "JPEG", quality=85)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+    except Exception:
+        mt = mimetypes.guess_type(path)[0] or "image/jpeg"
+        b64 = base64.b64encode(open(path,"rb").read()).decode()
     body = {"model": MODEL, "messages":[{"role":"user","content":[
         {"type":"text","text":PROMPT},
         {"type":"image_url","image_url":{"url":f"data:{mt};base64,{b64}"}}]}],
@@ -89,6 +98,11 @@ def main():
     out_js = os.path.join(base,"catalogo.json")
     regs = json.load(open(out_js, encoding="utf-8")) if os.path.exists(out_js) else []
     hechos = {r["archivo"] for r in regs}
+    if "--redo-vacios" in sys.argv:
+        antes = len(regs)
+        regs = [r for r in regs if (r.get("marca") or r.get("modelo") or r.get("precio_mayorista"))]
+        hechos = {r["archivo"] for r in regs}
+        print(f"  (redo-vacios: {antes-len(regs)} entradas vacias devueltas a la cola)")
     api = key()
     pend = [c for c in caps if c["file"] not in hechos and os.path.exists(os.path.join(base,c["file"]))]
     if limit: pend = pend[:limit]

@@ -570,21 +570,6 @@
   "precio_venta": 155000
  },
  {
-  "archivo": "046.jpg",
-  "caption": "",
-  "marca": "",
-  "modelo": "",
-  "color": "blanco",
-  "tipo": "sneaker",
-  "genero": "nino",
-  "descripcion": "Zapatillas blancas con gris y detalles negros, cordones blancos, sujetas en mano y sobre mesa con fondo decorativo.",
-  "tallas": "",
-  "notas": "",
-  "precio_mayorista": 0,
-  "precio_origen": "",
-  "precio_venta": 0
- },
- {
   "archivo": "048.jpg",
   "caption": "*NIÑ@*\n🌼🎀🐻\n \nTALLA EUR 28 AL 35\n \n💥    *$ 115.000* 💥\n \nPEDIDOS Y CONFIRMACIONES AQUI ⤵️:\nhttps://Wa.me/573188887435",
   "marca": "adidas",
@@ -1785,21 +1770,6 @@
   "precio_venta": 115000
  },
  {
-  "archivo": "198.jpg",
-  "caption": "",
-  "marca": "",
-  "modelo": "",
-  "color": "blanco y negro",
-  "tipo": "sandalias",
-  "genero": "dama",
-  "descripcion": "Sandalias de tiras con estampado de letras, hebilla metálica, suela negra y tobillo con pulsera dorada.",
-  "tallas": "",
-  "notas": "",
-  "precio_mayorista": 0,
-  "precio_origen": "",
-  "precio_venta": 0
- },
- {
   "archivo": "199.jpg",
   "caption": "",
   "marca": "Dior",
@@ -1815,6 +1785,36 @@
   "precio_venta": 0
  },
  {
+  "archivo": "046.jpg",
+  "caption": "",
+  "marca": "",
+  "modelo": "",
+  "color": "blanco",
+  "tipo": "sneaker",
+  "genero": "nino",
+  "descripcion": "Zapatillas blancas con detalles grises y negros, cordones blancos, sujetas en mano y sobre mesa con fondo decorativo.",
+  "tallas": "",
+  "notas": "",
+  "precio_mayorista": 0,
+  "precio_origen": "",
+  "precio_venta": 0
+ },
+ {
+  "archivo": "198.jpg",
+  "caption": "",
+  "marca": "",
+  "modelo": "",
+  "color": "blanco y negro",
+  "tipo": "sandalias",
+  "genero": "dama",
+  "descripcion": "Sandalias blancas con estampado negro, correas con hebilla, plataforma gruesa, pie con esmalte y tobillera dorada.",
+  "tallas": "",
+  "notas": "",
+  "precio_mayorista": 0,
+  "precio_origen": "",
+  "precio_venta": 0
+ },
+ {
   "archivo": "200.jpg",
   "caption": "",
   "marca": "",
@@ -1822,7 +1822,7 @@
   "color": "negro",
   "tipo": "sandalias",
   "genero": "dama",
-  "descripcion": "Sandalias negras con estampado blanco, correas con hebilla, dedos con esmalte y pantalón vaquero.",
+  "descripcion": "Sandalias negras con estampado blanco, correas dobles, hebilla metálica y tobillo con pulsera dorada.",
   "tallas": "",
   "notas": "",
   "precio_mayorista": 0,

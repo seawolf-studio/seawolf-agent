@@ -9,9 +9,9 @@ Generado por Bellion · margen asumido **35%**
 | BARCELONA MALL 11-12A | 144 | 135 | $90,000 – $170,000 | Nike(41), Adidas(22), Jordan(21), ?(20) |
 | LOBO_STORE_SHOES #1 | 200 | 193 | $50,000 – $260,000 | Nike(51), ?(36), Adidas(18), On(14) |
 | Difusión HYPE SNKS | 122 | 92 | $60,000 – $120,000 | Nike(23), Adidas(16), ?(15), New Balance(12) |
-| Ropa y Accesorios | 121 | 0 | — | New Era(22), ?(21), Nike(15), Jordan(14) |
-| GRUPO CONTAINER 2 | 8 | 0 | — | Adidas(7), Alo(1) |
-| Ultimas Tendencias Zapatillas | 47 | 0 | — | Nike(29), ?(10), Jordan(8) |
+| Ropa y Accesorios | 121 | 0 | — | New Era(22), ?(20), Nike(15), Jordan(14) |
+| GRUPO CONTAINER 2 | 100 | 0 | — | ?(56), Adidas(10), Nike(9), Timberland(7) |
+| Ultimas Tendencias Zapatillas | 47 | 0 | — | Nike(32), Jordan(8), ?(7) |
 
 ## 2. Listado ALTERNO — grupos que SÍ cumplen (imagen + precio)
 
@@ -41,6 +41,6 @@ Generado por Bellion · margen asumido **35%**
 
 ## 4. Totales
 
-- Ítems totales: **642**
+- Ítems totales: **734**
 - Precio mayorista: **$50,000 – $260,000** (prom $106,083)
 - Archivos: `CONSOLIDADO.csv` + `catalogo.csv` por grupo

@@ -2,6 +2,8 @@
 ### Documento de arranque para la sesión de construcción
 **Preparado por:** Bellion (Gran Comandante) · **Para:** Monarca (Key) · **Fecha:** 2026-10-22
 **Estado:** captación de catálogo COMPLETA · **falta:** levantar la tienda
+**NOMBRE DE LA TIENDA (cerrado):** **SNEAKER HOUSE** · dominio recomendado **`sneakerhouse.co`**
+*(nace como CLIENTE FANTASMA de Seawolf Studio: contrató SmartWeb + Círculo Publicitario → doble uso: negocio real + caso vitrina)*
 
 ---
 
@@ -76,6 +78,26 @@ No hay que volver a barrer ni a preguntar lo básico. Lee las secciones 1-6 (con
 - **420 productos** con precio · mayorista **$50.000 – $260.000** (prom **$106.083**)
 - **Venta sugerida (40%):** desde **$70.000** hasta **$364.000**
 - Tallas: **36-39** (dama) y **40-44** (caballero) · algunos niñ@s **25-35**
+
+## 6.5 DEMANDA — Google Trends (dato duro, Colombia, 12m)
+Índice relativo (ancla `nike`=47.4). **Fuente:** `seawolf-agent/intel/informe-trends-sneakerhouse-20261022.md`
++ módulo `seawolf-agent/intel/trends-demanda.py`.
+
+| Keyword | Índice | Nota |
+|---|---|---|
+| **jordan** | **20.3** | 🥇 imán (ambiguo con el país) |
+| **new balance** | **10.5** | 🥈 imán |
+| tenis adidas | 4.3 | 🟢 "tenis" ≫ "zapatillas" (3.6×) |
+| tenis nike | 3.4 | 🟢 |
+| sneakers | 2.2 | — |
+| adidas samba | 2.2 | — |
+| zapatillas nike | 1.4 | 🔴 usar "tenis nike" |
+
+**Reglas de copy/SEO para la tienda:**
+1. **Usar "TENIS", no "zapatillas"** en títulos, menú y SEO (3.6× más buscado en Colombia).
+2. **Priorizar Jordan + New Balance** en home y destacados (imanes reales), luego Nike/Adidas.
+3. **Línea femenina** como gancho ("tenis [marca] mujer" domina).
+4. Long-tail: *tenis New Balance mujer · tenis Nike Shox · Jordan Retro*.
 
 ## 7. ARQUITECTURA PROPUESTA PARA LA TIENDA
 - **Base:** Astro headless (skill `multi-brand-headless-ecommerce-astro`) — sitio estático rápido, **sin Shopify**.

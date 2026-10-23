@@ -1,0 +1,57 @@
+ORDEN: Construir la Smart Web REAL de la tienda "SNEAKER HOUSE" (cliente fantasma de Seawolf Studio).
+
+== CONTEXTO ==
+SNEAKER HOUSE es una tienda de tenis originales (Jordan, Nike, adidas, New Balance, On...). Nace como
+CLIENTE FANTASMA: para el mundo es un cliente externo que contrató el paquete completo del Studio
+(SmartWeb + Círculo Publicitario). Doble uso: negocio real + caso vitrina.
+
+== ENTRADAS (ya existen, NO las regeneres) ==
+- Catalogo: C:\Users\Admin\tienda\productos\productos.json  (734 productos: sku, slug, marca, modelo,
+  categoria, genero, color, tallas, precio_mayorista, precio_venta, imagen, grupo, descripcion)
+- Fotos reales: C:\Users\Admin\tienda\productos\imagenes\<slug>.jpg  (734)
+- MOCKUP APROBADO (referencia de diseño, respétalo): C:\Users\Admin\tienda\mockup\sneaker-house-home.html
+- QR data-URI del sello: C:\Users\Admin\tienda\mockup\qr-datauri.txt
+
+== ENTREGABLE ==
+UNA sola pieza autocontenida: C:\Users\Admin\tienda\web\sneaker-house.html  (Smart Web multipagina por
+hash-routing: #/inicio #/tenis #/marca/<slug> #/producto/<slug> #/promos #/familia). Copia tambien
+productos.json e imagenes/ a C:\Users\Admin\tienda\web\ (o referencia rutas relativas ../productos/).
+
+== ESTANDAR DE FABRICA SEAWOLF (NO NEGOCIABLE) ==
+1. Modo claro/oscuro con OSCURO POR DEFECTO (data-theme en <html>, persistido en localStorage, key
+   namespaced seawolf_sneakerhouse_v1).
+2. Tipografia Arvo.
+3. Colores: fondo #121E1E / #0b1414; acento #4CE8E7 y #48E8D8.
+4. Pie obligatorio: firma de marca + "SmartWeb powered by Seawolf Studio" + "© 2026 Seawolf Studio —
+   Todos los derechos reservados" + QR data-URI base64 (lee el archivo qr-datauri.txt).
+5. HTML autocontenido, sin build, sin CDN obligatorio (Arvo por Google Fonts con fallback serif).
+6. Reveal robusto: html.js .reveal{opacity:0} + <noscript> que fuerce opacity:1 + fallback si no hay
+   IntersectionObserver. El contenido NUNCA debe depender del JS.
+
+== DISEÑO (segun el mockup aprobado) ==
+- Home: carrusel hero (3 slides, frases impactantes: "Sientete como su majestad" linea Jordan /
+  "La familia que calza junta" promo / "El par que te estabas debiendo"), tira de miniaturas,
+  BOTONES GRANDES de marca (JORDAN, NIKE, ADIDAS, NEW BALANCE, ON, UNDER ARMOUR) -> cada uno a su
+  pagina hub #/marca/<slug>, banda de promos gancho, grid de destacados, footer con sello.
+- PROMOS (usar estas, no inventar margen): "3er par al 50%" (NO regalar par), "Envio gratis desde
+  $250.000", "Paga al recibir".
+- Marca-y-modelo con foto real de imagenes/. Filtros en #/tenis: marca, genero, talla, rango de precio.
+- Boton "Pedir por WhatsApp" en cada ficha (placeholder de enlace wa.me, WAHA se conecta luego).
+
+== SEO + GEO (obligatorio) ==
+- Semantic HTML, un H1 por vista, H2 por seccion, alt descriptivo en cada imagen con keywords.
+- En titulos y copy usar "TENIS" (no "zapatillas"): en Colombia "tenis" se busca 3.6x mas.
+- Priorizar Jordan y New Balance (mayor demanda medida).
+- JSON-LD: schema.org Store (home) + ItemList/Product con offers (fichas y listado).
+- Meta: title, description, og:title/description/url/type, twitter:card.
+
+== COPY ==
+Espanol COLOQUIAL colombiano, registro popular y sencillo. Frases cortas. Cero jerga tecnica.
+
+== VERIFICACION ANTES DE TERMINAR ==
+- Extraer el <script> y correr `node --check` (un error de sintaxis deja el preview en blanco).
+- Confirmar que todas las rutas de imagen referenciadas existen.
+- Probar que sin JS el contenido sigue visible (el texto no depende del JS).
+
+Escribe un mini-reporte en C:\Users\Admin\tienda\web\REPORTE-KAISEL.md con: archivos creados, nº de
+productos embebidos, rutas, y cualquier pendiente.

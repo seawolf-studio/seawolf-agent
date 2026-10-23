@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SNEAKER HOUSE — Tenis originales | Jordan, Nike, adidas, New Balance en Colombia</title>
+<meta name="description" content="SNEAKER HOUSE: tenis originales en Colombia. Jordan, Nike, adidas, New Balance, On y más. Paga al recibir, envío a todo el país.">
+<meta property="og:title" content="SNEAKER HOUSE — Tenis originales en Colombia">
+<meta property="og:description" content="Jordan, Nike, adidas, New Balance y más. Paga al recibir. Aquí el paso lo pones tú.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://sneakerhouse.co">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+:root{color-scheme:dark;--bg:#121E1E;--bg2:#0b1414;--surface:#18292a;--card:#1b3031;--ink:#eafaf9;
+ --mute:#9fb8b7;--line:#26403f;--accent:#4CE8E7;--accent2:#48E8D8;--gold:#F2C14E;--font:"Arvo",Georgia,serif;--w:1180px}
+html[data-theme="light"]{color-scheme:light;--bg:#f5f7f6;--bg2:#fff;--surface:#fff;--card:#fff;--ink:#12201f;
+ --mute:#5b7473;--line:#dbe4e3;--accent:#0f8f8d;--accent2:#0f8f8d}
+*{box-sizing:border-box}html{background-color:var(--bg);min-height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.5}
+::selection{background:var(--accent);color:#08110f}a{color:inherit;text-decoration:none}
+.wrap{width:var(--w);max-width:100%;margin:0;padding:0 22px}h1,h2,h3{margin:0;line-height:1.12}
+.btn{display:inline-block;padding:14px 26px;border-radius:999px;font-weight:700;background:var(--accent);
+ color:#06110f;border:2px solid var(--accent);cursor:pointer;font-family:var(--font);font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+header.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);
+ backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:20px;height:74px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:22px}
+.logo .paw{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+ display:grid;place-items:center;color:#06110f;font-size:18px}
+.nav-in nav{display:flex;gap:18px;margin-left:auto;font-size:15px;color:var(--mute);flex-wrap:wrap}
+.nav-in nav a:hover{color:var(--accent)}
+.tools{display:flex;gap:10px;align-items:center}
+#q{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 16px;color:var(--ink);font-size:14px;width:190px;font-family:var(--font)}
+.icobtn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:18px}
+.hero .slides{position:relative;height:500px}.slide{position:absolute;inset:0;opacity:0;transition:opacity .7s;
+ display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:30px}.slide.on{opacity:1}
+.slide .txt{padding:20px 0 20px 22px}.kicker{display:inline-block;font-size:13px;letter-spacing:3px;color:var(--accent);
+ border:1px solid var(--accent);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+.slide h1{font-size:50px;margin-bottom:14px}.slide p{color:var(--mute);font-size:18px;max-width:520px;margin:0 0 26px}
+.slide .art{height:100%;display:flex;align-items:center;justify-content:center}
+.slide .art img{max-height:420px;max-width:100%;object-fit:contain;filter:drop-shadow(0 30px 50px rgba(0,0,0,.55))}
+.dots{position:absolute;bottom:18px;left:22px;display:flex;gap:9px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--line);cursor:pointer;border:0}.dot.on{background:var(--accent)}
+.thumbs{display:flex;gap:16px;padding:26px 0;overflow-x:auto}
+.thumb{flex:0 0 176px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;transition:.2s}
+.thumb:hover{transform:translateY(-4px);border-color:var(--accent)}
+.thumb img{width:100%;height:118px;object-fit:contain;border-radius:8px}
+.thumb b{display:block;font-size:13px;margin-top:8px}.thumb span{font-size:12px;color:var(--accent)}
+section{padding:44px 0}h2.sec{font-size:32px;margin-bottom:8px}.sub{color:var(--mute);margin-bottom:26px}
+.brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.brand{display:flex;flex-direction:column;align-items:center;justify-content:center;height:108px;border-radius:16px;
+ background:var(--surface);border:1px solid var(--line);font-size:25px;font-weight:700;letter-spacing:2px;transition:.22s}
+.brand:hover{background:var(--card);border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
+.brand small{font-size:12px;letter-spacing:1px;color:var(--mute);font-weight:400;margin-top:4px}
+.promo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.promo{border-radius:18px;padding:26px;border:1px solid var(--line);background:linear-gradient(160deg,var(--card),var(--surface))}
+.promo .tag{font-size:13px;color:var(--gold);letter-spacing:2px}.promo b{display:block;font-size:24px;margin:8px 0}
+.promo p{color:var(--mute);font-size:14px;margin:0}.promo.hero-p{border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s;display:block}
+.pcard:hover{border-color:var(--accent);transform:translateY(-4px)}
+.pcard img{width:100%;height:190px;object-fit:cover;background:#0e1a1a}
+.pcard .pc{padding:13px}.pcard .m{font-size:12px;color:var(--accent);letter-spacing:1px}
+.pcard b{display:block;font-size:15px;margin:3px 0 8px}
+.pcard .pr{font-size:18px;font-weight:700}.pcard .cot{font-size:14px;color:var(--mute)}
+.filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.filters select,.filters input{background:var(--surface);border:1px solid var(--line);color:var(--ink);
+ border-radius:10px;padding:10px 14px;font-family:var(--font);font-size:14px}
+.ficha{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.ficha img{width:100%;border-radius:18px;background:#0e1a1a;border:1px solid var(--line)}
+.ficha .m{color:var(--accent);letter-spacing:2px;font-size:14px}
+.ficha h1{font-size:38px;margin:8px 0 14px}.ficha .pr{font-size:30px;font-weight:700;margin:10px 0}
+.ficha .cot{color:var(--mute);font-size:15px}
+footer{border-top:1px solid var(--line);background:var(--bg2);padding:40px 0}
+.foot{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.foot .col{font-size:14px;color:var(--mute)}
+.foot .seal{margin-left:auto;display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.foot .seal img{width:64px;height:64px;border-radius:8px;background:#fff}
+.foot .seal b{font-size:14px}.foot .seal small{display:block;color:var(--mute);font-size:11.5px}
+html.js .view{display:none}html.js .view.view-active{display:block}
+html.js .reveal{opacity:0;transform:translateY(16px)}html.js .reveal.in{opacity:1;transform:none;transition:.6s ease}
+.pill{display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;margin:2px 4px 2px 0}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="wrap nav-in">
+  <a class="logo" href="#/inicio"><span class="paw">🐺</span> SNEAKER HOUSE</a>
+  <nav>
+    <a href="#/tenis">Tenis</a><a href="#/marcas">Marcas</a>
+    <a href="#/promos">Promos</a><a href="#/familia">Familia</a>
+  </nav>
+  <div class="tools">
+    <input id="q" type="search" placeholder="🔎 Buscar marca o modelo…" aria-label="Buscar">
+    <button class="icobtn" id="tgl" aria-label="Cambiar tema">🌙</button>
+  </div>
+</div></header>
+
+<!-- INICIO -->
+<main id="v-inicio" class="view view-active">
+  <section class="hero"><div class="slides">
+    <article class="slide on">
+      <div class="txt"><span class="kicker">LÍNEA JORDAN BRAND</span>
+        <h1>Siéntete como<br>su majestad.</h1>
+        <p>Los tenis que hicieron leyenda, ahora en tus pies. Jordan originales, a precio de manada.</p>
+        <a class="btn" href="#/marca/jordan">Ver Jordan →</a></div>
+      <div class="art"><img id="hero1" src="" alt="Tenis Jordan originales en Colombia — SNEAKER HOUSE"></div>
+    </article>
+    <article class="slide">
+      <div class="txt"><span class="kicker">PROMO FAMILIA</span>
+        <h1>La familia que<br>calza junta…</h1>
+        <p>Compra 2 pares de adulto y llévate el tercero al 50%. Aquí el que compra no es uno: es el equipo.</p>
+        <a class="btn" href="#/promos">Ver la promo →</a></div>
+      <div class="art"><img id="hero2" src="" alt="Tenis originales para toda la familia"></div>
+    </article>
+    <article class="slide">
+      <div class="txt"><span class="kicker">ORIGINALES. SIN VUELTAS.</span>
+        <h1>El par que<br>te estabas debiendo.</h1>
+        <p>Nike, adidas, New Balance, On y más. Paga cuando lo recibas, en la puerta de tu casa.</p>
+        <a class="btn" href="#/tenis">Explorar catálogo →</a></div>
+      <div class="art"><img id="hero3" src="" alt="Tenis New Balance originales en Colombia"></div>
+    </article>
+  </div>
+  <div class="dots"><button class="dot on" data-i="0"></button><button class="dot" data-i="1"></button><button class="dot" data-i="2"></button></div></section>
+
+  <div class="wrap"><div class="thumbs reveal" id="tira"></div></div>
+
+  <section id="marcas"><div class="wrap"><h2 class="sec reveal">Busca por tu marca</h2>
+    <p class="sub reveal">Cada marca tiene su casa aquí. Entra y mira todo lo que tenemos.</p>
+    <div class="brand-grid" id="marcas-grid"></div></div></section>
+
+  <section id="promos"><div class="wrap"><h2 class="sec reveal">Promos de la manada</h2>
+    <p class="sub reveal">Las de toda la vida, pero de verdad.</p>
+    <div class="promo-grid">
+      <div class="promo hero-p reveal"><span class="tag">👨‍👩‍👧 FAMILIA</span><b>3er par al 50%</b>
+        <p>Compras 2 pares de adulto y el tercero (¡de niño también!) sale a mitad de precio.</p></div>
+      <div class="promo reveal"><span class="tag">🚚 ENVÍO</span><b>Envío gratis</b>
+        <p>Desde $250.000 a todo Colombia. Tu par llega a la puerta de tu casa.</p></div>
+      <div class="promo reveal"><span class="tag">💵 PAGO</span><b>Paga al recibir</b>
+        <p>Miras el par, te lo pruebas y ahí sí pagas. Sin riesgos, sin sorpresas.</p></div>
+    </div></div></section>
+
+  <section><div class="wrap"><h2 class="sec reveal">Los que se están yendo</h2>
+    <p class="sub reveal">Tenis originales, listos para salir hoy.</p>
+    <div class="grid" id="destacados"></div></div></section>
+</main>
+
+<!-- CATALOGO -->
+<main id="v-tenis" class="view"><section><div class="wrap">
+  <h1 class="sec">Tenis originales</h1>
+  <p class="sub" id="cat-count"></p>
+  <div class="filters">
+    <select id="f-marca"><option value="">Todas las marcas</option></select>
+    <select id="f-genero"><option value="">Todos</option><option value="dama">Dama</option>
+      <option value="caballero">Caballero</option><option value="unisex">Unisex</option><option value="nino">Niñ@</option></select>
+    <select id="f-precio"><option value="">Cualquier precio</option>
+      <option value="0|100000">Hasta $100.000</option><option value="100000|150000">$100.000 – $150.000</option>
+      <option value="150000|200000">$150.000 – $200.000</option><option value="200000|99999999">Más de $200.000</option></select>
+    <input id="f-txt" type="search" placeholder="Modelo o color…">
+  </div>
+  <div class="grid" id="cat-grid"></div>
+  <p style="text-align:center;margin-top:26px"><button class="btn ghost" id="ver-mas" style="display:none">Ver más</button></p>
+</div></section></main>
+
+<!-- MARCA -->
+<main id="v-marca" class="view"><section><div class="wrap">
+  <h1 class="sec" id="marca-titulo"></h1><p class="sub" id="marca-sub"></p>
+  <div class="grid" id="marca-grid"></div></div></section></main>
+
+<!-- PRODUCTO -->
+<main id="v-producto" class="view"><section><div class="wrap"><div class="ficha" id="ficha"></div>
+  <p style="margin-top:30px"><a class="btn ghost" href="#/tenis">← Volver al catálogo</a></p></div></section></main>
+
+<!-- PROMOS -->
+<main id="v-promos" class="view"><section><div class="wrap">
+  <h1 class="sec">Promos de la manada</h1><p class="sub">Las de toda la vida, pero de verdad.</p>
+  <div class="promo-grid">
+    <div class="promo hero-p"><span class="tag">👨‍👩‍👧 FAMILIA</span><b>3er par al 50%</b>
+      <p>Compras 2 pares de adulto y el tercero sale a mitad de precio. Para calzar a toda la familia.</p></div>
+    <div class="promo"><span class="tag">🚚 ENVÍO</span><b>Envío gratis</b>
+      <p>Desde $250.000 a todo Colombia. Llega a la puerta de tu casa.</p></div>
+    <div class="promo"><span class="tag">💵 PAGO</span><b>Paga al recibir</b>
+      <p>Miras el par, te lo pruebas y ahí sí pagas. Contra entrega.</p></div>
+  </div></div></section></main>
+
+<!-- FAMILIA -->
+<main id="v-familia" class="view"><section><div class="wrap">
+  <h1 class="sec">Aquí el paso lo pones tú</h1>
+  <p class="sub">En SNEAKER HOUSE el que compra no es un cliente: es la familia.</p>
+  <p style="max-width:640px;color:var(--mute)">Tenis originales de las marcas que todos quieren, al precio que
+  sí puedes pagar. Compra desde tu casa, paga cuando lo recibas, y calza a todo el equipo. Envíos a todo Colombia.</p>
+  <p style="margin-top:20px"><a class="btn" href="#/tenis">Ver el catálogo →</a></p>
+</div></section></main>
+
+<footer><div class="wrap foot">
+  <div class="col"><b style="color:var(--ink)">🐺 SNEAKER HOUSE</b><br>Aquí el paso lo pones tú.<br>Envíos a todo Colombia</div>
+  <div class="col">Tenis · Marca · Familia · Promos</div>
+  <div class="seal"><img src="__QR__" alt="QR hacia Seawolf Studio">
+    <div><b>SmartWeb powered by Seawolf Studio</b>
+    <small>© 2026 Seawolf Studio — Todos los derechos reservados</small></div></div>
+</div></footer>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Store","name":"SNEAKER HOUSE",
+ "description":"Tienda de tenis originales en Colombia: Jordan, Nike, adidas, New Balance, On y más.",
+ "url":"https://sneakerhouse.co","areaServed":"CO","currenciesAccepted":"COP",
+ "paymentAccepted":"Contra entrega","brand":["Jordan","Nike","adidas","New Balance","On"]}
+</script>
+
+<script>
+var PRODUCTOS = __DATOS__;
+var WA_NUM = "573125330127"; /* cambiar por el WhatsApp de la tienda */
+(function(){'use strict';
+  var root=document.documentElement, KEY='seawolf_sneakerhouse_v1';
+  var P = PRODUCTOS.map(function(r){return {slug:r[0],marca:r[1],modelo:r[2],cat:r[3],gen:r[4],color:r[5],
+    tallas:r[6],pm:r[7],pv:r[8],im:'productos/imagenes/'+r[0]+'.jpg',desc:r[9]};});
+  function $(s){return document.querySelector(s);}
+  function money(n){return n?('$'+n.toLocaleString('es-CO')):'';}
+  function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+  function card(p){return '<a class="pcard reveal" href="#/producto/'+p.slug+'">'+
+    '<img src="'+p.im+'" alt="'+esc(p.marca+' '+(p.modelo||'')+' '+p.color)+'" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
+    '<div class="pc"><div class="m">'+esc(p.marca||'SNEAKER HOUSE')+'</div><b>'+esc(p.modelo||'Tenis')+'</b>'+
+    (p.pv?('<span class="pr">'+money(p.pv)+'</span>'):('<span class="cot">Cotizar por WhatsApp</span>'))+'</div></a>';}
+  function pintar(el,arr,lim){el.innerHTML=arr.slice(0,lim||arr.length).map(card).join('');reveal();}
+
+  // ---- filtros catalogo ----
+  var marcasByCount={}; P.forEach(function(p){ if(p.marca) marcasByCount[p.marca]=(marcasByCount[p.marca]||0)+1; });
+  var marcasOrd=Object.keys(marcasByCount).sort(function(a,b){return marcasByCount[b]-marcasByCount[a];});
+  var fm=$('#f-marca'); marcasOrd.forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m+' ('+marcasByCount[m]+')';fm.appendChild(o);});
+  var CAT=P.filter(function(p){return p.cat==='zapatillas'||p.cat==='mixto';});
+  var visibles=48, actual=CAT;
+  function aplicar(){
+    var m=fm.value,g=$('#f-genero').value,pr=$('#f-precio').value,t=$('#f-txt').value.toLowerCase();
+    var r=CAT.filter(function(p){
+      if(m&&p.marca!==m)return false;
+      if(g&&p.gen!==g)return false;
+      if(t&&((p.modelo+' '+p.color+' '+p.marca).toLowerCase().indexOf(t)<0))return false;
+      if(pr){var a=+pr.split('|')[0],b=+pr.split('|')[1]; if(!p.pv||p.pv<a||p.pv>b)return false;}
+      return true;});
+    actual=r; visibles=48; pintar($('#cat-grid'),r,visibles);
+    $('#cat-count').textContent=r.length+' tenis encontrados';
+    $('#ver-mas').style.display=(r.length>visibles)?'block':'none';
+  }
+  ['#f-marca','#f-genero','#f-precio'].forEach(function(s){$(s).addEventListener('change',aplicar);});
+  $('#f-txt').addEventListener('input',function(){clearTimeout(window._t);window._t=setTimeout(aplicar,250);});
+  $('#ver-mas').addEventListener('click',function(){visibles+=48;pintar($('#cat-grid'),actual,visibles);
+    this.style.display=(actual.length>visibles)?'block':'none';});
+
+  // ---- inicio dinamico ----
+  var conPrecio=P.filter(function(p){return p.pv>0;});
+  function primerPor(marca){for(var i=0;i<conPrecio.length;i++){if(conPrecio[i].marca===marca)return conPrecio[i].im;}return '';}
+  $('#hero1').src=primerPor('Jordan')||conPrecio[0].im;
+  $('#hero2').src=primerPor('Nike')||conPrecio[1].im;
+  $('#hero3').src=primerPor('New Balance')||conPrecio[2].im;
+  $('#tira').innerHTML=conPrecio.slice(0,8).map(function(p){return '<a class="thumb" href="#/producto/'+p.slug+'">'+
+    '<img src="'+p.im+'" alt="'+esc(p.marca+' '+p.modelo)+'" loading="lazy"><b>'+esc(p.marca+' '+(p.modelo||''))+'</b><span>'+money(p.pv)+'</span></a>';}).join('');
+  $('#marcas-grid').innerHTML=marcasOrd.slice(0,6).map(function(m){return '<a class="brand reveal" href="#/marca/'+
+    encodeURIComponent(m)+'">'+esc(m.toUpperCase())+'<small>'+marcasByCount[m]+' modelos</small></a>';}).join('');
+  $('#destacados').innerHTML=conPrecio.filter(function(p){return ['Jordan','New Balance','Nike','adidas','On'].indexOf(p.marca)>=0;})
+    .slice(0,4).map(card).join('');
+
+  // ---- vistas / router ----
+  var VIEWS={inicio:'#v-inicio',tenis:'#v-tenis',marca:'#v-marca',producto:'#v-producto',promos:'#v-promos',familia:'#v-familia'};
+  function show(name){for(var k in VIEWS){$(VIEWS[k]).classList.toggle('view-active',k===name);}
+    window.scrollTo(0,0); reveal();}
+  function marcaView(slug){
+    var m=decodeURIComponent(slug), arr=P.filter(function(p){return p.marca===m;});
+    $('#marca-titulo').textContent=m; $('#marca-sub').textContent=arr.length+' modelos disponibles · '+
+      arr.filter(function(p){return p.pv>0;}).length+' con precio';
+    pintar($('#marca-grid'),arr.sort(function(a,b){return (b.pv>0)-(a.pv>0);}));show('marca');}
+  function productoView(slug){
+    var p=P.filter(function(x){return x.slug===slug;})[0]; if(!p){location.hash='#/tenis';return;}
+    var tallas=(p.tallas||'').split(/[ ,]+/).filter(Boolean).map(function(t){return '<span class="pill">'+esc(t)+'</span>';}).join(' ');
+    var msg=encodeURIComponent('Hola SNEAKER HOUSE 👋 quiero pedir: '+(p.marca+' '+(p.modelo||''))+' — talla ___');
+    $('#ficha').innerHTML='<div><img src="'+p.im+'" alt="'+esc(p.marca+' '+p.modelo+' '+p.color)+'"></div>'+
+      '<div><div class="m">'+esc(p.marca||'SNEAKER HOUSE')+'</div><h1>'+esc(p.modelo||'Tenis')+'</h1>'+
+      '<div class="cot">'+esc(p.desc||'Tenis originales.')+'</div>'+
+      (p.pv?('<div class="pr">'+money(p.pv)+'</div>'):('<div class="pr">Cotizar</div>'))+
+      '<p><b>Color:</b> '+esc(p.color||'—')+'</p><p><b>Género:</b> '+esc(p.gen||'—')+'</p>'+
+      '<p><b>Tallas:</b><br>'+tallas+'</p>'+
+      '<p style="margin-top:20px"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/'+WA_NUM+'?text='+msg+'">📲 Pedir por WhatsApp</a></p>'+
+      '<p class="cot" style="margin-top:10px">Pago contra entrega · Envíos a todo Colombia</p></div>';
+    show('producto');}
+  function route(){
+    var h=location.hash.replace(/^#\/?/,'')||'inicio', parts=h.split('/');
+    if(parts[0]==='marca'&&parts[1])return marcaView(parts[1]);
+    if(parts[0]==='producto'&&parts[1])return productoView(parts[1]);
+    if(VIEWS[parts[0]])return show(parts[0]);
+    show('inicio');}
+  window.addEventListener('hashchange',route);
+
+  // ---- tema ----
+  function setTheme(t){root.setAttribute('data-theme',t);var b=$('#tgl');
+    if(b)b.textContent=(t==='dark')?'☀️':'🌙';try{localStorage.setItem(KEY,JSON.stringify({theme:t}));}catch(e){}}
+  var st={theme:'dark'};try{st=JSON.parse(localStorage.getItem(KEY))||st;}catch(e){}setTheme(st.theme||'dark');
+  $('#tgl').addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+
+  // ---- buscador global ----
+  $('#q').addEventListener('keydown',function(e){if(e.key==='Enter'){$('#f-txt').value=this.value;location.hash='#/tenis';aplicar();}});
+
+  // ---- carrusel ----
+  var sl=[].slice.call(document.querySelectorAll('.slide')),dt=[].slice.call(document.querySelectorAll('.dot')),i=0,timer;
+  function go(n){i=(n+sl.length)%sl.length;sl.forEach(function(s,k){s.classList.toggle('on',k===i)});dt.forEach(function(d,k){d.classList.toggle('on',k===i)});}
+  function auto(){clearInterval(timer);timer=setInterval(function(){go(i+1)},5200);}
+  dt.forEach(function(d){d.addEventListener('click',function(){go(+d.dataset.i);auto();})});auto();
+
+  // ---- reveal ----
+  var io=null;
+  function reveal(){var rv=[].slice.call(document.querySelectorAll('.view-active .reveal'));
+    if('IntersectionObserver' in window){if(!io)io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
+      rv.forEach(function(e){io.observe(e)});setTimeout(function(){rv.forEach(function(e){e.classList.add('in')})},2000);}
+    else rv.forEach(function(e){e.classList.add('in')});}
+
+  aplicar(); route(); reveal();
+})();
+</script>
+</body>
+</html>

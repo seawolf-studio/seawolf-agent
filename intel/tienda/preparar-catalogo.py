@@ -47,6 +47,7 @@ def marca3(m):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--margen", type=float, default=1.35, help="multiplicador sobre mayorista (1.35 = 35%%)")
     a = ap.parse_args()
 
     with open(CSV, encoding="utf-8-sig") as f:
@@ -61,7 +62,8 @@ def main():
         vistos[base] += 1
         slug = base if vistos[base] == 1 else f"{base}-{vistos[base]}"
         pm = int(r["precio_mayorista"]) if (r["precio_mayorista"] or "").isdigit() else 0
-        pv = int(r["precio_venta"]) if (r["precio_venta"] or "").isdigit() else 0
+        # precio de venta = mayorista * margen, redondeado a 1.000 (35% por defecto)
+        pv = int(round(pm * a.margen / 1000.0) * 1000) if pm else 0
         if pm == 0:
             sin_precio += 1
         grupo = r["_grupo"]
@@ -93,8 +95,9 @@ def main():
 
     os.makedirs(IMG, exist_ok=True)
     for p in productos:
-        if p["foto_existe"]:
-            shutil.copy2(p["foto_origen"], os.path.join(IMG, p["slug"] + ".jpg"))
+        dst = os.path.join(IMG, p["slug"] + ".jpg")
+        if p["foto_existe"] and not os.path.exists(dst):
+            shutil.copy2(p["foto_origen"], dst)
     with open(os.path.join(OUT, "productos.json"), "w", encoding="utf-8") as f:
         json.dump(productos, f, ensure_ascii=False, indent=2)
     cols = ["sku", "slug", "marca", "modelo", "categoria", "genero", "color", "tallas",

@@ -16,7 +16,7 @@ No hay que volver a barrer ni a preguntar lo básico. Lee las secciones 1-6 (con
 ## 1. EL NEGOCIO (contexto real)
 - El Monarca **cerró un acuerdo** con proveedores de calzado: puede comprar a **precio de mayorista** y revender con margen a su favor.
 - Los proveedores publican **fotos de producto con el precio** en **grupos de difusión de WhatsApp**; los precios llegan **esporádicos** (no en un lote único).
-- **Margen decidido por el Monarca: 40%.**
+- **Margen: 35%** (ajustado desde 40% el 2026-10-22 — el Monarca revisó precios y bajó por ser él mismo cliente y saber hasta dónde pagan).
 - La tienda será una **"smart shop"**: se irá armando de a poco, no de golpe.
 - **PROSCRITO: Shopify** (bestia proscrita del Studio). La tienda es **código propio**.
 
@@ -76,7 +76,7 @@ No hay que volver a barrer ni a preguntar lo básico. Lee las secciones 1-6 (con
 
 ## 6. NÚMEROS (margen 40% ya aplicado)
 - **420 productos** con precio · mayorista **$50.000 – $260.000** (prom **$106.083**)
-- **Venta sugerida (40%):** desde **$70.000** hasta **$364.000**
+- **Venta sugerida (35%):** desde **$68.000** hasta **$351.000**
 - Tallas: **36-39** (dama) y **40-44** (caballero) · algunos niñ@s **25-35**
 
 ## 6.5 DEMANDA — Google Trends (dato duro, Colombia, 12m)
@@ -98,6 +98,12 @@ No hay que volver a barrer ni a preguntar lo básico. Lee las secciones 1-6 (con
 2. **Priorizar Jordan + New Balance** en home y destacados (imanes reales), luego Nike/Adidas.
 3. **Línea femenina** como gancho ("tenis [marca] mujer" domina).
 4. Long-tail: *tenis New Balance mujer · tenis Nike Shox · Jordan Retro*.
+
+## 6.6 PENDIENTES ABIERTOS (2026-10-23)
+- **ENVÍOS: sin montar.** Gancho deseado por el Monarca: **envío GRATIS en todo** (ya puesto en la web). Falta definir el servicio con el proveedor, o contratarlo propio y regarlo a las tiendas que NO son de Dropi.
+- **PAGO CONTRAENTREGA: sin definir.** Hoy figura como gancho en la web → **confirmar antes de prometerlo**.
+- **Imágenes:** 734 (5 eran VIDEOS .mp4 en CONTAINER 2 → convertidas a fotograma con ffmpeg). Optimizadas 148 MB → 69 MB.
+- **Demo:** reunión virtual con un proveedor el **2026-10-23 en la noche** → `web/sneaker-house.html`.
 
 ## 7. ARQUITECTURA PROPUESTA PARA LA TIENDA
 - **Base:** Astro headless (skill `multi-brand-headless-ecommerce-astro`) — sitio estático rápido, **sin Shopify**.

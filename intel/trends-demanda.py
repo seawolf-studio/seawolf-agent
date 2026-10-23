@@ -23,6 +23,16 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 MAX_POR_TANDA = 5  # límite duro de Google Trends
 
 
+def veredicto(indice):
+    """Traduce el índice (normalizado al ancla) a veredicto de DEMANDA.
+    OJO: Trends mide INTERÉS DE BÚSQUEDA, no ventas. Es señal, no caja registradora."""
+    if indice >= 15:  return "🔥 ALTA"
+    if indice >= 5:   return "🟢 MEDIA-ALTA"
+    if indice >= 1.5: return "🟡 MEDIA"
+    if indice >= 0.5: return "🟠 BAJA"
+    return "⚪ NULA / sin datos"
+
+
 def _get(path, params):
     """GET a la API interna; limpia el prefijo anti-JSON )]}' y devuelve dict."""
     url = BASE + path + "?" + urllib.parse.urlencode(params)
@@ -126,11 +136,12 @@ def main():
         idx, ref = barrido(a.kw, a.geo, a.tf, a.ancla)
         ordenado = sorted(idx.items(), key=lambda x: -x[1]["indice"])
         md += [f"## Interés por keyword (índice, ancla `{a.ancla}`={ref})", "",
-               "| # | Keyword | Índice |", "|---|---|---|"]
+               "> ⚠️ Trends mide **INTERÉS DE BÚSQUEDA**, no ventas. Es señal de demanda, no caja registradora.", "",
+               "| # | Keyword | Índice | Veredicto |", "|---|---|---|---|"]
         for i, (k, v) in enumerate(ordenado, 1):
-            md.append(f"| {i} | {k} | **{v['indice']}** |")
+            md.append(f"| {i} | {k} | **{v['indice']}** | {veredicto(v['indice'])} |")
         md.append("")
-        dump["keywords"] = {k: v["indice"] for k, v in ordenado}
+        dump["keywords"] = {k: {"indice": v["indice"], "veredicto": veredicto(v["indice"])} for k, v in ordenado}
 
     if a.relacionadas:
         md += ["## Consultas relacionadas", "", "| Semilla | TOP | 🚀 En ascenso |", "|---|---|---|"]

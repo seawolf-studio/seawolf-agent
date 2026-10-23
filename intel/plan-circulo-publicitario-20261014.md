@@ -21,7 +21,7 @@
 
 | # | Estación | Entrada | Proceso | Salida | Herramienta | ¿Auto? |
 |---|----------|---------|---------|--------|-------------|--------|
-| **1** | **Concepto / Ángulo** | Producto X + datos | Angles por 6 ejes | 100 ideas | LLM (OpenRouter) + `marketingskills` | Semi (tú apruebas) |
+| **1** | **Concepto / Ángulo** | Producto X + **datos de demanda (Google Trends)** | Angles por 6 ejes | 100 ideas | LLM (OpenRouter) + `marketingskills` + **`trends-demanda.py`** | Semi (tú apruebas) |
 | **2** | **Atributos / Hooks** | 100 ideas | Rúbrica 0–5 × 5 criterios | **Top 10** + hooks | LLM + rúbrica | ✅ |
 | **3** | **Creativos** | Top 10 | Copy + imagen + video | 10 piezas | LLM + LocalAI/SD + **MoneyPrinterTurbo** + `autoclip` | ✅ |
 | **4** | **Variantes nativas** | 10 piezas | 3–4 formatos por red | 30–40 variantes | LLM + plantillas | ✅ |
@@ -78,6 +78,7 @@ Se piden 15–20 ideas por eje → diversidad forzada:
 | 1–2 | **coreyhaines31/marketingskills** | 54.768 | Skills de marketing/copy para agentes |
 | 1–2 | ericosiu/ai-marketing-skills | 3.634 | Skills de growth/experimentos |
 | 1–2 | mikiarlo3/ai-copywriter | 1.212 | Copywriter con método real |
+| 1 | **`trends-demanda.py`** (interno) | — | **Demanda real: Google Trends → veredicto (se mueve / no se mueve).** Alimenta el ángulo con datos, no corazonadas |
 | 3 | **zhou Xiaoka/autoclip** | 9.414 | Video largo → clips |
 | 3 | **MoneyPrinterTurbo** | 126.900 | Video desde texto (TTS+subs) |
 | 3 | LocalAI / SD.cpp | — | Imagen |

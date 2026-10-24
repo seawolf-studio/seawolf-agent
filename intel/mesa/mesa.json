@@ -24,6 +24,50 @@
    "de": "bellion",
    "texto": "Escuchados, mi señor. Jima: el enganche va por .env + verificacion real (coincide con nuestra doctrina de secretos). Igris: LA GUARIDA, y el lema nos define. Fase 1 EN PIE: la mesa existe, las sombras hablan con su nombre, y usted puede convocar a cualquiera desde abajo.",
    "hora": "21:10"
+  },
+  {
+   "de": "bellion",
+   "texto": "Igris respondio al susurro privado: el lema paso de solemne a picante con las dos palabras exigidas al oido. Fase 2 VERIFICADA: el susurro cambia de verdad lo que la sombra produce.",
+   "hora": "22:13"
+  }
+ ],
+ "susurros": [
+  {
+   "de": "monarca",
+   "para": "igris",
+   "texto": "Mi caballero Igris: no me termina de gustar ese lema tan solemne. Hazmelo mas jocoso y con chispa picante, y asegurate de incluir EXACTAMENTE estas dos palabras: 'muerde' y 'sin permiso'.",
+   "hora": "22:13"
+  },
+  {
+   "de": "igris",
+   "para": "monarca",
+   "texto": "Palabras que muerden sin permiso.",
+   "hora": "22:13"
+  }
+ ],
+ "misiones": [
+  {
+   "id": "m1",
+   "titulo": "App multiplataforma que canta la hora",
+   "sombra": "jima",
+   "sesion": "local-2522882acc1827c5fc538f2d503480b439314803bc6c70a573c1bfaedc362e06",
+   "turnos": [
+    {
+     "n": 1,
+     "quien": "monarca",
+     "instruccion": "En maximo 3 lineas, se directo y sin preambulos: propuesta tecnica para una app multiplataforma que cada hora cante la hora con un ritmo distinto.",
+     "salida": "\u001b[0m\n\u001b[38;2;255;248;220mApp multiplataforma con cron por hora, cada vez con ritmo aleatorio desde lista predefinida (10 estilos). Usa Web Audio API para generar sonido en tiempo real, sin almacenar archivos. Notifica via push con notificación de audio (solo si permiso).\u001b[0m",
+     "hora": "22:33"
+    },
+    {
+     "n": 2,
+     "quien": "monarca",
+     "instruccion": "CORRECCION DEL MONARCA: olvida el azar. Quiero que los ritmos se elijan SEGUN LA HORA DEL DIA, no al azar. Dime en 3 lineas EXACTAMENTE que cambia respecto a tu propuesta anterior.",
+     "salida": "\u001b[0m\n\u001b[38;2;255;248;220mCambios: el ritmo se elige por hora del día (ej: 6-9 AM: alegre, 12-2 PM: bailable, 6-10 PM: lento). Lista de ritmos por franja horaria está codificada en un JSON de mapeo. El cron ejecuta el mismo flujo, pero el ritmo se selecciona por hora actual, no aleatorio.\u001b[0m",
+     "hora": "22:33"
+    }
+   ],
+   "estado": "esperando tu correccion"
   }
  ]
 }

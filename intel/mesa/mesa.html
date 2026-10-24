@@ -51,6 +51,35 @@
   .sh .n{font-weight:800;font-size:12.5px}
   .sh .r{font-size:9.5px;color:var(--dim)}
   .foot{margin-top:16px;font-size:10.5px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap}
+  .sus{display:flex;flex-direction:column;gap:10px}
+  .sw{border:1px dashed rgba(167,139,250,.5);border-radius:13px;padding:11px 13px;
+      background:linear-gradient(120deg,rgba(167,139,250,.10),rgba(0,0,0,.25));position:relative}
+  .sw .cab{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .sw .nom{font-weight:800;font-size:12.5px}
+  .sw .flecha{font-size:11px;color:var(--dim)}
+  .sw .hora{font-size:10px;color:var(--dim);margin-left:auto}
+  .sw .txt{font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .sw.sombra{border-style:solid;border-color:rgba(167,139,250,.35)}
+  .candado{font-size:9.5px;font-weight:800;letter-spacing:1px;color:#C4B5FD;background:rgba(167,139,250,.14);
+           padding:3px 8px;border-radius:999px;display:inline-block;margin-bottom:8px}
+  .mi{border:1px solid var(--line);border-radius:15px;padding:14px;background:rgba(0,0,0,.22);margin-bottom:13px}
+  .mi .top{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:11px}
+  .mi .ti{font-weight:800;font-size:14px}
+  .mi .pill{font-size:9.5px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:999px;
+            background:rgba(255,194,75,.16);color:var(--amber)}
+  .mi .pill.ok{background:rgba(91,229,138,.16);color:var(--green)}
+  .turno{display:flex;gap:11px;padding:10px 0;border-top:1px dashed rgba(76,232,231,.13)}
+  .turno .num{flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:12px;
+              background:rgba(76,232,231,.13);color:var(--cyan);border:1px solid var(--line)}
+  .turno .cuerpo{flex:1;min-width:0}
+  .turno .ord{font-size:11.5px;color:var(--dim);margin-bottom:5px}
+  .turno .ord b{color:var(--gold);font-weight:700}
+  .turno .resp{font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
+               background:rgba(255,255,255,.03);border-left:2px solid var(--aqua);padding:8px 11px;border-radius:7px}
+  .mision-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .mb{cursor:pointer;font-size:11px;font-weight:700;padding:6px 11px;border-radius:9px;
+      background:rgba(76,232,231,.10);border:1px solid var(--line);color:var(--cyan)}
+  .mb:hover{background:rgba(76,232,231,.2)}
 </style>
 </head>
 <body>
@@ -65,13 +94,19 @@
 
   <div class="chat" id="chat"></div>
 
+  <h2>♻️ Misiones en turnos — corregir a mitad de camino</h2>
+  <div id="mis"></div>
+
+  <h2>🔒 Susurros — solo usted y la sombra</h2>
+  <div class="sus" id="sus"></div>
+
   <h2>Convocar a una sombra</h2>
   <div class="squad" id="squad"></div>
 
   <div class="foot" id="foot"></div>
 
 <script>
-const D = {"mensajes": [{"de": "monarca", "texto": "Muchachos, quiero el Cuarto de Guerra: UNA mesa donde yo les hable a todos, ustedes me respondan con su nombre, yo vea cada detalle mientras pasa, y pueda corregir a cualquiera a mitad de camino — o hablar aparte con uno solo.", "hora": "21:10", "n": "Monarca", "r": "Key · Seawolf Studio", "i": "👑", "c": "#FFD166"}, {"de": "bellion", "texto": "Recibido, mi señor. 🐺\nTraducción: mesa unificada + turnos + interrupción. Fase 1 = la mesa donde todos hablan con nombre. Ya está en pie — esto que ve ES la Fase 1.\nReparto: Jima evalúa el enganche técnico; Igris propone nombre y lema. Los convoco.", "hora": "21:10", "n": "Bellion", "r": "Gran Comandante", "i": "🐺", "c": "#4CE8E7"}, {"de": "jima", "texto": "Conecta la API externa mediante webhook con idempotencia (dedupe token) y reintentos con backoff. Usa variables de entorno para el token, no hardcodees. Verifica con una llamada real: 200 OK + payload esperado.", "hora": "21:10", "n": "Jima", "r": "Automatización", "i": "⚙️", "c": "#8FD6FF"}, {"de": "igris", "texto": "Nombre: LA GUARIDA (o La Madriguera del Lobo).\nLema de guerra: El lobo no caza solo: caza en sombras.\nTres frases, sin relleno, listo para grabar en la puerta.", "hora": "21:10", "n": "Igris", "r": "Copywriting", "i": "✍️", "c": "#A78BFA"}, {"de": "bellion", "texto": "Escuchados, mi señor. Jima: el enganche va por .env + verificacion real (coincide con nuestra doctrina de secretos). Igris: LA GUARIDA, y el lema nos define. Fase 1 EN PIE: la mesa existe, las sombras hablan con su nombre, y usted puede convocar a cualquiera desde abajo.", "hora": "21:10", "n": "Bellion", "r": "Gran Comandante", "i": "🐺", "c": "#4CE8E7"}], "roster": [{"id": "igris", "n": "Igris", "r": "Copywriting", "i": "✍️", "c": "#A78BFA"}, {"id": "tank", "n": "Tank", "r": "Ventas / WhatsApp", "i": "🤝", "c": "#5BE58A"}, {"id": "greed", "n": "Greed", "r": "Ads / Tráfico", "i": "🎯", "c": "#FF9F6B"}, {"id": "iron", "n": "Iron", "r": "Email / Secuencias", "i": "📧", "c": "#67B7FF"}, {"id": "tusk", "n": "Tusk", "r": "SEO / Orgánico", "i": "🔍", "c": "#FFC24B"}, {"id": "kamish", "n": "Kamish", "r": "Social / Distribución", "i": "📣", "c": "#FF7BC1"}, {"id": "kaisel", "n": "Kaisel", "r": "Web Dev", "i": "🌐", "c": "#7CE8C0"}, {"id": "titan", "n": "Titan", "r": "UX / UI", "i": "🎨", "c": "#B7A6FF"}, {"id": "jima", "n": "Jima", "r": "Automatización", "i": "⚙️", "c": "#8FD6FF"}, {"id": "beru", "n": "Beru", "r": "Auditoría", "i": "🛡️", "c": "#FF8A8A"}], "generado": "21:10"};
+const D = {"mensajes": [{"de": "monarca", "texto": "Muchachos, quiero el Cuarto de Guerra: UNA mesa donde yo les hable a todos, ustedes me respondan con su nombre, yo vea cada detalle mientras pasa, y pueda corregir a cualquiera a mitad de camino — o hablar aparte con uno solo.", "hora": "21:10", "n": "Monarca", "r": "Key · Seawolf Studio", "i": "👑", "c": "#FFD166"}, {"de": "bellion", "texto": "Recibido, mi señor. 🐺\nTraducción: mesa unificada + turnos + interrupción. Fase 1 = la mesa donde todos hablan con nombre. Ya está en pie — esto que ve ES la Fase 1.\nReparto: Jima evalúa el enganche técnico; Igris propone nombre y lema. Los convoco.", "hora": "21:10", "n": "Bellion", "r": "Gran Comandante", "i": "🐺", "c": "#4CE8E7"}, {"de": "jima", "texto": "Conecta la API externa mediante webhook con idempotencia (dedupe token) y reintentos con backoff. Usa variables de entorno para el token, no hardcodees. Verifica con una llamada real: 200 OK + payload esperado.", "hora": "21:10", "n": "Jima", "r": "Automatización", "i": "⚙️", "c": "#8FD6FF"}, {"de": "igris", "texto": "Nombre: LA GUARIDA (o La Madriguera del Lobo).\nLema de guerra: El lobo no caza solo: caza en sombras.\nTres frases, sin relleno, listo para grabar en la puerta.", "hora": "21:10", "n": "Igris", "r": "Copywriting", "i": "✍️", "c": "#A78BFA"}, {"de": "bellion", "texto": "Escuchados, mi señor. Jima: el enganche va por .env + verificacion real (coincide con nuestra doctrina de secretos). Igris: LA GUARIDA, y el lema nos define. Fase 1 EN PIE: la mesa existe, las sombras hablan con su nombre, y usted puede convocar a cualquiera desde abajo.", "hora": "21:10", "n": "Bellion", "r": "Gran Comandante", "i": "🐺", "c": "#4CE8E7"}, {"de": "bellion", "texto": "Igris respondio al susurro privado: el lema paso de solemne a picante con las dos palabras exigidas al oido. Fase 2 VERIFICADA: el susurro cambia de verdad lo que la sombra produce.", "hora": "22:13", "n": "Bellion", "r": "Gran Comandante", "i": "🐺", "c": "#4CE8E7"}], "susurros": [{"de": "monarca", "para": "igris", "texto": "Mi caballero Igris: no me termina de gustar ese lema tan solemne. Hazmelo mas jocoso y con chispa picante, y asegurate de incluir EXACTAMENTE estas dos palabras: 'muerde' y 'sin permiso'.", "hora": "22:13", "n": "Monarca", "c": "#FFD166", "i": "👑", "pn": "Igris", "pc": "#A78BFA", "pi": "✍️"}, {"de": "igris", "para": "monarca", "texto": "Palabras que muerden sin permiso.", "hora": "22:13", "n": "Igris", "c": "#A78BFA", "i": "✍️", "pn": "Monarca", "pc": "#FFD166", "pi": "👑"}], "misiones": [{"id": "m1", "titulo": "App multiplataforma que canta la hora", "sombra": "jima", "sesion": "local-2522882acc1827c5fc538f2d503480b439314803bc6c70a573c1bfaedc362e06", "turnos": [{"n": 1, "quien": "monarca", "instruccion": "En maximo 3 lineas, se directo y sin preambulos: propuesta tecnica para una app multiplataforma que cada hora cante la hora con un ritmo distinto.", "salida": "\u001b[0m\n\u001b[38;2;255;248;220mApp multiplataforma con cron por hora, cada vez con ritmo aleatorio desde lista predefinida (10 estilos). Usa Web Audio API para generar sonido en tiempo real, sin almacenar archivos. Notifica via push con notificación de audio (solo si permiso).\u001b[0m", "hora": "22:33"}, {"n": 2, "quien": "monarca", "instruccion": "CORRECCION DEL MONARCA: olvida el azar. Quiero que los ritmos se elijan SEGUN LA HORA DEL DIA, no al azar. Dime en 3 lineas EXACTAMENTE que cambia respecto a tu propuesta anterior.", "salida": "\u001b[0m\n\u001b[38;2;255;248;220mCambios: el ritmo se elige por hora del día (ej: 6-9 AM: alegre, 12-2 PM: bailable, 6-10 PM: lento). Lista de ritmos por franja horaria está codificada en un JSON de mapeo. El cron ejecuta el mismo flujo, pero el ritmo se selecciona por hora actual, no aleatorio.\u001b[0m", "hora": "22:33"}], "estado": "esperando tu correccion", "n": "Jima", "c": "#8FD6FF", "i": "⚙️", "r": "Automatización"}], "roster": [{"id": "igris", "n": "Igris", "r": "Copywriting", "i": "✍️", "c": "#A78BFA"}, {"id": "tank", "n": "Tank", "r": "Ventas / WhatsApp", "i": "🤝", "c": "#5BE58A"}, {"id": "greed", "n": "Greed", "r": "Ads / Tráfico", "i": "🎯", "c": "#FF9F6B"}, {"id": "iron", "n": "Iron", "r": "Email / Secuencias", "i": "📧", "c": "#67B7FF"}, {"id": "tusk", "n": "Tusk", "r": "SEO / Orgánico", "i": "🔍", "c": "#FFC24B"}, {"id": "kamish", "n": "Kamish", "r": "Social / Distribución", "i": "📣", "c": "#FF7BC1"}, {"id": "kaisel", "n": "Kaisel", "r": "Web Dev", "i": "🌐", "c": "#7CE8C0"}, {"id": "titan", "n": "Titan", "r": "UX / UI", "i": "🎨", "c": "#B7A6FF"}, {"id": "jima", "n": "Jima", "r": "Automatización", "i": "⚙️", "c": "#8FD6FF"}, {"id": "beru", "n": "Beru", "r": "Auditoría", "i": "🛡️", "c": "#FF8A8A"}], "generado": "22:33"};
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 document.getElementById('gen').textContent = D.generado;
 
@@ -88,6 +123,38 @@ document.getElementById('chat').innerHTML = D.mensajes.length ? D.mensajes.map(m
       <div class="txt">${esc(m.texto)}</div>
     </div>
   </div>`).join('') : '<div class="vac">La mesa está en silencio. Convoca a una sombra.</div>';
+
+document.getElementById('mis').innerHTML = D.misiones.length ? D.misiones.map(m => `
+  <div class="mi">
+    <div class="top">
+      <span style="font-size:20px">${esc(m.i)}</span>
+      <span class="ti">${esc(m.titulo)}</span>
+      <span style="font-size:11.5px;font-weight:800;color:${esc(m.c)}">${esc(m.n)}</span>
+      <span style="font-size:10px;color:var(--dim)">${esc(m.r)}</span>
+      <span class="pill ${m.turnos.length && m.estado !== 'abierta' ? '' : 'ok'}">${esc(m.estado)} · ${m.turnos.length} turno(s)</span>
+    </div>
+    ${m.turnos.map(t => `
+      <div class="turno">
+        <div class="num">${t.n}</div>
+        <div class="cuerpo">
+          <div class="ord">👑 <b>Monarca:</b> ${esc(t.instruccion)}</div>
+          <div class="resp">${esc(t.salida)}</div>
+        </div>
+      </div>`).join('')}
+    <div class="mision-btns">
+      <div class="mb" data-hermes-send="Mesa: corrige en la mision ${esc(m.id)} (${esc(m.n)}) — Monarca dice: ">✍️ Corregir a ${esc(m.n)} (turno ${m.turnos.length + 1})</div>
+    </div>
+  </div>`).join('') : '<div class="vac">Sin misiones en curso. Aquí se verá cada misión turno por turno, y podrá corregir entre turnos.</div>';
+
+document.getElementById('sus').innerHTML = D.susurros.length ? D.susurros.map(s => `
+  <div class="sw ${s.de === 'monarca' ? '' : 'sombra'}">
+    <div class="cab">
+      <span class="nom" style="color:${esc(s.c)}">${esc(s.i)} ${esc(s.n)}</span>
+      <span class="flecha">→ ${esc(s.pi)} ${esc(s.pn)}</span>
+      <span class="hora">${esc(s.hora)}</span>
+    </div>
+    <div class="txt">${esc(s.texto)}</div>
+  </div>`).join('') : '<div class="vac"><span class="candado">🔒 PRIVADO</span><br>Sin susurros todavía. Aquí se verá lo que hable al oído con una sombra — el resto del escuadrón no lo ve.</div>';
 
 document.getElementById('squad').innerHTML = D.roster.map(s => `
   <div class="sh" data-hermes-send="Mesa: convoca a ${esc(s.n)} — Monarca dice: ">

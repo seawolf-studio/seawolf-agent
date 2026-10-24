@@ -51,6 +51,35 @@
   .sh .n{font-weight:800;font-size:12.5px}
   .sh .r{font-size:9.5px;color:var(--dim)}
   .foot{margin-top:16px;font-size:10.5px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap}
+  .sus{display:flex;flex-direction:column;gap:10px}
+  .sw{border:1px dashed rgba(167,139,250,.5);border-radius:13px;padding:11px 13px;
+      background:linear-gradient(120deg,rgba(167,139,250,.10),rgba(0,0,0,.25));position:relative}
+  .sw .cab{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .sw .nom{font-weight:800;font-size:12.5px}
+  .sw .flecha{font-size:11px;color:var(--dim)}
+  .sw .hora{font-size:10px;color:var(--dim);margin-left:auto}
+  .sw .txt{font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .sw.sombra{border-style:solid;border-color:rgba(167,139,250,.35)}
+  .candado{font-size:9.5px;font-weight:800;letter-spacing:1px;color:#C4B5FD;background:rgba(167,139,250,.14);
+           padding:3px 8px;border-radius:999px;display:inline-block;margin-bottom:8px}
+  .mi{border:1px solid var(--line);border-radius:15px;padding:14px;background:rgba(0,0,0,.22);margin-bottom:13px}
+  .mi .top{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:11px}
+  .mi .ti{font-weight:800;font-size:14px}
+  .mi .pill{font-size:9.5px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:999px;
+            background:rgba(255,194,75,.16);color:var(--amber)}
+  .mi .pill.ok{background:rgba(91,229,138,.16);color:var(--green)}
+  .turno{display:flex;gap:11px;padding:10px 0;border-top:1px dashed rgba(76,232,231,.13)}
+  .turno .num{flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:12px;
+              background:rgba(76,232,231,.13);color:var(--cyan);border:1px solid var(--line)}
+  .turno .cuerpo{flex:1;min-width:0}
+  .turno .ord{font-size:11.5px;color:var(--dim);margin-bottom:5px}
+  .turno .ord b{color:var(--gold);font-weight:700}
+  .turno .resp{font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
+               background:rgba(255,255,255,.03);border-left:2px solid var(--aqua);padding:8px 11px;border-radius:7px}
+  .mision-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .mb{cursor:pointer;font-size:11px;font-weight:700;padding:6px 11px;border-radius:9px;
+      background:rgba(76,232,231,.10);border:1px solid var(--line);color:var(--cyan)}
+  .mb:hover{background:rgba(76,232,231,.2)}
 </style>
 </head>
 <body>
@@ -64,6 +93,12 @@
   <div class="barra"></div>
 
   <div class="chat" id="chat"></div>
+
+  <h2>♻️ Misiones en turnos — corregir a mitad de camino</h2>
+  <div id="mis"></div>
+
+  <h2>🔒 Susurros — solo usted y la sombra</h2>
+  <div class="sus" id="sus"></div>
 
   <h2>Convocar a una sombra</h2>
   <div class="squad" id="squad"></div>
@@ -88,6 +123,38 @@ document.getElementById('chat').innerHTML = D.mensajes.length ? D.mensajes.map(m
       <div class="txt">${esc(m.texto)}</div>
     </div>
   </div>`).join('') : '<div class="vac">La mesa está en silencio. Convoca a una sombra.</div>';
+
+document.getElementById('mis').innerHTML = D.misiones.length ? D.misiones.map(m => `
+  <div class="mi">
+    <div class="top">
+      <span style="font-size:20px">${esc(m.i)}</span>
+      <span class="ti">${esc(m.titulo)}</span>
+      <span style="font-size:11.5px;font-weight:800;color:${esc(m.c)}">${esc(m.n)}</span>
+      <span style="font-size:10px;color:var(--dim)">${esc(m.r)}</span>
+      <span class="pill ${m.turnos.length && m.estado !== 'abierta' ? '' : 'ok'}">${esc(m.estado)} · ${m.turnos.length} turno(s)</span>
+    </div>
+    ${m.turnos.map(t => `
+      <div class="turno">
+        <div class="num">${t.n}</div>
+        <div class="cuerpo">
+          <div class="ord">👑 <b>Monarca:</b> ${esc(t.instruccion)}</div>
+          <div class="resp">${esc(t.salida)}</div>
+        </div>
+      </div>`).join('')}
+    <div class="mision-btns">
+      <div class="mb" data-hermes-send="Mesa: corrige en la mision ${esc(m.id)} (${esc(m.n)}) — Monarca dice: ">✍️ Corregir a ${esc(m.n)} (turno ${m.turnos.length + 1})</div>
+    </div>
+  </div>`).join('') : '<div class="vac">Sin misiones en curso. Aquí se verá cada misión turno por turno, y podrá corregir entre turnos.</div>';
+
+document.getElementById('sus').innerHTML = D.susurros.length ? D.susurros.map(s => `
+  <div class="sw ${s.de === 'monarca' ? '' : 'sombra'}">
+    <div class="cab">
+      <span class="nom" style="color:${esc(s.c)}">${esc(s.i)} ${esc(s.n)}</span>
+      <span class="flecha">→ ${esc(s.pi)} ${esc(s.pn)}</span>
+      <span class="hora">${esc(s.hora)}</span>
+    </div>
+    <div class="txt">${esc(s.texto)}</div>
+  </div>`).join('') : '<div class="vac"><span class="candado">🔒 PRIVADO</span><br>Sin susurros todavía. Aquí se verá lo que hable al oído con una sombra — el resto del escuadrón no lo ve.</div>';
 
 document.getElementById('squad').innerHTML = D.roster.map(s => `
   <div class="sh" data-hermes-send="Mesa: convoca a ${esc(s.n)} — Monarca dice: ">

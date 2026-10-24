@@ -11,7 +11,7 @@ Mesa donde el Monarca, Bellion y las sombras conversan.
 
 Salida: C:\\Users\\Admin\\intel\\mesa\\mesa.html
 """
-import json, os, sys, time, datetime
+import json, os, sys, time, datetime, subprocess, re
 
 BASE = r"C:\Users\Admin\intel\mesa"
 LOG = os.path.join(BASE, "mesa.json")
@@ -37,8 +37,10 @@ def hora():
 
 def cargar():
     if os.path.exists(LOG):
-        return json.load(open(LOG, encoding="utf-8"))
-    return {"mensajes": []}
+        d = json.load(open(LOG, encoding="utf-8"))
+        d.setdefault("mensajes", []); d.setdefault("susurros", [])
+        return d
+    return {"mensajes": [], "susurros": []}
 
 def guardar(d):
     json.dump(d, open(LOG, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
@@ -49,14 +51,72 @@ def habla(de, texto):
     guardar(d)
     print(f"+ [{de}] {texto[:70]}")
 
+def susurra(de, para, texto):
+    """El Monarca le habla AL OÍDO a una sombra: solo ellos dos lo ven."""
+    d = cargar()
+    d["susurros"].append({"de": de, "para": para, "texto": texto, "hora": hora()})
+    guardar(d)
+    print(f"~ [{de} -> {para}] {texto[:70]}")
+
+def _limpiar(t):
+    t = re.sub(r"hermes: .*could not be finished.*\n?", "", t)
+    lineas = [l for l in t.splitlines() if l.strip() and not l.startswith("Resume this session")
+              and not l.startswith("  hermes ") and not l.startswith("Title:")
+              and not l.startswith("Duration:") and not l.startswith("Messages:")
+              and not l.startswith("Query:") and "────" not in l and l.strip() != "☤ Hermes"]
+    return "\n".join(lineas).strip()
+
+def _parse(salida):
+    ses = None
+    m = re.search(r"Session:\s+(local-[0-9a-f]+)", salida)
+    if m: ses = m.group(1)
+    # la respuesta final vive entre el ultimo '☤ Hermes' y el cierre
+    partes = salida.split("☤ Hermes")
+    cuerpo = partes[-1] if len(partes) > 1 else salida
+    cuerpo = cuerpo.split("Resume this session")[0]
+    return ses, _limpiar(cuerpo)
+
+def turno(mid, instruccion, sombra=None, titulo=None):
+    """Avanza UNA misión un turno. Reanuda la sesión de la sombra para que RECUERDE."""
+    d = cargar(); d.setdefault("misiones", [])
+    mis = next((m for m in d["misiones"] if m["id"] == mid), None)
+    if mis is None:
+        mis = {"id": mid, "titulo": titulo or mid, "sombra": sombra or "tusk",
+               "sesion": None, "turnos": [], "estado": "abierta"}
+        d["misiones"].append(mis)
+    cmd = ["hermes", "-p", mis["sombra"], "chat"]
+    if mis.get("sesion"): cmd += ["--resume", mis["sesion"]]
+    cmd += ["-q", instruccion, "--oneshot"]
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=600, encoding="utf-8", errors="ignore")
+    ses, resp = _parse((r.stdout or "") + (r.stderr or ""))
+    if ses: mis["sesion"] = ses
+    n = len(mis["turnos"]) + 1
+    mis["turnos"].append({"n": n, "quien": "monarca", "instruccion": instruccion,
+                          "salida": resp, "hora": hora()})
+    mis["estado"] = "esperando tu correccion"
+    guardar(d)
+    print(f"~ turno {n} de {mid} ({mis['sombra']}) sesion={mis.get('sesion')}")
+    print(f"  -> {resp[:250]}")
+
 def render():
     d = cargar()
     msjs = []
     for m in d["mensajes"]:
         p = ROSTER.get(m["de"], {"n":m["de"],"r":"","i":"•","c":"#7FA3A3"})
         msjs.append({**m, **p})
+    sus = []
+    for s in d["susurros"]:
+        p = ROSTER.get(s["de"], {"n":s["de"],"r":"","i":"•","c":"#7FA3A3"})
+        q = ROSTER.get(s["para"], {"n":s["para"],"r":"","i":"•","c":"#7FA3A3"})
+        sus.append({**s, "n":p["n"], "c":p["c"], "i":p["i"], "pn":q["n"], "pc":q["c"], "pi":q["i"]})
+    mis = []
+    for m in d.get("misiones", []):
+        p = ROSTER.get(m["sombra"], {"n":m["sombra"],"r":"","i":"•","c":"#7FA3A3"})
+        mis.append({**m, "n":p["n"], "c":p["c"], "i":p["i"], "r":p["r"]})
     data = {
         "mensajes": msjs,
+        "susurros": sus,
+        "misiones": mis,
         "roster": [{"id":k, **v} for k,v in ROSTER.items() if k not in ("bellion","monarca")],
         "generado": hora(),
     }
@@ -69,6 +129,22 @@ def main():
     if "--habla" in a:
         i = a.index("--habla")
         habla(a[i+1], " ".join(a[i+2:]) or "(sin texto)")
+    if "--susurra" in a:
+        i = a.index("--susurra")
+        susurra(a[i+1], a[i+2], " ".join(a[i+3:]) or "(sin texto)")
+    if "--responde" in a:
+        i = a.index("--responde")
+        susurra(a[i+1], a[i+2], " ".join(a[i+3:]) or "(sin texto)")
+    if "--turno" in a:
+        i = a.index("--turno")
+        mid = a[i+1]
+        resto = a[i+2:]
+        som = None; tit = None
+        if "--sombra" in resto:
+            j = resto.index("--sombra"); som = resto[j+1]; resto = resto[:j] + resto[j+2:]
+        if "--titulo" in resto:
+            j = resto.index("--titulo"); tit = resto[j+1]; resto = resto[:j] + resto[j+2:]
+        turno(mid, " ".join(resto) or "(sin instruccion)", sombra=som, titulo=tit)
     render()
 
 if __name__ == "__main__":

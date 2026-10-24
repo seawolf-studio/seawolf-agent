@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Sala de Mando · Seawolf</title>
+<style>
+  :root{
+    --bg:#0B1414; --bg2:#121E1E; --cyan:#4CE8E7; --aqua:#48E8D8;
+    --ink:#E8FBFB; --dim:#7FA3A3; --line:rgba(76,232,231,.16);
+    --amber:#FFC24B; --green:#5BE58A; --red:#FF6B6B; --violet:#A78BFA;
+    --card:rgba(255,255,255,.028);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:18px 20px 26px; width:100%;
+    background:
+      radial-gradient(1100px 520px at 8% -8%, rgba(76,232,231,.13), transparent 60%),
+      radial-gradient(900px 460px at 100% 0%, rgba(167,139,250,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    color:var(--ink);
+    font-family:var(--font, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+    min-height:100vh;
+  }
+  .hd{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px}
+  .logo{display:flex; align-items:center; gap:10px}
+  .logo .wolf{font-size:30px; filter:drop-shadow(0 0 12px rgba(76,232,231,.55))}
+  .ttl{font-size:23px; font-weight:800; letter-spacing:.4px;
+        background:linear-gradient(92deg,var(--cyan),var(--aqua) 60%, #fff 130%);
+        -webkit-background-clip:text; background-clip:text; color:transparent}
+  .sub{font-size:11.5px; color:var(--dim); letter-spacing:1.6px; text-transform:uppercase; margin-top:2px}
+  .live{display:inline-flex; align-items:center; gap:8px; margin-left:auto;
+        padding:7px 14px; border-radius:999px; font-size:11.5px; font-weight:700; letter-spacing:1.2px;
+        background:rgba(76,232,231,.09); border:1px solid var(--line); color:var(--cyan)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan); box-shadow:0 0 10px var(--cyan)}
+  .dot.on{animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}
+  .btn{cursor:pointer; padding:7px 14px; border-radius:10px; font-size:11.5px; font-weight:700;
+       background:rgba(76,232,231,.10); border:1px solid var(--line); color:var(--cyan)}
+  .btn:hover{background:rgba(76,232,231,.2)}
+
+  .kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-bottom:18px}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 15px; position:relative; overflow:hidden}
+  .kpi::after{content:""; position:absolute; inset:0 0 auto 0; height:2px;
+              background:linear-gradient(90deg,var(--cyan),transparent)}
+  .kpi .v{font-size:26px; font-weight:900; line-height:1.05}
+  .kpi .l{font-size:10.5px; color:var(--dim); letter-spacing:1.3px; text-transform:uppercase; margin-top:5px}
+  .kpi.c .v{color:var(--cyan)} .kpi.a .v{color:var(--amber)}
+  .kpi.g .v{color:var(--green)} .kpi.r .v{color:var(--red)}
+
+  h2{font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--dim);
+     margin:0 0 11px; display:flex; align-items:center; gap:9px}
+  h2::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent)}
+
+  .squad{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:11px; margin-bottom:20px}
+  .sh{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px;
+      display:flex; gap:11px; align-items:center; transition:.2s}
+  .sh:hover{transform:translateY(-2px); border-color:rgba(76,232,231,.45)}
+  .sh.on{border-color:var(--cyan); box-shadow:0 0 0 1px rgba(76,232,231,.35), 0 8px 26px -10px rgba(76,232,231,.5);
+         background:rgba(76,232,231,.075)}
+  .av{width:40px;height:40px;border-radius:12px; flex:0 0 40px; display:grid; place-items:center; font-size:19px;
+      background:linear-gradient(140deg,rgba(76,232,231,.20),rgba(167,139,250,.18)); border:1px solid var(--line)}
+  .sh.on .av{animation:glow 1.8s infinite}
+  @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(76,232,231,.45)}50%{box-shadow:0 0 0 7px rgba(76,232,231,0)}}
+  .nm{font-weight:800; font-size:13.5px}
+  .rl{font-size:10.5px; color:var(--dim)}
+  .st{font-size:9.5px; font-weight:800; letter-spacing:.9px; padding:3px 7px; border-radius:6px; margin-top:4px; display:inline-block}
+  .st.w{background:rgba(76,232,231,.16); color:var(--cyan)}
+  .st.i{background:rgba(255,255,255,.05); color:var(--dim)}
+
+  .cols{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:18px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:15px}
+  .task{border:1px solid var(--line); border-radius:12px; padding:12px 13px; margin-bottom:10px;
+        background:rgba(0,0,0,.22); position:relative; overflow:hidden}
+  .task.running{border-color:var(--cyan); background:linear-gradient(90deg,rgba(76,232,231,.10),rgba(0,0,0,.22))}
+  .task.running::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--cyan); animation:pulse 1.6s infinite}
+  .trow{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+  .chip{font-size:9.5px; font-weight:800; letter-spacing:1px; padding:3px 8px; border-radius:999px; text-transform:uppercase}
+  .chip.running{background:rgba(76,232,231,.18); color:var(--cyan)}
+  .chip.ready{background:rgba(255,194,75,.16); color:var(--amber)}
+  .chip.done{background:rgba(91,229,138,.16); color:var(--green)}
+  .chip.blocked,.chip.triage{background:rgba(255,107,107,.16); color:var(--red)}
+  .chip.other{background:rgba(255,255,255,.07); color:var(--dim)}
+  .tname{font-weight:700; font-size:13.5px}
+  .tmeta{font-size:10.5px; color:var(--dim); margin-top:5px; display:flex; gap:13px; flex-wrap:wrap}
+  .who{color:var(--aqua); font-weight:700}
+  .bar{height:3px; border-radius:3px; background:rgba(255,255,255,.07); margin-top:9px; overflow:hidden}
+  .bar i{display:block; height:100%; width:38%; border-radius:3px;
+         background:linear-gradient(90deg,var(--cyan),var(--aqua)); animation:slide 1.9s ease-in-out infinite}
+  @keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+
+  .feed{max-height:430px; overflow:auto}
+  .ev{display:flex; gap:10px; padding:8px 0; border-bottom:1px dashed rgba(76,232,231,.10)}
+  .ev .t{font-size:10.5px; color:var(--dim); flex:0 0 58px; font-variant-numeric:tabular-nums}
+  .ev .k{font-size:11px; font-weight:800; letter-spacing:.5px}
+  .kd{color:var(--cyan)} .kc{color:var(--amber)} .kp{color:var(--green)} .ko{color:var(--violet)}
+  .ev .d{font-size:10px; color:var(--dim); word-break:break-all}
+  .foot{margin-top:16px; font-size:10.5px; color:var(--dim); display:flex; gap:16px; flex-wrap:wrap}
+  .empty{color:var(--dim); font-size:12px; padding:14px; text-align:center; border:1px dashed var(--line); border-radius:12px}
+  .err{margin-top:9px; font-size:10.5px; color:#FFB4B4; background:rgba(255,107,107,.10);
+       border-left:2px solid var(--red); padding:6px 9px; border-radius:6px; word-break:break-word}
+  .out{margin-top:8px; font-size:10.5px; color:#B9F5DC; background:rgba(91,229,138,.09);
+       border-left:2px solid var(--green); padding:6px 9px; border-radius:6px; word-break:break-word}
+  .att{font-size:9.5px; background:rgba(255,107,107,.14); color:var(--red); padding:2px 6px; border-radius:5px; font-weight:800}
+</style>
+</head>
+<body>
+  <div class="hd">
+    <div class="logo">
+      <div class="wolf">🐺</div>
+      <div>
+        <div class="ttl">SALA DE MANDO</div>
+        <div class="sub">Escuadrón Seawolf · tablero <span id="board"></span></div>
+      </div>
+    </div>
+    <div class="live"><span class="dot on" id="dt"></span> MOTOR ENCENDIDO · <span id="gen"></span></div>
+    <div class="btn" data-hermes-send="Bellion, actualiza la Sala de Mando">⟳ Actualizar</div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <h2>Las sombras</h2>
+  <div class="squad" id="squad"></div>
+
+  <div class="cols">
+    <div class="card">
+      <h2>Tablero de misiones</h2>
+      <div id="tasks"></div>
+    </div>
+    <div class="card">
+      <h2>Feed en vivo</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+
+<script>
+const D = /*__DATA__*/;
+const $ = s => document.querySelector(s);
+// Los datos vienen de nuestro tablero local; se escapan igual (defensa en profundidad).
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+document.getElementById('board').textContent = D.board;
+document.getElementById('gen').textContent = D.generado;
+document.getElementById('dt').className = 'dot' + (D.stats.running ? ' on' : '');
+
+const K = [
+  ['total', D.stats.total, 'Misiones', 'c'],
+  ['running', D.stats.running, 'En ejecución', 'a'],
+  ['ready', D.stats.ready, 'En cola', 'c'],
+  ['done', D.stats.done, 'Completadas', 'g'],
+  ['on', D.stats.sombras_on + '/' + D.stats.sombras_total, 'Sombras activas', 'g'],
+];
+$('#kpis').innerHTML = K.map(([k,v,l,c]) =>
+  `<div class="kpi ${c}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+
+$('#squad').innerHTML = D.sombras.map(s => `
+  <div class="sh ${s.activo?'on':''}">
+    <div class="av">${esc(s.icono)}</div>
+    <div>
+      <div class="nm">${esc(s.nombre)}</div>
+      <div class="rl">${esc(s.rol)}</div>
+      <span class="st ${s.activo?'w':'i'}">${s.activo?'● TRABAJANDO':'○ EN ESPERA'}</span>
+    </div>
+  </div>`).join('');
+
+const cls = e => ['running','ready','done','blocked','triage'].includes(e) ? e : 'other';
+$('#tasks').innerHTML = D.tareas.length ? D.tareas.map(t => `
+  <div class="task ${cls(t.estado)}">
+    <div class="trow">
+      <span class="chip ${cls(t.estado)}">${esc(t.estado)}</span>
+      <span class="tname">${esc(t.titulo)}</span>
+    </div>
+    <div class="tmeta">
+      <span>🐺 <span class="who">${esc(t.sombra)}</span></span>
+      <span>P${esc(t.prio)}</span>
+      <span>${esc(t.modelo)}</span>
+      ${t.pid?`<span>PID ${esc(t.pid)}</span>`:''}
+      ${t.latido?`<span>♥ ${esc(t.latido)}</span>`:''}
+      <span>${esc(t.ws)}</span>
+    </div>
+    ${t.estado==='running'?'<div class="bar"><i></i></div>':''}
+    ${t.err?`<div class="err">⚠ ${esc(t.err)}</div>`:''}
+    ${t.salida?`<div class="out">✎ ${esc(t.salida)}</div>`:''}
+  </div>`).join('') : '<div class="empty">Tablero vacío</div>';
+
+const kk = k => k==='created'?'ko':(k==='claimed'||k==='spawned')?'kc':(k==='completed')?'kp':'kd';
+$('#feed').innerHTML = D.eventos.length ? D.eventos.map(e => `
+  <div class="ev">
+    <span class="t">${esc(e.t||'')}</span>
+    <div>
+      <div class="k ${kk(e.k)}">${esc(e.k)}</div>
+      <div class="d">${esc(e.task)} · ${esc((e.p||'').replace(/[{}"]/g,' ').slice(0,110))}</div>
+    </div>
+  </div>`).join('') : '<div class="empty">Sin eventos todavía</div>';
+
+$('#foot').innerHTML = `<span>🐺 Seawolf Studio · Sala de Mando</span>
+  <span>datos reales del motor de escuadrón</span>
+  <span>generado ${D.generado}</span>`;
+</script>
+</body>
+</html>

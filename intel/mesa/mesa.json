@@ -1,0 +1,29 @@
+{
+ "mensajes": [
+  {
+   "de": "monarca",
+   "texto": "Muchachos, quiero el Cuarto de Guerra: UNA mesa donde yo les hable a todos, ustedes me respondan con su nombre, yo vea cada detalle mientras pasa, y pueda corregir a cualquiera a mitad de camino — o hablar aparte con uno solo.",
+   "hora": "21:10"
+  },
+  {
+   "de": "bellion",
+   "texto": "Recibido, mi señor. 🐺\nTraducción: mesa unificada + turnos + interrupción. Fase 1 = la mesa donde todos hablan con nombre. Ya está en pie — esto que ve ES la Fase 1.\nReparto: Jima evalúa el enganche técnico; Igris propone nombre y lema. Los convoco.",
+   "hora": "21:10"
+  },
+  {
+   "de": "jima",
+   "texto": "Conecta la API externa mediante webhook con idempotencia (dedupe token) y reintentos con backoff. Usa variables de entorno para el token, no hardcodees. Verifica con una llamada real: 200 OK + payload esperado.",
+   "hora": "21:10"
+  },
+  {
+   "de": "igris",
+   "texto": "Nombre: LA GUARIDA (o La Madriguera del Lobo).\nLema de guerra: El lobo no caza solo: caza en sombras.\nTres frases, sin relleno, listo para grabar en la puerta.",
+   "hora": "21:10"
+  },
+  {
+   "de": "bellion",
+   "texto": "Escuchados, mi señor. Jima: el enganche va por .env + verificacion real (coincide con nuestra doctrina de secretos). Igris: LA GUARIDA, y el lema nos define. Fase 1 EN PIE: la mesa existe, las sombras hablan con su nombre, y usted puede convocar a cualquiera desde abajo.",
+   "hora": "21:10"
+  }
+ ]
+}

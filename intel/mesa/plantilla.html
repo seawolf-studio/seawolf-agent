@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Mesa de Guerra · Seawolf</title>
+<style>
+  :root{--bg:#0B1414;--bg2:#121E1E;--cyan:#4CE8E7;--aqua:#48E8D8;--ink:#E8FBFB;--dim:#7FA3A3;
+        --line:rgba(76,232,231,.16);--card:rgba(255,255,255,.028);--gold:#FFD166}
+  *{box-sizing:border-box}
+  body{margin:0;padding:18px 20px 24px;width:100%;
+    background:radial-gradient(1100px 520px at 6% -10%,rgba(76,232,231,.13),transparent 60%),
+               radial-gradient(900px 480px at 100% 0%,rgba(255,209,102,.09),transparent 60%),
+               linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--ink);font-family:var(--font,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif);min-height:100vh}
+  .hd{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:6px}
+  .ttl{font-size:23px;font-weight:900;letter-spacing:.4px;
+       background:linear-gradient(92deg,var(--cyan),var(--aqua) 55%,#fff 140%);
+       -webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:11.5px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+  .live{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;
+        font-size:11px;font-weight:800;letter-spacing:1.2px;background:rgba(76,232,231,.09);
+        border:1px solid var(--line);color:var(--cyan)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}
+  .barra{height:1px;background:linear-gradient(90deg,var(--line),transparent);margin:12px 0 16px}
+
+  .chat{display:flex;flex-direction:column;gap:14px;max-width:100%}
+  .msg{display:flex;gap:11px;align-items:flex-start;max-width:88%}
+  .msg.mine{margin-left:auto;flex-direction:row-reverse}
+  .av{width:40px;height:40px;flex:0 0 40px;border-radius:12px;display:grid;place-items:center;font-size:19px;
+      background:linear-gradient(140deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line)}
+  .burbuja{border:1px solid var(--line);border-radius:14px;padding:11px 14px;background:var(--card);position:relative}
+  .msg.bellion .burbuja{background:linear-gradient(120deg,rgba(76,232,231,.12),rgba(0,0,0,.2));border-color:rgba(76,232,231,.4)}
+  .msg.mine .burbuja{background:linear-gradient(120deg,rgba(255,209,102,.13),rgba(0,0,0,.2));border-color:rgba(255,209,102,.4)}
+  .msg.sombra .burbuja{background:rgba(0,0,0,.24)}
+  .cab{display:flex;align-items:baseline;gap:9px;margin-bottom:5px;flex-wrap:wrap}
+  .nom{font-weight:800;font-size:13px}
+  .rol{font-size:10px;color:var(--dim);letter-spacing:.6px}
+  .hora{font-size:10px;color:var(--dim);margin-left:auto}
+  .txt{font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .vac{color:var(--dim);font-size:12px;text-align:center;padding:26px;border:1px dashed var(--line);border-radius:14px}
+
+  h2{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin:22px 0 11px;
+     display:flex;align-items:center;gap:9px}
+  h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .squad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .sh{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);
+      border-radius:13px;padding:10px;cursor:pointer;transition:.18s}
+  .sh:hover{transform:translateY(-2px);border-color:rgba(76,232,231,.5);background:rgba(76,232,231,.07)}
+  .sh .av{width:34px;height:34px;flex:0 0 34px;font-size:16px;border-radius:10px}
+  .sh .n{font-weight:800;font-size:12.5px}
+  .sh .r{font-size:9.5px;color:var(--dim)}
+  .foot{margin-top:16px;font-size:10.5px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+  <div class="hd">
+    <div>
+      <div class="ttl">🐺 MESA DE GUERRA</div>
+      <div class="sub">Cuarto de guerra · Bellion y el escuadrón · <span id="gen"></span></div>
+    </div>
+    <div class="live"><span class="dot"></span> EN VIVO</div>
+  </div>
+  <div class="barra"></div>
+
+  <div class="chat" id="chat"></div>
+
+  <h2>Convocar a una sombra</h2>
+  <div class="squad" id="squad"></div>
+
+  <div class="foot" id="foot"></div>
+
+<script>
+const D = /*__MESA__*/;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+document.getElementById('gen').textContent = D.generado;
+
+const clase = de => de === 'monarca' ? 'mine' : (de === 'bellion' ? 'bellion' : 'sombra');
+document.getElementById('chat').innerHTML = D.mensajes.length ? D.mensajes.map(m => `
+  <div class="msg ${clase(m.de)}">
+    <div class="av">${esc(m.i)}</div>
+    <div class="burbuja">
+      <div class="cab">
+        <span class="nom" style="color:${esc(m.c)}">${esc(m.n)}</span>
+        <span class="rol">${esc(m.r)}</span>
+        <span class="hora">${esc(m.hora)}</span>
+      </div>
+      <div class="txt">${esc(m.texto)}</div>
+    </div>
+  </div>`).join('') : '<div class="vac">La mesa está en silencio. Convoca a una sombra.</div>';
+
+document.getElementById('squad').innerHTML = D.roster.map(s => `
+  <div class="sh" data-hermes-send="Mesa: convoca a ${esc(s.n)} — Monarca dice: ">
+    <div class="av">${esc(s.i)}</div>
+    <div><div class="n" style="color:${esc(s.c)}">${esc(s.n)}</div><div class="r">${esc(s.r)}</div></div>
+  </div>`).join('');
+
+document.getElementById('foot').innerHTML =
+  `<span>🐺 Seawolf Studio · Mesa de Guerra</span><span>${D.mensajes.length} mensajes</span><span>generado ${esc(D.generado)}</span>`;
+</script>
+</body>
+</html>

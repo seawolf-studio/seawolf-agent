@@ -86,7 +86,12 @@ def turno(mid, instruccion, sombra=None, titulo=None):
         d["misiones"].append(mis)
     cmd = ["hermes", "-p", mis["sombra"], "chat"]
     if mis.get("sesion"): cmd += ["--resume", mis["sesion"]]
-    cmd += ["-q", instruccion, "--oneshot"]
+    # la DIRECTIVA vigente viaja en el proximo turno -> el reencauce se cumple de verdad
+    inst = instruccion
+    if mis.get("directiva"):
+        inst = (f"DIRECTIVA VIGENTE DEL MONARCA (obligatoria, reencauza el trabajo anterior): "
+                f"{mis['directiva']}\n\n{instruccion}")
+    cmd += ["-q", inst, "--oneshot"]
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=600, encoding="utf-8", errors="ignore")
     ses, resp = _parse((r.stdout or "") + (r.stderr or ""))
     if ses: mis["sesion"] = ses
@@ -97,6 +102,37 @@ def turno(mid, instruccion, sombra=None, titulo=None):
     guardar(d)
     print(f"~ turno {n} de {mid} ({mis['sombra']}) sesion={mis.get('sesion')}")
     print(f"  -> {resp[:250]}")
+
+def cambio(texto, antes="", despues=""):
+    """INTERRUPCION COLECTIVA: el Monarca cambia el rumbo en medio del trabajo.
+    Se propaga a (1) la conversacion, (2) las tareas en curso y (3) la memoria."""
+    d = cargar(); d.setdefault("cambios", []); d.setdefault("misiones", [])
+    c = {"id": f"c{len(d['cambios'])+1}", "texto": texto, "antes": antes, "despues": despues,
+         "hora": hora(), "tareas": [], "memoria": False, "conversacion": False}
+    # (2) TAREAS: toda mision viva queda marcada y su proximo turno carga la directiva
+    for m in d["misiones"]:
+        if m.get("estado") != "cerrada":
+            m["reencauzada"] = True
+            m["directiva"] = texto
+            c["tareas"].append(m["id"])
+    d["cambios"].append(c)
+    # (1) CONVERSACION: el cambio entra a la mesa como mensaje del Monarca
+    d["mensajes"].append({"de": "monarca", "texto": texto, "hora": hora(),
+                          "cambio": True, "antes": antes, "despues": despues})
+    c["conversacion"] = True
+    # (3) MEMORIA: queda escrito para siempre (sobrevive a la sesion y a la compactacion)
+    try:
+        mem = os.path.join(BASE, "directivas.json")
+        dm = json.load(open(mem, encoding="utf-8")) if os.path.exists(mem) else {"directivas": []}
+        dm["directivas"].append({"id": c["id"], "texto": texto, "antes": antes,
+                                 "despues": despues, "hora": hora()})
+        json.dump(dm, open(mem, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        c["memoria"] = True
+    except Exception as e:
+        print("memoria:", e)
+    guardar(d)
+    print(f"⚡ REENCAUCE {c['id']}: {texto[:70]}")
+    print(f"   propagado -> conversacion={c['conversacion']} tareas={c['tareas']} memoria={c['memoria']}")
 
 def render():
     d = cargar()
@@ -117,6 +153,12 @@ def render():
         "mensajes": msjs,
         "susurros": sus,
         "misiones": mis,
+        "cambios": [
+            {**c, "n_tareas": len(c.get("tareas", [])),
+             "sombras": [ROSTER.get(next((m["sombra"] for m in d.get("misiones", []) if m["id"] == t), ""), {}).get("n", t)
+                         for t in c.get("tareas", [])]}
+            for c in d.get("cambios", [])
+        ],
         "roster": [{"id":k, **v} for k,v in ROSTER.items() if k not in ("bellion","monarca")],
         "generado": hora(),
     }
@@ -145,6 +187,14 @@ def main():
         if "--titulo" in resto:
             j = resto.index("--titulo"); tit = resto[j+1]; resto = resto[:j] + resto[j+2:]
         turno(mid, " ".join(resto) or "(sin instruccion)", sombra=som, titulo=tit)
+    if "--cambio" in a:
+        i = a.index("--cambio")
+        resto = a[i+1:]; ant = ""; des = ""
+        if "--antes" in resto:
+            j = resto.index("--antes"); ant = resto[j+1]; resto = resto[:j] + resto[j+2:]
+        if "--despues" in resto:
+            j = resto.index("--despues"); des = resto[j+1]; resto = resto[:j] + resto[j+2:]
+        cambio(" ".join(resto) or "(sin texto)", antes=ant, despues=des)
     render()
 
 if __name__ == "__main__":

@@ -29,6 +29,14 @@
    "de": "bellion",
    "texto": "Igris respondio al susurro privado: el lema paso de solemne a picante con las dos palabras exigidas al oido. Fase 2 VERIFICADA: el susurro cambia de verdad lo que la sombra produce.",
    "hora": "22:13"
+  },
+  {
+   "de": "monarca",
+   "texto": "El cliente ya no lo quiere azul y en espanol. Ahora lo quiere ROJO y en INGLES. Reencaucen todo el trabajo.",
+   "hora": "22:51",
+   "cambio": true,
+   "antes": "Azul · Español",
+   "despues": "Rojo · Inglés"
   }
  ],
  "susurros": [
@@ -65,9 +73,32 @@
      "instruccion": "CORRECCION DEL MONARCA: olvida el azar. Quiero que los ritmos se elijan SEGUN LA HORA DEL DIA, no al azar. Dime en 3 lineas EXACTAMENTE que cambia respecto a tu propuesta anterior.",
      "salida": "\u001b[0m\n\u001b[38;2;255;248;220mCambios: el ritmo se elige por hora del día (ej: 6-9 AM: alegre, 12-2 PM: bailable, 6-10 PM: lento). Lista de ritmos por franja horaria está codificada en un JSON de mapeo. El cron ejecuta el mismo flujo, pero el ritmo se selecciona por hora actual, no aleatorio.\u001b[0m",
      "hora": "22:33"
+    },
+    {
+     "n": 3,
+     "quien": "monarca",
+     "instruccion": "Aplica la directiva vigente a tu propuesta anterior. Dime en 2 lineas que cambia en el color y en el idioma.",
+     "salida": "\u001b[0m\n\u001b[38;2;255;248;220mCambios: el color de la interfaz es rojo (#B30000) en vez de azul; el idioma del sistema es inglés (en-US), con todos los mensajes y etiquetas en inglés.\u001b[0m",
+     "hora": "22:51"
     }
    ],
-   "estado": "esperando tu correccion"
+   "estado": "esperando tu correccion",
+   "reencauzada": true,
+   "directiva": "El cliente ya no lo quiere azul y en espanol. Ahora lo quiere ROJO y en INGLES. Reencaucen todo el trabajo."
+  }
+ ],
+ "cambios": [
+  {
+   "id": "c1",
+   "texto": "El cliente ya no lo quiere azul y en espanol. Ahora lo quiere ROJO y en INGLES. Reencaucen todo el trabajo.",
+   "antes": "Azul · Español",
+   "despues": "Rojo · Inglés",
+   "hora": "22:51",
+   "tareas": [
+    "m1"
+   ],
+   "memoria": true,
+   "conversacion": true
   }
  ]
 }

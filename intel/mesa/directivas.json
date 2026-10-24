@@ -1,0 +1,11 @@
+{
+ "directivas": [
+  {
+   "id": "c1",
+   "texto": "El cliente ya no lo quiere azul y en espanol. Ahora lo quiere ROJO y en INGLES. Reencaucen todo el trabajo.",
+   "antes": "Azul · Español",
+   "despues": "Rojo · Inglés",
+   "hora": "22:51"
+  }
+ ]
+}

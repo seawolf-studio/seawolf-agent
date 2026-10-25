@@ -134,6 +134,29 @@ def cambio(texto, antes="", despues=""):
     print(f"⚡ REENCAUCE {c['id']}: {texto[:70]}")
     print(f"   propagado -> conversacion={c['conversacion']} tareas={c['tareas']} memoria={c['memoria']}")
 
+def asigna(sombra, titulo, orden):
+    """El Monarca le da una orden a una sombra desde la Mesa. Queda EN COLA."""
+    d = cargar(); d.setdefault("misiones", [])
+    mid = f"m{len(d['misiones'])+1}"
+    d["misiones"].append({"id": mid, "titulo": titulo, "sombra": sombra, "sesion": None,
+                          "turnos": [], "estado": "en cola", "orden": orden})
+    guardar(d)
+    print(f"+ mision {mid} -> {sombra}: {titulo}  [EN COLA]")
+    return mid
+
+def corre():
+    """MOTOR DE LA MESA — via DIRECTA (no kanban, no pipe de Windows).
+    Toma las misiones EN COLA y las ejecuta con la sombra de verdad."""
+    d = cargar()
+    cola = [m for m in d.get("misiones", []) if m.get("estado") == "en cola"]
+    if not cola:
+        print("Mesa: nada en cola."); return
+    print(f"Mesa MOTOR: {len(cola)} mision(es) en cola")
+    for m in cola:
+        print(f"  ▶ {m['id']} ({m['sombra']}) {m['titulo']}")
+        turno(m["id"], m.get("orden") or m["titulo"])
+    render()
+
 def render():
     d = cargar()
     msjs = []
@@ -195,6 +218,15 @@ def main():
         if "--despues" in resto:
             j = resto.index("--despues"); des = resto[j+1]; resto = resto[:j] + resto[j+2:]
         cambio(" ".join(resto) or "(sin texto)", antes=ant, despues=des)
+    if "--asigna" in a:
+        i = a.index("--asigna")
+        som = a[i+1]; resto = a[i+2:]; tit = "mision"
+        if "--titulo" in resto:
+            j = resto.index("--titulo"); tit = resto[j+1]; resto = resto[:j] + resto[j+2:]
+        asigna(som, tit, " ".join(resto) or tit)
+    if "--corre" in a:
+        corre()
+        return
     render()
 
 if __name__ == "__main__":

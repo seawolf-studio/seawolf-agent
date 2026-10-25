@@ -85,6 +85,40 @@
    "estado": "esperando tu correccion",
    "reencauzada": true,
    "directiva": "El cliente ya no lo quiere azul y en espanol. Ahora lo quiere ROJO y en INGLES. Reencaucen todo el trabajo."
+  },
+  {
+   "id": "m2",
+   "titulo": "Exponer el Muro en la red",
+   "sombra": "kaisel",
+   "sesion": "local-f26c170b9b0c36cd920b23795cbf117fd94c2f856fb651b54bd269bd0c70d6e4",
+   "turnos": [
+    {
+     "n": 1,
+     "quien": "monarca",
+     "instruccion": "En maximo 3 lineas, directo: como exponer el Muro de Sombras como pagina web accesible por red, desde el VPS con Cloudflare Tunnel?",
+     "salida": "\u001b[0m\n\u001b[38;2;255;248;220mPara exponer el Muro de Sombras como página web accesible por red desde un VPS con Cloudflare Tunnel:\u001b[0m\n\u001b[38;2;255;248;220m\u001b[0m\n\u001b[38;2;255;248;220m1. Instala cloudflared en Windows: El archivo cloudflared.exe debe estar en el PATH o ejecutarse con la ruta completa.\u001b[0m\n\u001b[38;2;255;248;220m2. Arranca el servicio del Muro de Sombras en el VPS en localhost:8080.\u001b[0m\n\u001b[38;2;255;248;220m3. Inicia cloudflared con el comando correcto:\u001b[0m\n\u001b[38;2;255;248;220m   bash   C:\\Users\\Admin\\cloudflared.exe tunnel --url http://localhost:8080   \u001b[0m\n\u001b[38;2;255;248;220m\u001b[0m\n\u001b[38;2;255;248;220mEste comando crea un túnel seguro hacia Cloudflare, permitiendo acceder al Muro de Sombras desde cualquier lugar.\u001b[0m\n\u001b[38;2;255;248;220m\u001b[0m\n\u001b[38;2;255;248;220m♻️ Si aún no instalaste cloudflared, ejecuta:\u001b[0m\n\u001b[38;2;255;248;220mbashcurl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -o cloudflared.exe\u001b[0m\n\u001b[38;2;255;248;220m\u001b[0m\n\u001b[38;2;255;248;220mLuego:\u001b[0m\n\u001b[38;2;255;248;220mbashcloudflared.exe tunnel --url http://localhost:8080\u001b[0m\n\u001b[38;2;255;248;220m\u001b[0m\n\u001b[38;2;255;248;220m✅ Verifica en el panel de Cloudflare que el tunnel está activo y redirige al dominio deseado.\u001b[0m",
+     "hora": "23:51"
+    }
+   ],
+   "estado": "esperando tu correccion",
+   "orden": "En maximo 3 lineas, directo: como exponer el Muro de Sombras como pagina web accesible por red, desde el VPS con Cloudflare Tunnel?"
+  },
+  {
+   "id": "m3",
+   "titulo": "Sello del Cuarto de Guerra",
+   "sombra": "igris",
+   "sesion": null,
+   "turnos": [
+    {
+     "n": 1,
+     "quien": "monarca",
+     "instruccion": "En maximo 2 lineas: confirma o mejora el nombre LA GUARIDA para nuestro cuarto de guerra.",
+     "salida": "",
+     "hora": "23:51"
+    }
+   ],
+   "estado": "esperando tu correccion",
+   "orden": "En maximo 2 lineas: confirma o mejora el nombre LA GUARIDA para nuestro cuarto de guerra."
   }
  ],
  "cambios": [

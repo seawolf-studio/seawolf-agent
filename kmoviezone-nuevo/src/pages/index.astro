@@ -1,0 +1,30 @@
+---
+// HOME — catalogo. Si hay TMDB_API_KEY usa TMDb; si no, cae a la muestra local
+// (asi el esqueleto COMPILA y se ve sin depender de la clave).
+import Base from '../layouts/Base.astro';
+import * as tmdb from '../lib/tmdb.js';
+import muestra from '../data/fixture.json';
+
+let titulos = muestra;
+let fuente = 'muestra local';
+if (tmdb.tieneClave()) {
+  try { titulos = await tmdb.populares('movie'); fuente = 'TMDb (en vivo)'; }
+  catch (e) { fuente = `TMDb fallo (${e.message}) — uso muestra`; }
+}
+---
+<Base title="KMOVIEZONE — Catálogo">
+  <p style="color:var(--mut);font-size:.8rem;margin:0 0 1rem">
+    Fuente: <strong>{fuente}</strong> · {titulos.length} títulos
+  </p>
+  <div class="rejilla">
+    {titulos.map((t) => (
+      <a class="ficha" href={`/titulo/${t.tmdb_id}`}>
+        {t.poster
+          ? <img src={t.poster} alt={t.nombre} loading="lazy" />
+          : <div style="aspect-ratio:2/3;background:#21262d"></div>}
+        <div class="t">{t.nombre}</div>
+        <div class="m">{t.tipo} · {t.anio}</div>
+      </a>
+    ))}
+  </div>
+</Base>

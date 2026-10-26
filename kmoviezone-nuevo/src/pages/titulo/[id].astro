@@ -1,0 +1,25 @@
+---
+// Ficha de titulo. Rutas estaticas generadas desde la muestra + TMDb si hay clave.
+import Base from '../../layouts/Base.astro';
+import * as tmdb from '../../lib/tmdb.js';
+import muestra from '../../data/fixture.json';
+
+export async function getStaticPaths() {
+  let lista = muestra;
+  if (tmdb.tieneClave()) {
+    try { lista = await tmdb.populares('movie'); } catch { /* usa muestra */ }
+  }
+  return lista.map((t) => ({ params: { id: String(t.tmdb_id) }, props: { t } }));
+}
+
+const { t } = Astro.props;
+---
+<Base title={`${t.nombre} — KMOVIEZONE`} descripcion={t.sinopsis}>
+  <a href="/" style="color:var(--mut);font-size:.8rem;text-decoration:none">← Volver al catálogo</a>
+  <h1 style="margin:.8rem 0 .2rem">{t.nombre}</h1>
+  <p style="color:var(--mut);margin:0 0 1rem">{t.tipo} · {t.anio}{t.puntaje ? ` · ⭐ ${t.puntaje}` : ''}</p>
+  <p style="max-width:65ch;line-height:1.6">{t.sinopsis || 'Sin sinopsis.'}</p>
+  <p style="color:var(--mut);font-size:.75rem;margin-top:2rem">
+    id TMDb: <code>{t.tmdb_id}</code> · pieza del riel: <code>tmdb:{t.tmdb_id}</code>
+  </p>
+</Base>

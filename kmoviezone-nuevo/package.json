@@ -1,0 +1,16 @@
+{
+  "name": "kmoviezone-nuevo",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "kmoviezone reconstruido (clean-room) — Astro + motor propio. Sin WordPress, sin PHP.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "importar": "node scripts/importar-tmdb.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  }
+}

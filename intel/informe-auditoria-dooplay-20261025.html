@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Seawolf - informe-auditoria-dooplay-20261025</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Seawolf - informe-auditoria-dooplay-20261025</h1>
+</header>
+<h1 id="informe-de-auditoría-dooplay-2.5.4-nj-nulled">INFORME DE
+AUDITORÍA — DooPlay 2.5.4 “NJ” (nulled)</h1>
+<p><strong>Para:</strong> Monarca (Key) · <strong>De:</strong> Bellion,
+Gran Comandante · <strong>Fecha:</strong> 2026-10-25
+<strong>Objeto:</strong> <code>dooplay-2.5.4-NJ.zip</code> (8,3 MB · 624
+archivos · 277 PHP · 21,4 MB expandido) <strong>Procedimiento:</strong>
+<code>untrusted-code-audit</code> (estático, sin ejecutar el
+objetivo)</p>
+<hr />
+<h2 id="veredicto">1. VEREDICTO</h2>
+<blockquote>
+<p><strong>NO se encontró huella conocida de puerta
+trasera.</strong></p>
+</blockquote>
+<p><strong>Con la salvedad honesta que manda la doctrina:</strong>
+<em>“no backdoor encontrado” ≠ “limpio”</em>. Falta la prueba definitiva
+— <strong>un diff contra el DooPlay 2.5.4 oficial</strong>, que no
+tenemos. Lo que afirmo: <strong>no aparece ninguna de las formas
+conocidas.</strong> Lo que NO afirmo: pureza absoluta.</p>
+<hr />
+<h2 id="origen-identificado-sin-ambigüedad">2. ORIGEN (identificado, sin
+ambigüedad)</h2>
+<p><code>License key.txt</code> dice textualmente: &gt; <em>“License
+key: To get license key visit
+<strong>https://nulljungle.com</strong>”</em> &gt; <em>“Use the license
+key you have received from NullJungle to activate both theme and
+dbmovies.”</em></p>
+<p>→ <strong>Copia NULLED de NullJungle.</strong> El código pudo ser
+modificado por el reempaquetador.</p>
+<hr />
+<h2 id="rastro-de-evidencia-lo-que-se-revisó">3. RASTRO DE EVIDENCIA (lo
+que se revisó)</h2>
+<h3 id="inventario">3.1 Inventario</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Hallazgo</th>
+<th>Lectura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>624 archivos (277 PHP)</td>
+<td>normal para el tema</td>
+</tr>
+<tr>
+<td><code>dooplay/</code> (617) + <code>dooplay-child/</code> (5)</td>
+<td>estructura estándar</td>
+</tr>
+<tr>
+<td><code>logo.zip</code> anidado (40 KB)</td>
+<td><strong>inspeccionado</strong>: solo <code>Logo/</code> (png, psd,
+ttf) → <strong>limpio</strong></td>
+</tr>
+<tr>
+<td><code>Thumbs.db</code> ×3</td>
+<td>artefactos de Windows → el zip fue <strong>reempaquetado en un
+escritorio</strong> (señal débil de manipulación)</td>
+</tr>
+<tr>
+<td><code>jwplayer.flash.swf</code></td>
+<td>parte histórica de JWPlayer (tema de 2021), no ejecutable en
+servidor</td>
+</tr>
+</tbody>
+</table>
+<h3 id="escaneo-de-firmas-276-php">3.2 Escaneo de firmas (276 PHP)</h3>
+<table>
+<thead>
+<tr>
+<th>Patrón</th>
+<th>Hits</th>
+<th>Triaje</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eval</code> / <code>assert</code> /
+<code>create_function</code></td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>base64_decode</code> literal</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>system</code>/<code>shell_exec</code>/<code>passthru</code>/<code>popen</code></td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>fsockopen</code> / socket directo</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Puerta por hash</strong> <code>md5($_GET…)</code></td>
+<td><strong>0</strong></td>
+<td>✅ firma clásica AUSENTE</td>
+</tr>
+<tr>
+<td><strong>Puerta por cabecera</strong>
+<code>$_SERVER[&#39;HTTP_…&#39;]</code></td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>IPs literales / llamadas a IP</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>file_put_contents</code> a URL remota</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>include</code>/<code>require</code> con superglobal</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Cadenas <code>chr()</code> encadenadas</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Base64 largo embebido</td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>str_rot13</code></td>
+<td><strong>0</strong></td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>call_user_func</code></td>
+<td>24</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>file_put_contents</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>wp_mail</code>/<code>curl_init</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Triaje de los no-cero:</strong> - <code>call_user_func</code>
+→ <strong>Codestar Framework</strong> (marco de opciones legítimo) + el
+candado de licencia. - <code>file_put_contents</code> → caché de
+plantilla (<code>doo_cache.php</code>), caché de <code>dbmvs</code>, y
+<strong>descarga de Google Drive</strong> (función propia). -
+<code>wp_mail</code> → <strong>formularios de contacto</strong>
+(<code>inboxes.php</code>, <code>requests.php</code>). -
+<code>curl_init</code> → integración <strong>Google Drive</strong>.</p>
+<h3 id="el-payload-ofuscado-descifrado">3.3 El “payload” ofuscado —
+DESCIFRADO</h3>
+<p><code>inc/doo_init.php:177</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode php"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$code1</span> <span class="op">=</span> <span class="fu">unserialize</span>(<span class="fu">gzuncompress</span>(<span class="fu">stripslashes</span>(<span class="fu">call_user_func</span>(<span class="st">&#39;base&#39;</span><span class="op">.</span><span class="va">$codex</span><span class="op">.</span><span class="st">&#39;_decode&#39;</span><span class="ot">,</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">rtrim</span>(<span class="fu">strtr</span>(<span class="st">&#39;eNortjK0tFJKyc8vyEmsjM_JTE7NK06Nz06tVLIGXDCDiAmz&#39;</span><span class="ot">,</span><span class="st">&#39;-_&#39;</span><span class="ot">,</span><span class="st">&#39;+/&#39;</span>)<span class="ot">,</span><span class="st">&#39;=&#39;</span>)))))<span class="ot">;</span></span></code></pre></div>
+<p>Nombre de función armado por partes
+(<code>&#39;base&#39;.$codex.&#39;_decode&#39;</code>) → evade un grep de
+<code>base64_decode</code>.</p>
+<p><strong>Descifrado paso a paso:</strong>
+<code>strtr(&#39;-_&#39;→&#39;+/&#39;)</code> → base64 → zlib →
+<strong>resultado</strong>:</p>
+<pre><code>s:19:&quot;dooplay_license_key&quot;;</code></pre>
+<p>→ <strong>Es el NOMBRE DE LA OPCIÓN DE LICENCIA de
+WordPress.</strong> Es decir: <strong>la protección anti-pirata del
+propio autor de Doothemes</strong>, no un backdoor.</p>
+<h3 id="el-null-localizado-y-clasificado">3.4 El “null” — localizado y
+clasificado</h3>
+<p><code>inc/doo_database.php:209</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode php"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="st">&#39;forcelicense&#39;</span><span class="ot">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    update_option(<span class="st">&#39;dooplay_license_key_status&#39;</span><span class="ot">,</span><span class="st">&#39;valid&#39;</span>)<span class="ot">;</span></span></code></pre></div>
+<p><strong>Clasificación por ALCANCE (no por existencia):</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode php"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(is_admin()){ ... }                                   <span class="co">// exige admin</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="va">$run</span> <span class="op">&amp;&amp;</span> wp_verify_nonce(<span class="va">$noc</span><span class="ot">,</span><span class="st">&#39;doodatabasetoolnonce&#39;</span>)) <span class="co">// exige nonce</span></span></code></pre></div>
+<p>→ <strong>Es un CRACK, no un backdoor.</strong> Está detrás de
+<strong>capability + nonce</strong>; no es alcanzable sin autenticación.
+Vive junto a las herramientas legítimas (<code>genpages</code>,
+<code>transients</code>, <code>reports</code>,
+<code>ratings</code>).</p>
+<h3 id="fechas">3.5 Fechas</h3>
+<p>Todas 2021-06-10/11 → <strong>coherentes</strong>. Ningún archivo con
+fecha suelta de otra época.</p>
+<h3 id="validación-de-licencia-legítima">3.6 Validación de licencia
+(legítima)</h3>
+<p><code>inc/core/doothemes/class.php</code> → clase EDD estándar:
+<code>wp_remote_get</code> a la URL remota con
+<code>edd_action=activate_license</code>. <strong>Sin IPs, sin dominios
+ocultos, sin exfiltración.</strong></p>
+<hr />
+<h2 id="hallazgo-colateral-más-grave-que-el-tema">4. HALLAZGO COLATERAL
+(más grave que el tema)</h2>
+<p>🔴 <strong>Credencial en texto plano</strong>: el bloque MCP
+<code>wp-streaming</code> de <code>config.yaml</code> contiene
+<code>WORDPRESS_APP_PASSWORD</code> <strong>en claro</strong> para
+<code>kmoviezone.net</code> (valor omitido por política). <strong>Viola
+la doctrina de secretos.</strong> Remedio: mover a <code>.env</code>
+(<code>${VAR}</code>) <strong>y rotar</strong>.</p>
+<hr />
+<h2 id="límites-de-esta-auditoría-declaración-honesta">5. LÍMITES DE
+ESTA AUDITORÍA (declaración honesta)</h2>
+<ol type="1">
+<li><strong>Análisis estático de patrones.</strong> No se observó
+ejecución (runtime).</li>
+<li><strong>Sin diff contra el original.</strong> La prueba concluyente
+sería comparar con el DooPlay 2.5.4 oficial.</li>
+<li>Los bundles de terceros (<strong>Codestar</strong>,
+<strong>dbmvs</strong>) se revisaron por firmas, no línea por
+línea.</li>
+<li><strong>Un tema limpio puede comprometerse después</strong> por un
+plugin vulnerable o un admin robado.</li>
+</ol>
+<hr />
+<h2 id="conclusión">6. CONCLUSIÓN</h2>
+<p><strong>El zip no presenta puerta trasera conocida.</strong> Contiene
+el crack de licencia (<code>forcelicense</code>, admin+nonce) y la
+ofuscación anti-pirata del autor original. <strong>El riesgo principal
+NO es el tema: es que (a) es nulled y no se actualiza, y (b) dejamos una
+credencial en texto plano en nuestra propia configuración.</strong></p>
+<p><strong>Decisión estratégica:</strong> reconstruir kmoviezone
+<strong>sin WordPress y sin PHP</strong> (clean-room, desde el mapa de
+funciones) → el problema desaparece por diseño.</p>
+<p><em>— Bellion, Gran Comandante del Ejército de Sombras</em></p>
+</body>
+</html>

@@ -1,0 +1,43 @@
+---
+// Layout base — identidad Seawolf (oscuro por defecto)
+const { title = 'KMOVIEZONE', descripcion = 'El hogar del entretenimiento' } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={descripcion} />
+</head>
+<body>
+  <header class="top">
+    <a href="/" class="marca">KMOVIEZONE</a>
+    <span class="tag">El hogar del entretenimiento</span>
+  </header>
+  <main><slot /></main>
+  <footer class="pie">
+    <span>Estación C · Línea de Montaje Seawolf · sin WordPress, sin PHP</span>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  :root { --bg:#0d1117; --fg:#e6edf3; --mut:#8b949e; --acc:#4CE8E7; --borde:#21262d; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  .top { display:flex; align-items:baseline; gap:.8rem; padding:1.2rem 1.6rem;
+         border-bottom:1px solid var(--borde); }
+  .marca { color:var(--acc); font-weight:800; letter-spacing:.12em; text-decoration:none; }
+  .tag { color:var(--mut); font-size:.85rem; }
+  main { padding:1.6rem; max-width:1200px; margin:0 auto; }
+  .pie { padding:1.2rem 1.6rem; color:var(--mut); font-size:.75rem;
+         border-top:1px solid var(--borde); margin-top:2rem; }
+  .rejilla { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+  .ficha { background:#161b22; border:1px solid var(--borde); border-radius:10px;
+           overflow:hidden; text-decoration:none; color:inherit; display:block; }
+  .ficha img { width:100%; display:block; aspect-ratio:2/3; object-fit:cover; background:#21262d; }
+  .ficha .t { padding:.6rem .7rem; font-size:.85rem; font-weight:600; }
+  .ficha .m { padding:0 .7rem .7rem; color:var(--mut); font-size:.75rem; }
+</style>

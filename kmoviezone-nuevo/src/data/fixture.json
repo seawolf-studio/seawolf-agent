@@ -1,0 +1,5 @@
+[
+  {"tmdb_id": 27205, "tipo": "pelicula", "nombre": "Origen", "anio": "2010", "poster": null, "sinopsis": "Un ladrón que roba secretos del subconsciente recibe la misión inversa.", "puntaje": 8.4},
+  {"tmdb_id": 603, "tipo": "pelicula", "nombre": "Matrix", "anio": "1999", "poster": null, "sinopsis": "Un hacker descubre la verdadera naturaleza de su realidad.", "puntaje": 8.2},
+  {"tmdb_id": 1396, "tipo": "serie", "nombre": "Breaking Bad", "anio": "2008", "poster": null, "sinopsis": "Un profesor de química se convierte en fabricante de metanfetamina.", "puntaje": 8.9}
+]

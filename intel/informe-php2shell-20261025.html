@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Informe PHP2Shell - Seawolf</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">
+:root {
+--background-body: #202b38;
+--background: #161f27;
+--background-alt: #1a242f;
+--selection: #1c76c5;
+--text-main: #dbdbdb;
+--text-bright: #fff;
+--text-muted: #a9b1ba;
+--links: #41adff;
+--focus: #0096bfab;
+--border: #526980;
+--code: #ffbe85;
+--animation-duration: 0.1s;
+--button-base: #0c151c;
+--button-hover: #040a0f;
+--scrollbar-thumb: var(--button-hover);
+--scrollbar-thumb-hover: rgb(0, 0, 0);
+--form-placeholder: #a9a9a9;
+--form-text: #fff;
+--variable: #d941e2;
+--highlight: #efdb43;
+--select-arrow: url("data:image/svg+xml;charset=utf-8,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' height='62.5' width='116.9' fill='%23efefef'%3E %3Cpath d='M115.3,1.6 C113.7,0 111.1,0 109.5,1.6 L58.5,52.7 L7.4,1.6 C5.8,0 3.2,0 1.6,1.6 C0,3.2 0,5.8 1.6,7.4 L55.5,61.3 C56.3,62.1 57.3,62.5 58.4,62.5 C59.4,62.5 60.5,62.1 61.3,61.3 L115.2,7.4 C116.9,5.8 116.9,3.2 115.3,1.6Z'/%3E %3C/svg%3E");
+}
+html {
+scrollbar-color: #040a0f #202b38;
+scrollbar-color: var(--scrollbar-thumb) var(--background-body);
+scrollbar-width: thin;
+}
+body {
+font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+line-height: 1.4;
+max-width: 800px;
+margin: 20px auto;
+padding: 0 10px;
+word-wrap: break-word;
+color: #dbdbdb;
+color: var(--text-main);
+background: #202b38;
+background: var(--background-body);
+text-rendering: optimizeLegibility;
+}
+button {
+transition:
+background-color 0.1s linear,
+border-color 0.1s linear,
+color 0.1s linear,
+box-shadow 0.1s linear,
+transform 0.1s ease;
+transition:
+background-color var(--animation-duration) linear,
+border-color var(--animation-duration) linear,
+color var(--animation-duration) linear,
+box-shadow var(--animation-duration) linear,
+transform var(--animation-duration) ease;
+}
+input {
+transition:
+background-color 0.1s linear,
+border-color 0.1s linear,
+color 0.1s linear,
+box-shadow 0.1s linear,
+transform 0.1s ease;
+transition:
+background-color var(--animation-duration) linear,
+border-color var(--animation-duration) linear,
+color var(--animation-duration) linear,
+box-shadow var(--animation-duration) linear,
+transform var(--animation-duration) ease;
+}
+textarea {
+transition:
+background-color 0.1s linear,
+border-color 0.1s linear,
+color 0.1s linear,
+box-shadow 0.1s linear,
+transform 0.1s ease;
+transition:
+background-color var(--animation-duration) linear,
+border-color var(--animation-duration) linear,
+color var(--animation-duration) linear,
+box-shadow var(--animation-duration) linear,
+transform var(--animation-duration) ease;
+}
+h1 {
+font-size: 2.2em;
+margin-top: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-bottom: 12px;
+margin-top: 24px;
+}
+h1 {
+color: #fff;
+color: var(--text-bright);
+}
+h2 {
+color: #fff;
+color: var(--text-bright);
+}
+h3 {
+color: #fff;
+color: var(--text-bright);
+}
+h4 {
+color: #fff;
+color: var(--text-bright);
+}
+h5 {
+color: #fff;
+color: var(--text-bright);
+}
+h6 {
+color: #fff;
+color: var(--text-bright);
+}
+strong {
+color: #fff;
+color: var(--text-bright);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong,
+th {
+font-weight: 600;
+}
+q::before {
+content: none;
+}
+q::after {
+content: none;
+}
+blockquote {
+border-left: 4px solid #0096bfab;
+border-left: 4px solid var(--focus);
+margin: 1.5em 0;
+padding: 0.5em 1em;
+font-style: italic;
+}
+q {
+border-left: 4px solid #0096bfab;
+border-left: 4px solid var(--focus);
+margin: 1.5em 0;
+padding: 0.5em 1em;
+font-style: italic;
+}
+blockquote > footer {
+font-style: normal;
+border: 0;
+}
+blockquote cite {
+font-style: normal;
+}
+address {
+font-style: normal;
+}
+a[href^='mailto\:']::before {
+content: '📧 ';
+}
+a[href^='tel\:']::before {
+content: '📞 ';
+}
+a[href^='sms\:']::before {
+content: '💬 ';
+}
+mark {
+background-color: #efdb43;
+background-color: var(--highlight);
+border-radius: 2px;
+padding: 0 2px 0 2px;
+color: #000;
+}
+a > code,
+a > strong {
+color: inherit;
+}
+button,
+select,
+input[type='submit'],
+input[type='reset'],
+input[type='button'],
+input[type='checkbox'],
+input[type='range'],
+input[type='radio'] {
+cursor: pointer;
+}
+input,
+select {
+display: block;
+}
+[type='checkbox'],
+[type='radio'] {
+display: initial;
+}
+input {
+color: #fff;
+color: var(--form-text);
+background-color: #161f27;
+background-color: var(--background);
+font-family: inherit;
+font-size: inherit;
+margin-right: 6px;
+margin-bottom: 6px;
+padding: 10px;
+border: none;
+border-radius: 6px;
+outline: none;
+}
+button {
+color: #fff;
+color: var(--form-text);
+background-color: #161f27;
+background-color: var(--background);
+font-family: inherit;
+font-size: inherit;
+margin-right: 6px;
+margin-bottom: 6px;
+padding: 10px;
+border: none;
+border-radius: 6px;
+outline: none;
+}
+textarea {
+color: #fff;
+color: var(--form-text);
+background-color: #161f27;
+background-color: var(--background);
+font-family: inherit;
+font-size: inherit;
+margin-right: 6px;
+margin-bottom: 6px;
+padding: 10px;
+border: none;
+border-radius: 6px;
+outline: none;
+}
+select {
+color: #fff;
+color: var(--form-text);
+background-color: #161f27;
+background-color: var(--background);
+font-family: inherit;
+font-size: inherit;
+margin-right: 6px;
+margin-bottom: 6px;
+padding: 10px;
+border: none;
+border-radius: 6px;
+outline: none;
+}
+button {
+background-color: #0c151c;
+background-color: var(--button-base);
+padding-right: 30px;
+padding-left: 30px;
+}
+input[type='submit'] {
+background-color: #0c151c;
+background-color: var(--button-base);
+padding-right: 30px;
+padding-left: 30px;
+}
+input[type='reset'] {
+background-color: #0c151c;
+background-color: var(--button-base);
+padding-right: 30px;
+padding-left: 30px;
+}
+input[type='button'] {
+background-color: #0c151c;
+background-color: var(--button-base);
+padding-right: 30px;
+padding-left: 30px;
+}
+button:hover {
+background: #040a0f;
+background: var(--button-hover);
+}
+input[type='submit']:hover {
+background: #040a0f;
+background: var(--button-hover);
+}
+input[type='reset']:hover {
+background: #040a0f;
+background: var(--button-hover);
+}
+input[type='button']:hover {
+background: #040a0f;
+background: var(--button-hover);
+}
+input[type='color'] {
+min-height: 2rem;
+padding: 8px;
+cursor: pointer;
+}
+input[type='checkbox'],
+input[type='radio'] {
+height: 1em;
+width: 1em;
+}
+input[type='radio'] {
+border-radius: 100%;
+}
+input {
+vertical-align: top;
+}
+label {
+vertical-align: middle;
+margin-bottom: 4px;
+display: inline-block;
+}
+input:not([type='checkbox']):not([type='radio']),
+input[type='range'],
+select,
+button,
+textarea {
+-webkit-appearance: none;
+}
+textarea {
+display: block;
+margin-right: 0;
+box-sizing: border-box;
+resize: vertical;
+}
+textarea:not([cols]) {
+width: 100%;
+}
+textarea:not([rows]) {
+min-height: 40px;
+height: 140px;
+}
+select {
+background: #161f27 url("data:image/svg+xml;charset=utf-8,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' height='62.5' width='116.9' fill='%23efefef'%3E %3Cpath d='M115.3,1.6 C113.7,0 111.1,0 109.5,1.6 L58.5,52.7 L7.4,1.6 C5.8,0 3.2,0 1.6,1.6 C0,3.2 0,5.8 1.6,7.4 L55.5,61.3 C56.3,62.1 57.3,62.5 58.4,62.5 C59.4,62.5 60.5,62.1 61.3,61.3 L115.2,7.4 C116.9,5.8 116.9,3.2 115.3,1.6Z'/%3E %3C/svg%3E") calc(100% - 12px) 50% / 12px no-repeat;
+background: var(--background) var(--select-arrow) calc(100% - 12px) 50% / 12px no-repeat;
+padding-right: 35px;
+}
+select::-ms-expand {
+display: none;
+}
+select[multiple] {
+padding-right: 10px;
+background-image: none;
+overflow-y: auto;
+}
+input:focus {
+box-shadow: 0 0 0 2px #0096bfab;
+box-shadow: 0 0 0 2px var(--focus);
+}
+select:focus {
+box-shadow: 0 0 0 2px #0096bfab;
+box-shadow: 0 0 0 2px var(--focus);
+}
+button:focus {
+box-shadow: 0 0 0 2px #0096bfab;
+box-shadow: 0 0 0 2px var(--focus);
+}
+textarea:focus {
+box-shadow: 0 0 0 2px #0096bfab;
+box-shadow: 0 0 0 2px var(--focus);
+}
+input[type='checkbox']:active,
+input[type='radio']:active,
+input[type='submit']:active,
+input[type='reset']:active,
+input[type='button']:active,
+input[type='range']:active,
+button:active {
+transform: translateY(2px);
+}
+input:disabled,
+select:disabled,
+button:disabled,
+textarea:disabled {
+cursor: not-allowed;
+opacity: 0.5;
+}
+::-moz-placeholder {
+color: #a9a9a9;
+color: var(--form-placeholder);
+}
+:-ms-input-placeholder {
+color: #a9a9a9;
+color: var(--form-placeholder);
+}
+::-ms-input-placeholder {
+color: #a9a9a9;
+color: var(--form-placeholder);
+}
+::placeholder {
+color: #a9a9a9;
+color: var(--form-placeholder);
+}
+fieldset {
+border: 1px #0096bfab solid;
+border: 1px var(--focus) solid;
+border-radius: 6px;
+margin: 0;
+margin-bottom: 12px;
+padding: 10px;
+}
+legend {
+font-size: 0.9em;
+font-weight: 600;
+}
+input[type='range'] {
+margin: 10px 0;
+padding: 10px 0;
+background: transparent;
+}
+input[type='range']:focus {
+outline: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
+width: 100%;
+height: 9.5px;
+-webkit-transition: 0.2s;
+transition: 0.2s;
+background: #161f27;
+background: var(--background);
+border-radius: 3px;
+}
+input[type='range']::-webkit-slider-thumb {
+box-shadow: 0 1px 1px #000, 0 0 1px #0d0d0d;
+height: 20px;
+width: 20px;
+border-radius: 50%;
+background: #526980;
+background: var(--border);
+-webkit-appearance: none;
+margin-top: -7px;
+}
+input[type='range']:focus::-webkit-slider-runnable-track {
+background: #161f27;
+background: var(--background);
+}
+input[type='range']::-moz-range-track {
+width: 100%;
+height: 9.5px;
+-moz-transition: 0.2s;
+transition: 0.2s;
+background: #161f27;
+background: var(--background);
+border-radius: 3px;
+}
+input[type='range']::-moz-range-thumb {
+box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+height: 20px;
+width: 20px;
+border-radius: 50%;
+background: #526980;
+background: var(--border);
+}
+input[type='range']::-ms-track {
+width: 100%;
+height: 9.5px;
+background: transparent;
+border-color: transparent;
+border-width: 16px 0;
+color: transparent;
+}
+input[type='range']::-ms-fill-lower {
+background: #161f27;
+background: var(--background);
+border: 0.2px solid #010101;
+border-radius: 3px;
+box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+}
+input[type='range']::-ms-fill-upper {
+background: #161f27;
+background: var(--background);
+border: 0.2px solid #010101;
+border-radius: 3px;
+box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+}
+input[type='range']::-ms-thumb {
+box-shadow: 1px 1px 1px #000, 0 0 1px #0d0d0d;
+border: 1px solid #000;
+height: 20px;
+width: 20px;
+border-radius: 50%;
+background: #526980;
+background: var(--border);
+}
+input[type='range']:focus::-ms-fill-lower {
+background: #161f27;
+background: var(--background);
+}
+input[type='range']:focus::-ms-fill-upper {
+background: #161f27;
+background: var(--background);
+}
+a {
+text-decoration: none;
+color: #41adff;
+color: var(--links);
+}
+a:hover {
+text-decoration: underline;
+}
+code {
+background: #161f27;
+background: var(--background);
+color: #ffbe85;
+color: var(--code);
+padding: 2.5px 5px;
+border-radius: 6px;
+font-size: 1em;
+}
+samp {
+background: #161f27;
+background: var(--background);
+color: #ffbe85;
+color: var(--code);
+padding: 2.5px 5px;
+border-radius: 6px;
+font-size: 1em;
+}
+time {
+background: #161f27;
+background: var(--background);
+color: #ffbe85;
+color: var(--code);
+padding: 2.5px 5px;
+border-radius: 6px;
+font-size: 1em;
+}
+pre > code {
+padding: 10px;
+display: block;
+overflow-x: auto;
+}
+var {
+color: #d941e2;
+color: var(--variable);
+font-style: normal;
+font-family: monospace;
+}
+kbd {
+background: #161f27;
+background: var(--background);
+border: 1px solid #526980;
+border: 1px solid var(--border);
+border-radius: 2px;
+color: #dbdbdb;
+color: var(--text-main);
+padding: 2px 4px 2px 4px;
+}
+img,
+video {
+max-width: 100%;
+height: auto;
+}
+hr {
+border: none;
+border-top: 1px solid #526980;
+border-top: 1px solid var(--border);
+}
+table {
+border-collapse: collapse;
+margin-bottom: 10px;
+width: 100%;
+table-layout: fixed;
+}
+table caption {
+text-align: left;
+}
+td,
+th {
+padding: 6px;
+text-align: left;
+vertical-align: top;
+word-wrap: break-word;
+}
+thead {
+border-bottom: 1px solid #526980;
+border-bottom: 1px solid var(--border);
+}
+tfoot {
+border-top: 1px solid #526980;
+border-top: 1px solid var(--border);
+}
+tbody tr:nth-child(even) {
+background-color: #161f27;
+background-color: var(--background);
+}
+tbody tr:nth-child(even) button {
+background-color: #1a242f;
+background-color: var(--background-alt);
+}
+tbody tr:nth-child(even) button:hover {
+background-color: #202b38;
+background-color: var(--background-body);
+}
+::-webkit-scrollbar {
+height: 10px;
+width: 10px;
+}
+::-webkit-scrollbar-track {
+background: #161f27;
+background: var(--background);
+border-radius: 6px;
+}
+::-webkit-scrollbar-thumb {
+background: #040a0f;
+background: var(--scrollbar-thumb);
+border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+background: rgb(0, 0, 0);
+background: var(--scrollbar-thumb-hover);
+}
+::-moz-selection {
+background-color: #1c76c5;
+background-color: var(--selection);
+color: #fff;
+color: var(--text-bright);
+}
+::selection {
+background-color: #1c76c5;
+background-color: var(--selection);
+color: #fff;
+color: var(--text-bright);
+}
+details {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+background-color: #1a242f;
+background-color: var(--background-alt);
+padding: 10px 10px 0;
+margin: 1em 0;
+border-radius: 6px;
+overflow: hidden;
+}
+details[open] {
+padding: 10px;
+}
+details > :last-child {
+margin-bottom: 0;
+}
+details[open] summary {
+margin-bottom: 10px;
+}
+summary {
+display: list-item;
+background-color: #161f27;
+background-color: var(--background);
+padding: 10px;
+margin: -10px -10px 0;
+cursor: pointer;
+outline: none;
+}
+summary:hover,
+summary:focus {
+text-decoration: underline;
+}
+details > :not(summary) {
+margin-top: 0;
+}
+summary::-webkit-details-marker {
+color: #dbdbdb;
+color: var(--text-main);
+}
+dialog {
+background-color: #1a242f;
+background-color: var(--background-alt);
+color: #dbdbdb;
+color: var(--text-main);
+border: none;
+border-radius: 6px;
+border-color: #526980;
+border-color: var(--border);
+padding: 10px 30px;
+}
+dialog > header:first-child {
+background-color: #161f27;
+background-color: var(--background);
+border-radius: 6px 6px 0 0;
+margin: -10px -30px 10px;
+padding: 10px;
+text-align: center;
+}
+dialog::-webkit-backdrop {
+background: #0000009c;
+-webkit-backdrop-filter: blur(4px);
+backdrop-filter: blur(4px);
+}
+dialog::backdrop {
+background: #0000009c;
+-webkit-backdrop-filter: blur(4px);
+backdrop-filter: blur(4px);
+}
+footer {
+border-top: 1px solid #526980;
+border-top: 1px solid var(--border);
+padding-top: 10px;
+color: #a9b1ba;
+color: var(--text-muted);
+}
+body > footer {
+margin-top: 40px;
+}
+@media print {
+body,
+pre,
+code,
+summary,
+details,
+button,
+input,
+textarea {
+background-color: #fff;
+}
+button,
+input,
+textarea {
+border: 1px solid #000;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+button,
+input,
+textarea,
+footer,
+summary,
+strong {
+color: #000;
+}
+summary::marker {
+color: #000;
+}
+summary::-webkit-details-marker {
+color: #000;
+}
+tbody tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+a {
+color: #00f;
+text-decoration: underline;
+}
+}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Informe PHP2Shell - Seawolf</h1>
+</header>
+<h1 id="informe-de-seguridad-php2shell-cve-2026-109618-cve-2026-109619">INFORME
+DE SEGURIDAD — PHP2Shell (CVE-2026-109618 / CVE-2026-109619)</h1>
+<p><strong>Para:</strong> Monarca (Key) · <strong>De:</strong> Bellion,
+Gran Comandante · <strong>Fecha:</strong> 2026-10-25
+<strong>Clasificación:</strong> PARÉNTESIS TÁCTICO URGENTE ·
+<strong>Estado:</strong> auditoría completa</p>
+<hr />
+<h2 id="el-fallo-qué-es-y-por-qué-importa">1. EL FALLO (qué es y por qué
+importa)</h2>
+<p>Dos vulnerabilidades <strong>críticas en el núcleo del intérprete
+PHP</strong>, bautizadas <strong>PHP2Shell</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Dato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CVE-2026-109618</strong></td>
+<td>Fallo en el manejo de <em>out-of-memory</em>: interrumpe PHP
+mientras los datos de la petición están <strong>parcialmente
+inicializados</strong>; la limpieza de la petición acaba ejecutando
+memoria no inicializada.</td>
+</tr>
+<tr>
+<td><strong>CVE-2026-109619</strong></td>
+<td><strong>Estado global obsoleto</strong>: PHP conserva referencias a
+datos de una petición <strong>después</strong> de liberar su memoria;
+una petición posterior ejecuta esos datos ya liberados.</td>
+</tr>
+<tr>
+<td><strong>CVSS</strong></td>
+<td><strong>9.2 (v4.0)</strong> — <em>Remote Code Execution</em>
+<strong>sin autenticación</strong></td>
+</tr>
+<tr>
+<td><strong>Alcance</strong></td>
+<td><strong>~70% de los sitios de internet</strong> (PHP es el motor del
+~77% de la web)</td>
+</tr>
+<tr>
+<td><strong>Anunciado</strong></td>
+<td>20–21 de octubre de 2026 · <strong>CISA pide parcheo
+inmediato</strong></td>
+</tr>
+<tr>
+<td><strong>Tipo</strong></td>
+<td><strong>Del lado del SERVIDOR</strong> (no afecta navegadores, Node
+ni Python)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="versiones-parcheadas-publicadas-21-oct-2026">Versiones
+parcheadas (publicadas 21-oct-2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Rama PHP</th>
+<th>Afectadas</th>
+<th><strong>Parcheadas</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PHP 8.5</td>
+<td>&lt; 8.5.12</td>
+<td><strong>8.5.12</strong></td>
+</tr>
+<tr>
+<td>PHP 8.4</td>
+<td>&lt; 8.4.27</td>
+<td><strong>8.4.27</strong></td>
+</tr>
+<tr>
+<td>PHP 8.3</td>
+<td>&lt; 8.3.36</td>
+<td><strong>8.3.36</strong></td>
+</tr>
+<tr>
+<td>PHP 8.2</td>
+<td>&lt; 8.2.35</td>
+<td><strong>8.2.35</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="mitigación-temporal-si-no-se-puede-parchear-ya">Mitigación
+temporal (si no se puede parchear ya)</h3>
+<ul>
+<li><em>Hardening de runtime</em> en <code>php.ini</code> (Google Cloud
+publica el fragmento “Prepatch PHP runtime hardening”).</li>
+<li>Reducir el número de procesos/reciclado y evitar hosting
+multi-inquilino compartido mientras no se parche.</li>
+<li><strong>Regla:</strong> mitigar ≠ parchear. La mitigación es un
+parche de tiempo, no la cura.</li>
+</ul>
+<p><strong>Fuentes:</strong> CISA (alerta 2026-10-21) · Qualys ·
+watchTowr (FAQ) · Google Cloud · cPanel · Aikido · php.net/archive
+2026-10-21.</p>
+<hr />
+<h2 id="auditoría-de-nuestro-sistema-dónde-somos-vulnerables">2.
+AUDITORÍA DE NUESTRO SISTEMA (¿dónde somos vulnerables?)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Activo</th>
+<th>¿Corre PHP?</th>
+<th>Veredicto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VPS <code>76.13.109.237</code></strong>
+(WAHA/NEREUS/Composio)</td>
+<td><strong>NO</strong> — sin CLI, sin paquetes, sin php-fpm</td>
+<td>✅ <strong>NO vulnerable</strong></td>
+</tr>
+<tr>
+<td><strong>PC local (Windows)</strong></td>
+<td><strong>NO</strong> — <code>php</code> no instalado</td>
+<td>✅ <strong>NO vulnerable</strong></td>
+</tr>
+<tr>
+<td><strong>kmoviezone.net</strong></td>
+<td><strong>SÍ — Apache + WordPress 7.0.7</strong></td>
+<td>⚠️ <strong>RIESGO — verificar PHP</strong></td>
+</tr>
+<tr>
+<td>agente.sw-st.net</td>
+<td>Cloudflare (proxy)</td>
+<td>✅ sin PHP propio</td>
+</tr>
+<tr>
+<td><code>seawolf-agent</code> / WebUI / Astro</td>
+<td>Python / Node / estático</td>
+<td>✅ no aplica</td>
+</tr>
+</tbody>
+</table>
+<h3 id="único-punto-de-riesgo-real-kmoviezone.net">⚠️ ÚNICO PUNTO DE
+RIESGO REAL: <strong>kmoviezone.net</strong></h3>
+<p>Corre <strong>WordPress sobre Apache</strong> → <strong>ejecuta
+PHP</strong> → <strong>puede estar en el rango afectado</strong>. -
+<strong>No pude leer su versión de PHP desde fuera</strong>: el hosting
+<strong>oculta <code>X-Powered-By</code></strong> y los endpoints
+<code>wp-site-health</code> devuelven 404 (restringidos). Lo verifiqué
+intentándolo por API autenticada. - <strong>Acción obligatoria:</strong>
+entrar a
+<code>wp-admin → Herramientas → Salud del sitio → Información → Servidor</code>
+y leer la versión de PHP. - Si dice <strong>&lt; 8.5.12 / 8.4.27 /
+8.3.36 / 8.2.35</strong> → <strong>cambiar la versión de PHP en el panel
+del hosting de inmediato</strong>. - Aprovechar: actualizar
+<strong>WordPress core + plugins + temas</strong>, y revisar
+usuarios/plugins desconocidos (un RCE de este calibre suele venir
+seguido de webshells).</p>
+<hr />
+<h2 id="hallazgo-adicional-de-seguridad-encontrado-durante-la-auditoría">3.
+HALLAZGO ADICIONAL DE SEGURIDAD (encontrado durante la auditoría)</h2>
+<p>🔴 <strong>Contraseña de aplicación de WordPress en TEXTO PLANO
+dentro de <code>config.yaml</code>.</strong> - El bloque MCP
+<code>wp-streaming</code> tiene <code>WORDPRESS_APP_PASSWORD</code> en
+claro (valor omitido aquí a propósito). - <strong>Viola nuestra
+doctrina</strong>: <em>“los secretos viven en <code>.env</code>;
+<code>config.yaml</code> solo referencia <code>${VAR}</code>”</em>. -
+<strong>Riesgo:</strong> <code>config.yaml</code> no está cifrado y
+puede acabar en respaldos/git. - <strong>Remedio (2 pasos, cuando el
+Monarca lo ordene):</strong> ① mover el valor a
+<code>profiles/default/.env</code> y dejar
+<code>${WORDPRESS_APP_PASSWORD}</code> en el yaml; ②
+<strong>rotar</strong> esa contraseña de aplicación en WordPress
+(¿estuvo expuesta? → se rota por principio).</p>
+<hr />
+<h2 id="actualizaciones-de-node.js-y-python-orden-del-monarca">4.
+ACTUALIZACIONES DE NODE.JS Y PYTHON (orden del Monarca)</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Software</th>
+<th>Antes</th>
+<th>Ahora</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Node.js LTS</strong></td>
+<td>24.20.0</td>
+<td><strong>→ 24.22.1</strong></td>
+<td>MSI oficial aplicado</td>
+</tr>
+<tr>
+<td><strong>npm</strong></td>
+<td>11.19.0</td>
+<td>(acompaña a Node)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Python 3.14</strong></td>
+<td>3.14.7</td>
+<td>3.14.7</td>
+<td><strong>Ya es la última de su rama</strong> (winget no ofrece
+más)</td>
+</tr>
+<tr>
+<td><strong>Python (Hermes tools)</strong></td>
+<td>3.14.7 + 3.14.9</td>
+<td>3.14.9</td>
+<td>Duplicado a limpiar (cosmético)</td>
+</tr>
+<tr>
+<td><strong>Miniconda</strong></td>
+<td>py310_24.5.0</td>
+<td>disponible py314</td>
+<td>Opcional</td>
+</tr>
+<tr>
+<td><strong>Node en VPS</strong></td>
+<td>v22.23.1</td>
+<td>v22.23.1</td>
+<td>✅ actualizado (LTS soportada)</td>
+</tr>
+<tr>
+<td><strong>Python en VPS</strong></td>
+<td>3.12.3</td>
+<td>3.12.3</td>
+<td>✅ en soporte</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota honesta:</strong> ninguna de estas actualizaciones tiene
+relación con PHP2Shell (el fallo es del servidor PHP). Se hicieron por
+<strong>higiene</strong>, no como parche del CVE.</p>
+</blockquote>
+<hr />
+<h2 id="recomendaciones-en-orden-de-prioridad">5. RECOMENDACIONES, EN
+ORDEN DE PRIORIDAD</h2>
+<ol type="1">
+<li><strong>🔴 kmoviezone.net — hoy:</strong> verificar la versión de
+PHP y subirla a la parcheada. Es el único activo nuestro expuesto.</li>
+<li><strong>🔴 Rotar la contraseña de WordPress</strong> y sacarla de
+<code>config.yaml</code>.</li>
+<li><strong>🟠 Auditar kmoviezone</strong> (plugins/temas/usuarios) por
+si ya hubo explotación: el vector es silencioso.</li>
+<li><strong>🟡 Node.js</strong> — quedó en 24.22.1 (LTS). Buen momento
+para el <strong>reinicio de Windows</strong> pendiente.</li>
+<li><strong>🟢 Mantener el VPS como está</strong> en materia de PHP:
+<strong>no instalar PHP</strong> salvo necesidad explícita. Hoy somos
+inmunes por no tenerlo.</li>
+</ol>
+<hr />
+<h2 id="resumen-ejecutivo-una-línea">6. RESUMEN EJECUTIVO (una
+línea)</h2>
+<p><strong>El fallo es grave para el mundo, pero nuestro VPS y nuestro
+PC están a salvo por no correr PHP; el único punto real es
+kmoviezone.net (WordPress/Apache), donde hay que subir la versión de PHP
+ya — y de paso corregimos una contraseña de WordPress que estaba en
+texto plano.</strong></p>
+<p><em>— Bellion, Gran Comandante del Ejército de Sombras</em></p>
+</body>
+</html>

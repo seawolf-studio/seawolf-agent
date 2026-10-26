@@ -1,0 +1,22 @@
+# ═══════════════════════════════════════════════════════════
+#  COLA DE ENLACES — kmoviezone
+#  AQUI pegas los enlaces de MediaFire. Nada mas.
+#
+#  COMO SE USA:
+#    1. Rellena las 3 lineas de abajo (titulo / tipo / carpeta)
+#    2. Pega los enlaces, uno por linea
+#    3. Guarda el archivo
+#    4. Cierra MiPony  y  ejecuta:   python mipony.py encolar
+#
+#  (Las lineas que empiezan con # se ignoran)
+# ═══════════════════════════════════════════════════════════
+
+titulo: 
+tipo: anime
+carpeta: D:\my stream
+
+---
+# Pega aqui los enlaces de MediaFire, uno por linea:
+#
+# https://www.mediafire.com/file/xxxxxxxx/archivo.mkv
+# https://www.mediafire.com/file/yyyyyyyy/archivo2.mkv

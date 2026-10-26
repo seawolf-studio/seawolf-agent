@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>kmoviezone - Proceso Completo</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">kmoviezone - Proceso Completo</h1>
+</header>
+<h1 id="proceso-completo-kmoviezone-de-la-fuente-al-catálogo-publicado">📋
+PROCESO COMPLETO — kmoviezone (de la fuente al catálogo publicado)</h1>
+<p><strong>Para:</strong> Monarca · <strong>De:</strong> Bellion, Gran
+Comandante · <strong>Fecha:</strong> 2026-10-25 <strong>Carpeta de
+trabajo:</strong> <code>C:\Users\Admin\streaming_web\</code></p>
+<blockquote>
+<p><strong>Léalo una vez completo antes de empezar.</strong> Cada fase
+dice qué hacer <strong>y cómo verificar</strong> que salió bien.</p>
+</blockquote>
+<hr />
+<h2 id="el-mapa-7-fases">🗺️ EL MAPA (7 fases)</h2>
+<pre><code>1. CONSEGUIR    los enlaces          (usted)
+2. ENCOLAR      en MiPony            (usted + ENCOLAR.bat)
+3. DESCARGAR    MiPony → D:\my stream (MiPony)
+4. SUBIR        FileUploader → 3 hosts (usted)
+5. COSECHAR     log → fila del catálogo (cosechar.py)
+6. PUBLICAR     catálogo → web        (watch.py / BAT)
+7. VERIFICAR    que se vea bien        (usted)</code></pre>
+<table style="width:6%;">
+<colgroup>
+<col style="width: 5%" />
+</colgroup>
+<tbody>
+<tr>
+<td># FASE 1 — CONSEGUIR LOS ENLACES <em>(manual)</em></td>
+</tr>
+<tr>
+<td>1. Busque el contenido en sus fuentes habituales (mayoría
+<strong>MediaFire</strong>). 2. <strong>Regla de oro:</strong> fíjese en
+el <strong>nombre exacto</strong> del archivo. El Cosechador saca el
+número de capítulo del nombre, así que un nombre torcido = capítulo mal
+numerado. 3. Reúna <strong>los enlaces de una sola tanda</strong> (una
+serie o una película) antes de pasar a la fase 2.</td>
+</tr>
+<tr>
+<td>✅ <strong>Verificación:</strong> tiene una lista de enlaces de
+<strong>un solo título</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="fase-2-encolar-en-mipony-usted-1-doble-clic">FASE 2 — ENCOLAR EN
+MIPONY <em>(usted + 1 doble clic)</em></h1>
+<ol type="1">
+<li><p>Abra <code>cola-enlaces.txt</code>.</p></li>
+<li><p>Rellene <strong>las 3 líneas</strong> (respete los dos
+puntos):</p>
+<pre><code>titulo: Solo Leveling
+tipo: anime
+carpeta: D:\my stream</code></pre>
+<p><em>(tipo admite: <code>pelicula</code>, <code>serie</code>,
+<code>anime</code>, <code>comics</code>)</em></p></li>
+<li><p>Pegue los enlaces <strong>debajo de la línea
+<code>---</code></strong>, <strong>uno por línea</strong>.</p></li>
+<li><p><strong>Guarde</strong> el archivo (Ctrl+S).</p></li>
+<li><p><strong>CIERRE MiPony.</strong> <em>(obligatorio: lo reescribe al
+salir y perdemos los enlaces)</em></p></li>
+<li><p>Doble clic en <strong><code>ENCOLAR.bat</code></strong>.</p></li>
+</ol>
+<p>✅ <strong>Verificación:</strong> el .bat imprime
+<code>OK: N enlaces encolados</code>. Luego <strong>abra MiPony</strong>
+y confirme que aparecen en la lista.</p>
+<blockquote>
+<p>⚠️ <strong>Si el .bat dice
+<code>*** MIPONY ESTA ABIERTO ***</code></strong> → ciérrelo y repita el
+paso 6. No insista con MiPony abierto.</p>
+</blockquote>
+<hr />
+<h1 id="fase-3-descargar-mipony">FASE 3 — DESCARGAR
+<em>(MiPony)</em></h1>
+<ol type="1">
+<li><p>En MiPony, <strong>arranque la descarga</strong> (botón de
+inicio).</p></li>
+<li><p>Déjelo trabajar. Los archivos caen en la carpeta que puso
+(<code>D:\my stream</code>).</p></li>
+<li><p>Cuando termine (o si quiere saber cómo va), en la carpeta del
+proyecto:</p>
+<pre><code>python mipony.py estado</code></pre>
+<p>Le dice cuántos <strong>Complete</strong>, cuántos
+<strong>Stopped</strong> y dónde quedaron.</p></li>
+<li><p><strong>Si quedaron detenidos:</strong></p>
+<pre><code>python mipony.py pendientes</code></pre>
+<p>→ escribe <code>reintentar.txt</code> con los enlaces caídos.
+<strong>Re-encólalos</strong> con el mismo <code>ENCOLAR.bat</code>
+(Fase 2, pasos 5 y 6).</p></li>
+</ol>
+<p>✅ <strong>Verificación:</strong> los archivos están <strong>en el
+disco</strong> (<code>Complete</code>).</p>
+<blockquote>
+<p>💡 <strong>Dato real:</strong> en su cola hay <strong>633
+detenidos</strong> (p. ej. Black Mirror S01–S05). Son descargas a
+medias, no pérdidas: se reintentan con este mismo método.</p>
+</blockquote>
+<hr />
+<h1 id="fase-4-subir-a-los-3-hosts-usted-fileuploader">FASE 4 — SUBIR A
+LOS 3 HOSTS <em>(usted, FileUploader)</em></h1>
+<ol type="1">
+<li>Abra <strong>FileUploader</strong> (<code>Escritorio</code> →
+<code>FileUploader.exe</code>).</li>
+<li>Agregue <strong>los archivos de esta tanda</strong> (arrastrar la
+carpeta o seleccionar).</li>
+<li>Deje que suba a los <strong>3 hosts</strong>: <strong>streamtape ·
+voe · player4me</strong>.</li>
+<li><strong>Ojo con esto (no es culpa suya):</strong>
+<ul>
+<li><strong><code>429 Too Many Requests</code></strong> en player4me →
+el host lo está frenando. <strong>Reintente con pausa.</strong> Es la
+causa #1 de enlaces faltantes.</li>
+<li><strong><code>File is in your account</code></strong> → el archivo
+ya estaba subido; el host <strong>no da enlace nuevo</strong>. Sáquelo
+manualmente o sáltelo.</li>
+</ul></li>
+</ol>
+<p>✅ <strong>Verificación:</strong> el log creció. Compruébelo así:</p>
+<pre><code>cosechar.py --lista | findstr /i &quot;player4me&quot;</code></pre>
+<p>o simplemente siga a la fase 5 — el Cosechador le dirá qué falta.</p>
+<hr />
+<h1 id="fase-5-cosechar-los-enlaces-automático">FASE 5 — COSECHAR LOS
+ENLACES <em>(automático)</em></h1>
+<p><strong>Paso 1 — VER (no escribe nada):</strong></p>
+<pre><code>python cosechar.py &quot;Solo Leveling&quot; --tipo anime --filtro &quot;Solo Leveling&quot;</code></pre>
+<p>Le muestra: <strong>cuántos capítulos</strong>, la <strong>lista de
+capítulos</strong> y <strong>qué servidor falta</strong> en cada
+uno.</p>
+<p><strong>Paso 2 — AGREGAR (escribe en
+<code>catalogo.csv</code>):</strong></p>
+<pre><code>python cosechar.py &quot;Solo Leveling&quot; --tipo anime --filtro &quot;Solo Leveling&quot; --csv</code></pre>
+<blockquote>
+<p><strong><code>--filtro</code> es obligatorio en la práctica:</strong>
+el log <strong>mezcla todas las tandas</strong> que haya subido. El
+filtro es una palabra que solo aparezca en los archivos de
+<strong>esta</strong> tanda.</p>
+</blockquote>
+<p>✅ <strong>Verificación:</strong> revise la última línea de
+<code>catalogo.csv</code> — debe tener <code>titulo,tipo</code> y la
+cadena de enlaces con <code>;</code> y <code>|</code>.</p>
+<hr />
+<h1 id="fase-6-publicar-automático">FASE 6 — PUBLICAR
+<em>(automático)</em></h1>
+<p><strong>Opción A (recomendada) — el vigilante ya está
+corriendo:</strong> Si <code>INICIAR_VIGILANTE.bat</code> está abierto,
+<strong>detecta el cambio solo</strong> y regenera + sube.</p>
+<p><strong>Opción B (manual):</strong></p>
+<pre><code>REGENERAR_DATOS.bat     (regenera datos.json desde catalogo.csv)
+SUBIR_WEB.bat           (sube index.html + datos.json + logo.png)</code></pre>
+<p>✅ <strong>Verificación:</strong> <code>datos.json</code> contiene el
+título nuevo.</p>
+<hr />
+<h1 id="fase-7-verificar-en-la-web">FASE 7 — VERIFICAR EN LA WEB</h1>
+<ol type="1">
+<li>Abra <strong>kmoviezone.stream</strong> y <strong>fuerce
+recarga</strong> (<code>Ctrl + F5</code> — el navegador cachea).</li>
+<li>Busque el título nuevo.</li>
+<li><strong>Abra su ficha</strong> y pruebe los <strong>3
+servidores</strong>.</li>
+<li>Si un servidor dice <strong>“· falta”</strong> → ese enlace no llegó
+(fase 4, el 429). Reintente la subida de ese archivo y repita desde la
+fase 4.</li>
+</ol>
+<p>✅ <strong>Verificación final:</strong> el título se ve, con sus
+capítulos, y <strong>los 3 botones</strong> funcionan.</p>
+<hr />
+<h1 id="reglas-que-nunca-se-rompen">🚫 REGLAS QUE NUNCA SE ROMPEN</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Nunca</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Escribir en la cola con MiPony abierto</strong></td>
+<td>MiPony reescribe <code>linkList.xml</code> al salir → se pierde
+todo</td>
+</tr>
+<tr>
+<td><strong>Usar otro formato raro de nombre de archivo</strong></td>
+<td>El Cosechador no saca el número de capítulo</td>
+</tr>
+<tr>
+<td><strong>Subir dos tandas mezcladas sin
+<code>--filtro</code></strong></td>
+<td>La fila del catálogo saldría con capítulos cruzados</td>
+</tr>
+<tr>
+<td><strong>Editar <code>index.html</code> a mano</strong></td>
+<td>Lo regenera <code>build.py</code>; se pierde el cambio</td>
+</tr>
+<tr>
+<td><strong>Olvidar el <code>Ctrl + F5</code></strong></td>
+<td>Verá la versión vieja y creerá que falló</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="diccionario-de-errores">🔧 DICCIONARIO DE ERRORES</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Causa</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*** MIPONY ESTA ABIERTO ***</code></td>
+<td>MiPony corriendo</td>
+<td>Ciérrelo y repita <code>ENCOLAR.bat</code></td>
+</tr>
+<tr>
+<td><code>429 Too Many Requests</code></td>
+<td>Límite del host</td>
+<td>Reintentar con pausa (no cambiar nada)</td>
+</tr>
+<tr>
+<td><code>File is in your account</code></td>
+<td>Ya estaba subido</td>
+<td>Sacar el enlace a mano o saltar</td>
+</tr>
+<tr>
+<td>Faltan capítulos en la cosecha</td>
+<td>Nombre sin número legible</td>
+<td>Renombre con <code>NN - Título</code> y re-subir</td>
+</tr>
+<tr>
+<td>Un capítulo sin un servidor</td>
+<td>Subida fallida</td>
+<td>Reintentar ese archivo en FileUploader</td>
+</tr>
+<tr>
+<td>La web no muestra el título nuevo</td>
+<td>Falta publicar o caché</td>
+<td><code>SUBIR_WEB.bat</code> + <code>Ctrl + F5</code></td>
+</tr>
+<tr>
+<td><code>cosechar</code> mezcla series</td>
+<td>Falta <code>--filtro</code></td>
+<td>Añada <code>--filtro &quot;&lt;palabra de la tanda&gt;&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="tarjeta-rápida-para-pegar-en-la-pared">✅ TARJETA RÁPIDA (para
+pegar en la pared)</h1>
+<pre><code>1. Pegar enlaces en  cola-enlaces.txt  (titulo/tipo/carpeta)
+2. CERRAR MiPony  -&gt;  ENCOLAR.bat
+3. Abrir MiPony  -&gt;  descargar
+4. FileUploader  -&gt;  subir a los 3
+5. cosechar.py &quot;Titulo&quot; --tipo X --filtro &quot;X&quot;          (ver)
+   cosechar.py &quot;Titulo&quot; --tipo X --filtro &quot;X&quot; --csv    (agregar)
+6. Vigilante sube solo   (o REGENERAR_DATOS.bat + SUBIR_WEB.bat)
+7. kmoviezone.stream  +  Ctrl+F5  -&gt;  probar los 3 botones</code></pre>
+<p><em>— Bellion, Gran Comandante del Ejército de Sombras</em></p>
+</body>
+</html>

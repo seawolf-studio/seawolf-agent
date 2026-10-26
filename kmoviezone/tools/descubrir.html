@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DESCUBRIR — kmoviezone (operador)</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#121821;--line:#1e2733;--txt:#e6edf3;--mut:#8b98a9;--acc:#e50914;--ok:#22c55e}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,Segoe UI,Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:20;background:rgba(11,15,20,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 20px}
+  .bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;max-width:1400px;margin:0 auto}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:18px;margin-right:8px}
+  .brand span{color:var(--acc)}
+  input,select,button{font:inherit}
+  #q{flex:1;min-width:240px;background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:10px 14px;border-radius:10px}
+  #q:focus{outline:none;border-color:var(--acc)}
+  #anio{background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:10px;border-radius:10px;width:110px}
+  button{cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:10px 16px;border-radius:10px;transition:.15s}
+  button:hover{border-color:var(--acc)}
+  button.prim{background:var(--acc);border-color:var(--acc);font-weight:700}
+  .tabs{display:flex;gap:8px;margin:18px auto 0;max-width:1400px;padding:0 20px}
+  .tab{padding:9px 18px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--mut)}
+  .tab.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+  main{max-width:1400px;margin:0 auto;padding:20px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:.15s}
+  .card:hover{transform:translateY(-3px);border-color:var(--acc)}
+  .card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#0d131b}
+  .card .t{padding:8px 10px;font-size:13px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card .m{padding:0 10px 9px;color:var(--mut);font-size:11px}
+  .vacio{color:var(--mut);text-align:center;padding:60px 20px}
+  #estado{color:var(--mut);font-size:13px;margin:0 0 14px}
+  /* modal */
+  #ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;z-index:50;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px}
+  #ov.on{display:flex}
+  #mod{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:820px;width:100%;overflow:hidden;position:relative}
+  #mod .fondo{height:180px;background-size:cover;background-position:center;opacity:.55}
+  #mod .cuerpo{padding:0 22px 22px;margin-top:-70px;position:relative}
+  #mod .top{display:flex;gap:16px;align-items:flex-end}
+  #mod img.poster{width:120px;border-radius:10px;border:2px solid var(--line);flex:none}
+  #mod h2{margin:0 0 4px;font-size:22px}
+  #mod .sub{color:var(--mut);font-size:13px}
+  #mod .chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+  .chip{background:#1b2533;border:1px solid var(--line);border-radius:20px;padding:4px 11px;font-size:12px;color:#c7d2de}
+  #mod .sin{color:#c3cedb;font-size:14px;margin:8px 0 14px}
+  #mod .meta{color:var(--mut);font-size:12.5px;margin:4px 0}
+  .campo{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .campo input{flex:1;min-width:260px;background:#0d131b;border:1px solid var(--line);color:var(--txt);padding:11px 13px;border-radius:10px}
+  .campo select{background:#0d131b;border:1px solid var(--line);color:var(--txt);padding:11px;border-radius:10px}
+  #msg{margin-top:12px;font-size:13px;min-height:18px}
+  #cerrar{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.5);border:0;font-size:22px;width:38px;height:38px;border-radius:50%;line-height:1;color:#fff}
+  .trailer{margin-top:12px}
+  .trailer iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">DESCUBRIR <span>·</span> kmoviezone</div>
+    <input id="q" placeholder="Buscar por título…  (ej. Inception, Breaking Bad)" autocomplete="off">
+    <select id="anio"><option value="">Año…</option></select>
+    <button id="btnBuscar" class="prim">Buscar</button>
+    <button id="btnLimpiar">Limpiar</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab on" data-t="peliculas" id="tabPeliculas">🎬 Películas</button>
+  <button class="tab" data-t="series" id="tabSeries">📺 Series</button>
+</div>
+
+<main>
+  <p id="estado">Escribe un título o elige un año.</p>
+  <div class="grid" id="grilla"></div>
+</main>
+
+<div id="ov">
+  <div id="mod">
+    <button id="cerrar">✕</button>
+    <div class="fondo" id="mFondo"></div>
+    <div class="cuerpo">
+      <div class="top">
+        <img class="poster" id="mPoster" alt="">
+        <div>
+          <h2 id="mTitulo"></h2>
+          <div class="sub" id="mSub"></div>
+        </div>
+      </div>
+      <div class="chips" id="mChips"></div>
+      <div class="sin" id="mSin"></div>
+      <div class="meta" id="mMeta"></div>
+      <div class="trailer" id="mTrailer"></div>
+      <div class="campo">
+        <select id="mTipo">
+          <option value="pelicula">Película</option>
+          <option value="serie">Serie</option>
+          <option value="anime">Anime</option>
+          <option value="comics">Comics</option>
+        </select>
+        <input id="mEnlaces" placeholder="Pega aquí los enlaces (streamtape|voe|player4me)…">
+        <button id="btnAgregar" class="prim">➕ Agregar al catálogo</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const IMG = "https://image.tmdb.org/t/p/w500";
+// escapa texto de TMDb antes de inyectarlo (los titulos vienen de fuera)
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let TAB = "peliculas", DATOS = {peliculas:[], series:[]}, ACTUAL = null;
+
+// --- selector de años (1950 - actual) ---
+(function(){
+  const s = $("anio"), hoy = new Date().getFullYear();
+  for (let a = hoy; a >= 1950; a--){ const o = document.createElement("option"); o.value = a; o.textContent = a; s.appendChild(o); }
+})();
+
+function setEstado(t){ $("estado").textContent = t; }
+
+function pintar(){
+  const lista = DATOS[TAB] || [];
+  $("grilla").innerHTML = lista.length ? lista.map(x =>
+    `<div class="card" data-id="${esc(x.id)}" data-tipo="${esc(x.tipo)}">
+       <img src="${esc(x.poster||'')}" loading="lazy" alt="">
+       <div class="t">${esc(x.titulo)}</div>
+       <div class="m">${esc(x.anio || '—')} · ⭐ ${x.puntuacion ? x.puntuacion.toFixed(1) : '—'}</div>
+     </div>`).join("")
+    : `<div class="vacio">Sin resultados.</div>`;
+  document.querySelectorAll(".card").forEach(c => c.onclick = () => abrir(c.dataset.id, c.dataset.tipo));
+}
+
+async function buscar(){
+  const q = $("q").value.trim(); const anio = $("anio").value;
+  if (!q && !anio){ setEstado("Escribe un título o elige un año."); DATOS = {peliculas:[],series:[]}; pintar(); return; }
+  $("grilla").innerHTML = ""; setEstado("Consultando TMDb…");
+  try {
+    if (anio && !q){
+      const r = await fetch(`/api/anio?anio=${anio}`); const d = await r.json();
+      DATOS = {peliculas: d.peliculas||[], series: d.series||[]};
+      setEstado(`Año ${anio}: ${DATOS.peliculas.length} películas · ${DATOS.series.length} series`);
+    } else {
+      const r = await fetch(`/api/buscar?q=${encodeURIComponent(q)}`); const d = await r.json();
+      const todo = d.resultados || [];
+      DATOS = {peliculas: todo.filter(x=>x.tipo==="pelicula"), series: todo.filter(x=>x.tipo==="serie")};
+      setEstado(`"${q}": ${DATOS.peliculas.length} películas · ${DATOS.series.length} series`);
+    }
+    pintar();
+  } catch(e){ setEstado("Error: " + e.message); }
+}
+
+function cambiarTab(t){
+  TAB = t;
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  pintar();
+}
+
+async function abrir(id, tipo){
+  $("ov").classList.add("on"); $("msg").textContent = "";
+  $("mTitulo").textContent = "Cargando…"; $("mSin").textContent = "";
+  $("mChips").innerHTML = ""; $("mMeta").textContent = ""; $("mTrailer").innerHTML = "";
+  try {
+    const r = await fetch(`/api/detalle?tipo=${tipo}&id=${id}`); const d = await r.json();
+    if (d.error){ $("mTitulo").textContent = "No encontrado"; return; }
+    ACTUAL = d;
+    $("mTitulo").textContent = d.titulo;
+    $("mSub").textContent = `${d.anio || '—'} · ${d.tipo === 'serie' ? 'Serie' : 'Película'}${d.duracion ? ' · '+d.duracion+' min' : ''}`;
+    $("mPoster").src = d.poster || "";
+    $("mFondo").style.backgroundImage = d.fondo ? `url(${d.fondo})` : (d.poster ? `url(${d.poster})` : '');
+    $("mChips").innerHTML = (d.generos||[]).map(g => `<span class="chip">${esc(g)}</span>`).join("");
+    $("mSin").textContent = d.sinopsis || "Sin sinopsis.";
+    const metas = [];
+    if (d.director) metas.push(`🎬 Dir: ${d.director}`);
+    if (d.reparto && d.reparto.length) metas.push(`🎭 ${d.reparto.slice(0,5).join(', ')}`);
+    if (d.temporadas) metas.push(`📺 ${d.temporadas} temporadas · ${d.episodios} episodios`);
+    $("mMeta").textContent = metas.join("  ·  ");
+    $("mTipo").value = (d.tipo === 'serie' ? 'serie' : 'pelicula');
+    $("mEnlaces").value = "";
+    // el trailer se construye server-side como https://www.youtube.com/embed/<id>; valida antes de inyectar
+    if (d.trailer && /^https:\/\/www\.youtube\.com\/embed\/[A-Za-z0-9_-]+$/.test(d.trailer))
+      $("mTrailer").innerHTML = `<iframe src="${d.trailer}" allowfullscreen loading="lazy"></iframe>`;
+  } catch(e){ $("mTitulo").textContent = "Error: " + e.message; }
+}
+
+async function agregar(){
+  if (!ACTUAL){ return; }
+  const enlaces = $("mEnlaces").value.trim();
+  if (!enlaces){ $("msg").style.color = "#f59e0b"; $("msg").textContent = "Pega al menos un enlace antes de agregar."; return; }
+  const tipo = $("mTipo").value;
+  const r = await fetch("/api/agregar", {method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({titulo: ACTUAL.titulo, tipo: tipo, enlaces: enlaces})});
+  const d = await r.json();
+  if (d.ok){ $("msg").style.color = "#22c55e"; $("msg").textContent = `✔ "${d.titulo}" agregado a catalogo.csv. El vigilante lo sube si está activo.`; }
+  else { $("msg").style.color = "#f59e0b"; $("msg").textContent = "⚠ " + (d.motivo || d.error || "no se pudo agregar"); }
+}
+
+$("btnBuscar").onclick = buscar;
+$("btnLimpiar").onclick = () => { $("q").value=""; $("anio").value=""; DATOS={peliculas:[],series:[]}; setEstado("Escribe un título o elige un año."); pintar(); };
+$("q").addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+$("anio").addEventListener("change", buscar);
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => cambiarTab(b.dataset.t));
+$("cerrar").onclick = () => $("ov").classList.remove("on");
+$("ov").onclick = e => { if (e.target.id === "ov") $("ov").classList.remove("on"); };
+$("btnAgregar").onclick = agregar;
+pintar();
+</script>
+</body>
+</html>

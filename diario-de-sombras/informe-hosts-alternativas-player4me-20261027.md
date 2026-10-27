@@ -129,4 +129,49 @@
 - **Pruebas propias en vivo** (27-oct-2026): estado HTTP de 11 dominios y DNS de player4me
 
 ---
+
+# 🔄 ACTUALIZACIÓN — decisión del Monarca (27-oct-2026, tarde)
+
+## Vetados por decisión propia
+| Host | Motivo |
+|---|---|
+| **DoodStream** | **VETADO** — ya lo dejó tirado una vez. *(quien traiciona no vuelve)* |
+| **FileMoon** | **VETADO** — mismo motivo |
+
+## Confirmado por el Monarca
+**Vidoza y VidMoly están en la lista de hosts de su FileUploader** ✅ → compatibilidad verificada en el campo.
+
+## Las 3 que faltan (verificadas en vivo)
+
+### A) LuluStream — 2018 (7 años) · HTTP 200 ✅
+Mínimo **$20** · paga en **24 h** · HLS · FTP/remoto/**API** · sin límite de ancho de banda.
+
+### B) MixDrop — servicio desde 2019 (6 años) · `mixdrop.ag` HTTP 200 ✅
+Web oficial con **sección de afiliados** activa · embebido de video y audio · sin límites.
+⚠️ **Usar `mixdrop.ag`** (el `mixdrop.co` que circula está muerto, 410 Gone).
+
+### C) NetU (`netu.to`) — veterano de la escena · HTTP 200 ✅
+Varios años en el sector · **muy usado en el público hispano** · subida múltiple, remoto y **FTP** · máximo 8096 MB / 500 min · tiene programa de webmasters con monetización.
+
+## Alternos (si alguno no está en su FileUploader)
+
+### D) StreamRuby — dominio desde 2021 (4 años) · HTTP 200 ✅
+**El más transparente de todos:** publica **$3M+ pagados**, 264M vistas/mes, 527 TB alojados.
+250 GB gratis que crecen · HLS adaptativo · **5 métodos de subida** · API.
+🎯 **Joyita operativa:** tiene **"Clone Upload" — clona archivos desde OTRO host sin volver a subirlos.** Es decir: lo que ya subió a Streamtape o VoE se puede clonar a StreamRuby **sin gastar subida**.
+
+### E) StreamA2Z — dominio desde 2018 (7 años) · HTTP 200 ✅
+Programa de recompensa por vistas + referidos.
+⚠️ Sus cifras publicadas (10.999.999+ vistas, 1000+ usuarios) **parecen de mercadeo** — no me fío de ellas.
+
+## Descartados por estado técnico
+`streamhub.to` (muerto) · `mixdrop.co` (muerto) · `streamwish.to` (522 hoy) · `vidguard.to` (000) · `goodstream.one` (000) · `1uploadflix.net` y `dropload.pro` (demasiado nuevos)
+
+## Recomendación final de Bellion
+**Dar de alta: LuluStream · MixDrop(`.ag`) · NetU** → con Streamtape, VoE, Vidoza y VidMoly = **7 destinos**.
+**Alternos a tener a mano:** StreamRuby (por el clonado) y StreamA2Z.
+
+> **Regla de oro:** nunca menos de 3 vivos · nunca uno con menos de 3 años · y el negocio **nunca** colgando de un solo host.
+
+---
 *Informe generado por Bellion — Seawolf Studio. Datos verificables; lo no verificable se marca como tal.*

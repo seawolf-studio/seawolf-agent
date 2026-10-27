@@ -65,6 +65,14 @@ def pendientes(salida=None):
     print(f"{len(pend)} enlaces detenidos -> {salida}")
     print("Peguelos en MiPony (o vuelvalos a encolar con: mipony.py encolar reintentar.txt)")
 
+def normalizar_url(u):
+    """MiPony (build 2023) SOLO resuelve el formato viejo de MediaFire.
+    Convierte el moderno /file/<clave>/... al viejo ?<clave>. Verificado 2026-10-26."""
+    m = re.search(r"mediafire\.com/file/([^/]+)/", u, re.I)
+    if m:
+        return "http://www.mediafire.com/?" + m.group(1)
+    return u
+
 def detectar_host(url):
     m = re.search(r"https?://(?:www\.)?([a-z0-9.-]+)", url, re.I)
     h = (m.group(1) if m else "").lower()
@@ -73,33 +81,58 @@ def detectar_host(url):
         if clave in h: return nombre
     return "MediaFire"
 
-def leer_cola(ruta):
-    """Lee cola-enlaces.txt: cabeceras (titulo/tipo/carpeta) + lineas con URLs."""
-    titulo = tipo = carpeta = None; urls = []
-    if not os.path.exists(ruta):
-        print(f"!! no existe {ruta}"); sys.exit(1)
-    for l in open(ruta, encoding="utf-8", errors="ignore"):
+def _parse_bloque(lineas):
+    """Lee un cajon: cabeceras (titulo/tipo/carpeta/password) + enlaces."""
+    titulo = tipo = carpeta = password = None; urls = []
+    for l in lineas:
         s = l.strip()
         if not s or s.startswith("#"): continue
         low = s.lower()
         if low.startswith("titulo:"): titulo = s.split(":", 1)[1].strip(); continue
         if low.startswith("tipo:"):   tipo = s.split(":", 1)[1].strip(); continue
         if low.startswith("carpeta:"):carpeta = s.split(":", 1)[1].strip(); continue
+        if low.startswith(("password:", "contrasena:", "contraseña:", "clave:", "pass:")):
+            password = s.split(":", 1)[1].strip(); continue
         if s.startswith("---"): continue
         m = re.search(r"https?://\S+", s)
         if m: urls.append(m.group(0))
-    return titulo, tipo, carpeta, urls
+    return titulo, tipo, carpeta, urls, password
+
+def leer_tandas(ruta):
+    """Lee el archivo completo y devuelve TODAS las tandas (cajones).
+    Cada cajon trae sus cabeceras y sus enlaces; se separan con una linea de
+    '===' (3 o mas iguales). Asi se encolan VARIAS subidas en un solo paso."""
+    if not os.path.exists(ruta):
+        print(f"!! no existe {ruta}"); sys.exit(1)
+    bloques = [[]]
+    for l in open(ruta, encoding="utf-8", errors="ignore"):
+        if re.match(r"^\s*={3,}\s*$", l):
+            bloques.append([]); continue
+        bloques[-1].append(l)
+    tandas = []
+    for b in bloques:
+        t, ti, c, u, p = _parse_bloque(b)
+        if u:
+            tandas.append({"titulo": t, "tipo": ti, "carpeta": c or r"D:\my stream",
+                           "password": p, "urls": u})
+    return tandas
+
+def leer_cola(ruta):
+    """Compatibilidad: devuelve la PRIMERA tanda como tupla."""
+    td = leer_tandas(ruta)
+    if not td: return None, None, None, [], None
+    x = td[0]
+    return x["titulo"], x["tipo"], x["carpeta"], x["urls"], x["password"]
 
 def encolar(ruta):
-    titulo, tipo, carpeta, urls = leer_cola(ruta)
-    if not urls:
+    """Encola TODAS las tandas del archivo (una o varias, separadas por '===')."""
+    tandas = leer_tandas(ruta)
+    if not tandas:
         print("!! no encontre enlaces en el archivo"); return
-    carpeta = carpeta or r"D:\my stream"
     if mi_pony_abierto():
         print("### ALTO ### MiPony parece ABIERTO.")
         print("Cierrelo antes de encolar (lo reescribe al salir y perderiamos los cambios).")
         return
-    # respaldo
     resp = LISTA + ".bak-" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     shutil.copy2(LISTA, resp)
     print(f"respaldo: {resp}")
@@ -107,16 +140,21 @@ def encolar(ruta):
     tasks = root.find("Tasks")
     if tasks is None:
         tasks = ET.SubElement(root, "Tasks")
-    puestos = 0
-    for u in urls:
-        t = ET.SubElement(tasks, "Task", {"type": "file"})
-        for k, v in (("Url", u), ("State", "Pending"), ("FilePath", carpeta),
-                     ("FileName", ""), ("Size", "0"), ("Type", detectar_host(u)), ("Password", "")):
-            ET.SubElement(t, "property", {k: v})
-        puestos += 1
+    print(f"\nENCUELO: {len(tandas)} tanda(s)")
+    total = 0
+    for n, td in enumerate(tandas, 1):
+        print(f"  {n}. {td['titulo'] or '(sin titulo)'} [{td['tipo'] or 'tipo?'}] -> {td['carpeta']}"
+              f"  ({len(td['urls'])} enlaces{', con clave' if td['password'] else ''})")
+        for u in td["urls"]:
+            u = normalizar_url(u)
+            t = ET.SubElement(tasks, "Task", {"type": "file"})
+            for k, v in (("Url", u), ("State", "Pending"), ("FilePath", td["carpeta"]),
+                         ("FileName", ""), ("Size", "0"), ("Type", detectar_host(u)),
+                         ("Password", td["password"] or "")):
+                ET.SubElement(t, "property", {k: v})
+            total += 1
     tree.write(LISTA, encoding="utf-8", xml_declaration=True)
-    print(f"OK: {puestos} enlaces encolados en {carpeta}")
-    if titulo: print(f"   tanda: {titulo} ({tipo or 'tipo?'})")
+    print(f"\nOK: {total} enlaces encolados en {len(tandas)} tanda(s)")
     print("Abra MiPony: los vera en la lista.")
 
 def main():

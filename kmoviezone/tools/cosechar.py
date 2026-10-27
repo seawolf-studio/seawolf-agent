@@ -15,10 +15,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 LOG = os.path.join(os.path.expanduser("~"), "Downloads", "FileUploader.log")
 
 # orden fijo de proveedores (doctrina del Monarca)
-ORDEN = [("streamtape", "streamtape.com"), ("voe", "voe.sx"), ("player4me", "player4me.com[APi]")]
+# player4me/4meplayer QUEDO FUERA: el servicio murio (origen caido, dominio sin IP) -> 27-oct-2026
+ORDEN = [("streamtape", "streamtape.com"), ("voe", "voe.sx")]
 ALIAS = {"streamtape.com": "streamtape", "streamtape.to": "streamtape",
          "voe.sx": "voe", "voe2.sx": "voe",
          "player4me.com[APi]": "player4me", "player4me.com": "player4me"}
+# hosts muertos: sus enlaces NUNCA entran al catalogo
+HOSTS_MUERTOS = ("4meplayer", "player4me", "streamhub.to")
 
 def leer_log(ruta):
     """Devuelve {archivo: {proveedor: url}} tomando el ULTIMO enlace valido de cada uno."""
@@ -31,6 +34,7 @@ def leer_log(ruta):
         _, host, url, _, archivo = parts[0], parts[1], parts[2], parts[3], parts[4]
         prov = ALIAS.get(host.strip(), host.strip())
         if not archivo.strip(): continue
+        if any(m in url.lower() for m in HOSTS_MUERTOS): continue   # host muerto: se ignora
         if "File is in your account" in url or not url.startswith("http"):
             datos[archivo.strip()].setdefault(prov, None)   # marca ausencia
             continue
@@ -40,6 +44,15 @@ def leer_log(ruta):
 def num_cap(archivo):
     """Saca el numero de capitulo del nombre del archivo."""
     n = os.path.splitext(archivo)[0]
+    # primero quita la marca de TEMPORADA, para que no la confunda con el capitulo:
+    # 'One Punch Man - 01 Temp 3' -> 'One Punch Man - 01'   (NO toca 'S03E01')
+    n = re.sub(r'\b(temp(?:orada)?|season)\s*\.?\s*\d{1,2}\b', ' ', n, flags=re.I)
+    # 'One Punch Man S03E05' / 'T03E05' / '03x05'  -> 5   (formato explicito, manda)
+    m = re.search(r'[SsTt]\s?(\d{1,2})\s?[Ee]\s?(\d{1,3})', n) or re.search(r'\b(\d{1,2})\s?x\s?(\d{1,3})\b', n)
+    if m: return int(m.group(2))
+    # 'One Punch Man - 01 ...' / '(2025) - 01 (REPACK)'  -> 1   (numero tras el guion)
+    m = re.search(r'-\s*(\d{1,3})\b', n)
+    if m: return int(m.group(1))
     # 'LDSH_T1_1080p-(Identi-Jesus4247) (10)'  -> 10
     m = re.search(r'\((\d+)\)\s*$', n)
     if m: return int(m.group(1))
@@ -92,6 +105,9 @@ def main():
     if a and not titulo: titulo = a[0]
     if not titulo and not solo_lista: print('Uso: python cosechar.py "Titulo" --tipo anime [--csv]'); return
     if solo_lista and not titulo: titulo = "(lista)"
+    # EL TITULO FILTRA EL LOG POR DEFECTO (el log acumula TODAS las subidas de la historia;
+    # sin esto se mezclan series distintas en una sola fila)
+    if not filtro and titulo and titulo != "(lista)": filtro = titulo
 
     datos = leer_log(log)
     if filtro:

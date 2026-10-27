@@ -1,0 +1,55 @@
+# ═══════════════════════════════════════════════════════════════════
+#  COLA DE ENLACES — MODO MULTIPLE (varios cajones en un solo archivo)
+#  kmoviezone · Seawolf Studio
+# ═══════════════════════════════════════════════════════════════════
+#
+#  REGLAS:
+#   - Cada TITULO es un bloque.
+#   - El bloque lleva sus cabeceras y luego sus enlaces.
+#   - Los bloques se separan con una linea de  ===  (tres o mas iguales).
+#   - La linea "---" separa las cabeceras de los enlaces (dentro del bloque).
+#   - Con UN solo ENCOLAR.bat se encolan TODOS los bloques de golpe.
+#
+#  Uso:  cierre MiPony  ->  doble clic en ENCOLAR.bat
+# ═══════════════════════════════════════════════════════════════════
+
+
+titulo: One Punch Man
+tipo: anime
+carpeta: H:\caida
+password: OPMS32025
+---
+# (aqui van los enlaces de One Punch Man, uno por linea)
+https://www.mediafire.com/file/aaaaaaaaaaaa/archivo01.rar/file
+https://www.mediafire.com/file/bbbbbbbbbbbb/archivo02.rar/file
+
+
+===
+# ↑ LA LINEA DE ARRIBA ABRE EL SIGUIENTE CAJON (no la borre)
+
+titulo: Breaking Bad
+tipo: serie
+carpeta: D:\my stream
+password: Mr.Movies
+---
+https://www.mediafire.com/file/cccccccccccc/bb01.rar/file
+https://www.mediafire.com/file/dddddddddddd/bb02.rar/file
+
+
+===
+
+titulo: Una Pelicula Cualquiera
+tipo: pelicula
+carpeta: J:\cine
+password:
+---
+https://www.mediafire.com/file/eeeeeeeeeeee/pelicula.rar/file
+
+
+# ───────────────────────────────────────────────────────────────────
+#  NOTAS
+#   - "password:" vacia = el .rar no tiene contrasena.
+#   - tipo admite: pelicula | serie | anime | comics
+#   - carpeta: la ruta donde caen los archivos (cada bloque puede ir a un disco distinto)
+#   - CUIDADO con el disco: revise que tenga espacio libre antes de encolar.
+# ───────────────────────────────────────────────────────────────────

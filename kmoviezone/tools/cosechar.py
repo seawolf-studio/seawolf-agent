@@ -16,9 +16,13 @@ LOG = os.path.join(os.path.expanduser("~"), "Downloads", "FileUploader.log")
 
 # orden fijo de proveedores (doctrina del Monarca)
 # player4me/4meplayer QUEDO FUERA: el servicio murio (origen caido, dominio sin IP) -> 27-oct-2026
-ORDEN = [("streamtape", "streamtape.com"), ("voe", "voe.sx")]
+ORDEN = [("streamtape", "streamtape.com"), ("voe", "voe.sx"),
+         ("vidmoly", "vidmoly"), ("mixdrop", "mixdrop")]
 ALIAS = {"streamtape.com": "streamtape", "streamtape.to": "streamtape",
          "voe.sx": "voe", "voe2.sx": "voe",
+         "vidmoly.me": "vidmoly", "vidmoly.to": "vidmoly",
+         "vidmoly.biz": "vidmoly", "vidmoly.net": "vidmoly",
+         "mixdrop.ag": "mixdrop", "mixdrop.co": "mixdrop", "mixdrop.to": "mixdrop",
          "player4me.com[APi]": "player4me", "player4me.com": "player4me"}
 # hosts muertos: sus enlaces NUNCA entran al catalogo
 HOSTS_MUERTOS = ("4meplayer", "player4me", "streamhub.to")
@@ -95,11 +99,12 @@ def construir(titulo, tipo, datos):
 
 def main():
     a = sys.argv[1:]
-    titulo = None; tipo = "anime"; log = LOG; escribir = False; solo_lista = False; filtro = ""
+    titulo = None; tipo = "anime"; log = LOG; escribir = False; solo_lista = False; filtro = ""; actualizar = False
     if "--log" in a: i = a.index("--log"); log = a[i+1]; del a[i:i+2]
     if "--filtro" in a: i = a.index("--filtro"); filtro = a[i+1]; del a[i:i+2]
     if "--tipo" in a: i = a.index("--tipo"); tipo = a[i+1]; del a[i:i+2]
     if "--csv" in a: escribir = True; a.remove("--csv")
+    if "--actualizar" in a: escribir = True; actualizar = True; a.remove("--actualizar")
     if "--lista" in a: solo_lista = True; a.remove("--lista")
     if "--titulo" in a: i = a.index("--titulo"); titulo = a[i+1]; del a[i:i+2]
     if a and not titulo: titulo = a[0]
@@ -134,12 +139,22 @@ def main():
 
     if escribir:
         ruta = os.path.join(BASE, "catalogo.csv")
-        existe = os.path.exists(ruta)
-        with open(ruta, "a", encoding="utf-8", newline="") as f:
-            w = csv.writer(f)
-            if not existe: w.writerow(["titulo", "tipo", "enlaces"])
-            w.writerow(fila)
-        print(f"\n✔ agregado a {ruta}")
+        if actualizar and os.path.exists(ruta):
+            with open(ruta, encoding="utf-8", newline="") as f:
+                filas = list(csv.reader(f))
+            cab = filas[0] if filas else ["titulo", "tipo", "enlaces"]
+            cuerpo = [r for r in filas[1:] if r and r[0].strip().lower() != fila[0].strip().lower()]
+            cuerpo.append(fila)
+            with open(ruta, "w", encoding="utf-8", newline="") as f:
+                w = csv.writer(f); w.writerow(cab); w.writerows(cuerpo)
+            print(f"\n✔ fila ACTUALIZADA en {ruta} (reemplazada, sin duplicar)")
+        else:
+            existe = os.path.exists(ruta)
+            with open(ruta, "a", encoding="utf-8", newline="") as f:
+                w = csv.writer(f)
+                if not existe: w.writerow(["titulo", "tipo", "enlaces"])
+                w.writerow(fila)
+            print(f"\n✔ agregado a {ruta}")
 
 if __name__ == "__main__":
     main()

@@ -34,6 +34,34 @@
 
 ---
 
+## 🩺 DIAGNÓSTICO DE LA DESCARGA (madrugada del 29)
+
+MiPony arrancó LOS SIMPSON antes de que el Monarca se durmiera. Estado observado:
+
+```
+Complete:       2   ✅  (EX01 0.89 GB · EX05 0.62 GB)
+Downloading:    1   (T02)
+Queued:        27
+DownloadError: 11   ⚠️ (EX02-04 · T03-T10)
+```
+
+**VERIFICADO con la API: los 11 archivos con error EXISTEN y estan `ready=yes`** (2-8 GB cada uno).
+**No se perdio nada.**
+
+**Patron:** completan los **pequenos** (0.6-0.9 GB) y fallan los **grandes** (2-8 GB) →
+**agotamiento del enlace directo / limite de MediaFire en archivos largos** (comportamiento tipico de
+MiPony build-2023). Es **temporal**, no dano.
+
+### QUE HACER (manana)
+1. **Reintentar en MiPony**: seleccionar los 11 con error → clic derecho → *Resume / Reintentar*.
+2. **Bajar la concurrencia**: que MiPony haga **1-2 descargas a la vez** (no 10). Menos presion = menos errores.
+3. **Si vuelven a fallar los grandes**: plan B = **JDownloader 2** (ya instalado, mas moderno, mejor
+   reanudacion en archivos grandes). Los enlaces `http://www.mediafire.com/?<clave>` sirven en JDownloader igual.
+
+**Ninguna de las 3 rutas pierde datos.** El botin esta a salvo.
+
+---
+
 ## 📋 LOS 15 CAJONES (orden de peso)
 
 | # | Título | Peso | # | Título | Peso |

@@ -950,7 +950,7 @@ button{font:inherit;cursor:pointer;border-radius:7px;font-size:12px;padding:5px 
 .dsk .m{color:var(--mut);font-size:11px;margin:2px 0 6px}
 button:disabled{opacity:.4;cursor:not-allowed}
 </style></head><body><div class="wrap">
-<h1>SEAWOLF <span class="b">TOOLS</span> · Optimizacion</h1><div class="sub">Multi-disco · Pesados · Mapa · Duplicados · Mantenimiento · Papelera · REA. Nada se borra sin tu orden.</div>
+<h1>SEAWOLF <span class="b">TOOLS</span></h1><div class="sub">Pesados · Mapa · Duplicados · Mantenimiento · REA · ✏️ Renombrador · 🩺 Salud · Papelera. Nada se borra ni se cambia sin tu orden. <b style="color:var(--warn)">Los módulos de disco son zona delicada: lean las advertencias antes de ejecutar.</b></div>
 <div class="chips" id="chips"></div><div class="drives" id="drives"></div>
 <div class="tabs">
 <button class="tab on" data-t="heavy">🔥 Pesados</button><button class="tab" data-t="map">🗺️ Mapa</button>

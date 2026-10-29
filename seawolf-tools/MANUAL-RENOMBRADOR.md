@@ -185,4 +185,47 @@ El módulo se controla por HTTP. Útil para automatizar o para envolverlo en otr
 
 ---
 
+## 🌐 EL DOMINIO — acceso desde fuera del PC
+
+La herramienta se publica en:
+
+```
+https://herramientas.sw-st.net
+```
+
+**Cómo funciona:** el aplicativo corre en el PC (tiene que ver sus discos) y un **túnel de
+Cloudflare** lo publica en el dominio. **No hay que abrir puertos en el router** y el PC
+queda invisible: solo el túnel sabe llegar.
+
+**Arranque:** doble clic en `C:\Users\Admin\HERRAMIENTAS-SEAWOLF.bat` (y queda en el arranque
+de Windows). Levanta dos ventanas minimizadas:
+
+| Ventana | Qué es |
+|---|---|
+| **Seawolf Tools** | El aplicativo (escanea los discos) |
+| **Seawolf Tunel** | El túnel que publica el dominio |
+
+### 🔒 La cerradura
+
+**Sin la clave de acceso no se entra** — ni en local ni por el dominio.
+
+```
+Ver la clave     :  python intel\seawolf-tools.py clave
+Cambiarla        :  python intel\seawolf-tools.py clave --sub nueva
+Entrar (1ª vez)  :  https://herramientas.sw-st.net/?k=<su clave>   ← queda guardada
+Apagarla         :  python intel\seawolf-tools.py clave --sub off  (NO recomendado)
+```
+
+### ⚠️ Honestidad sobre la seguridad
+
+Este aplicativo **mueve y borra archivos del disco**. Publicado en internet, la única barrera
+es esa clave. Dos consecuencias prácticas:
+
+1. **No comparta la clave** ni la deje en capturas de pantalla.
+2. Si algún día la herramienta crece o la usan terceros, conviene poner delante
+   **Cloudflare Access** (doble factor por correo, gratis hasta 50 usuarios).
+   La cerradura actual es sólida, pero es un solo factor: la puerta y la llave.
+
+---
+
 *Renombrador Seawolf · parte de Seawolf Tools · código propio · Seawolf Studio.*

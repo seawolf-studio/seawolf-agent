@@ -809,7 +809,7 @@ setInterval(function(){if(!S.busy&&S.tab==='mant')refrescar();},60000);
 refrescar();
 </script></body></html>"""
 
-def serve(targets, port):
+def serve(targets, port, abrir=True):
     import http.server, socketserver
     state = {"busy": True, "targets": targets, "scanned": 0, "heavy": [], "dupes": [],
              "total": 0, "waste": 0, "drives": {}, "map": [], "rea": None}
@@ -938,8 +938,9 @@ def serve(targets, port):
             print("[Cerradura]  (guardela. Sin ella no se entra desde el dominio.)")
         else:
             print("[Cerradura]  DESACTIVADA (solo uso local)")
-        try: webbrowser.open(f"http://127.0.0.1:{port}/?k={tok}" if (act and tok) else f"http://127.0.0.1:{port}")
-        except Exception: pass
+        if abrir:
+            try: webbrowser.open(f"http://127.0.0.1:{port}/?k={tok}" if (act and tok) else f"http://127.0.0.1:{port}")
+            except Exception: pass
         srv.serve_forever()
 
 if __name__ == "__main__":
@@ -952,6 +953,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", type=int, default=8770)
     ap.add_argument("--paths", default="")
     ap.add_argument("--hard", action="store_true")
+    ap.add_argument("--no-open", action="store_true", help="no abrir el navegador al arrancar")
     a = ap.parse_args()
     if a.cmd == "drives":
         for d in list_drives(): print(f"  {d['root']}  total {human(d['total'])} · usado {human(d['used'])} · libre {human(d['free'])}")
@@ -977,4 +979,4 @@ if __name__ == "__main__":
             print(f"  cerradura : {'ACTIVA' if act else 'DESACTIVADA'}")
             print(f"  clave     : {tok}")
             print(f"  entrada   : http://127.0.0.1:{a.port}/?k={tok}")
-    elif a.cmd == "serve": serve(parse_targets(a.arg), a.port)
+    elif a.cmd == "serve": serve(parse_targets(a.arg), a.port, abrir=not a.no_open)

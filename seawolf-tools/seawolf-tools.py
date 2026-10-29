@@ -16,6 +16,8 @@ Seguridad: mueve a la Papelera Seawolf (reversible); --hard borra de verdad.
 Codigo propio. Bellion para el Monarca (Key).
 """
 import os, sys, re, json, hashlib, argparse, webbrowser, string, shutil, heapq, subprocess, threading
+import secrets
+import urllib.parse as urlparse
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -243,6 +245,63 @@ def rescatar(n):
     print(f"[OK] RESCATADO -> {e['original']}")
 
 # ---------------- APLICATIVO WEB ----------------
+# ════════════════════════════════════════════════════════════════════════════
+#  CERRADURA — sin la clave no se entra. OBLIGATORIA al publicar en un dominio:
+#  este aplicativo MUEVE y BORRA archivos del disco, no puede quedar abierto.
+# ════════════════════════════════════════════════════════════════════════════
+AUTH_CFG = os.path.join(HERE, "seawolf-tools-auth.json")
+
+
+def auth_leer():
+    """Devuelve (token, activo). Si no hay archivo, crea una clave nueva."""
+    try:
+        d = json.load(open(AUTH_CFG, encoding="utf-8"))
+        return str(d.get("token", "")), bool(d.get("activo", True))
+    except Exception:
+        pass
+    tok = secrets.token_urlsafe(18)
+    try:
+        json.dump({"token": tok, "activo": True,
+                   "creado": datetime.now().isoformat(timespec="seconds")},
+                  open(AUTH_CFG, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    except Exception:
+        pass
+    return tok, True
+
+
+def auth_guardar(token=None, activo=None):
+    """Cambia la clave o activa/desactiva la cerradura."""
+    tok, act = auth_leer()
+    if token is not None: tok = token
+    if activo is not None: act = bool(activo)
+    json.dump({"token": tok, "activo": act,
+               "actualizado": datetime.now().isoformat(timespec="seconds")},
+              open(AUTH_CFG, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return tok, act
+
+
+PAGINA_CLAVE = """<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Seawolf Tools - clave</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+background:radial-gradient(1100px 560px at 50% -8%,#122b2b,#0b1414 58%,#070f0f);color:#e6fbfb;
+font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.c{border:1px solid #1e3434;border-radius:14px;padding:26px 28px;background:#101d1d;width:370px}
+h1{font-size:18px;margin:0 0 4px}b{color:#4CE8E7}.s{color:#7fa8a8;font-size:12.5px;margin-bottom:14px}
+input{width:100%;padding:11px 12px;border-radius:9px;border:1px solid #1e3434;background:#0b1414;
+color:#e6fbfb;font:inherit;font-size:14px;box-sizing:border-box}
+button{margin-top:11px;width:100%;padding:11px;border-radius:9px;border:0;background:#4CE8E7;
+color:#04120f;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.err{color:#ff4d4d;font-size:12.5px;margin-top:9px}</style></head><body>
+<form class="c" method="GET" action="/"><h1>SEAWOLF <b>TOOLS</b></h1>
+<div class="s">Aplicativo protegido. Escriba su clave de acceso.</div>
+<input name="k" type="password" placeholder="Clave de acceso" autofocus autocomplete="off">
+<button type="submit">Entrar</button>__ERR__</form></body></html>"""
+
+
+def auth_pagina(error=False):
+    return PAGINA_CLAVE.replace("__ERR__", '<div class="err">Clave incorrecta.</div>' if error else "")
+
+
 # ════════════════════════════════════════════════════════════════════════════
 #  RENOMBRADOR SEAWOLF — motor de reglas con vista previa, registro y deshacer
 #  Regla de oro: NADA se renombra sin ver antes el resultado y sin poder volver.
@@ -754,7 +813,27 @@ def serve(targets, port):
         def log_message(self, *a): pass
         def _send(self, b, ct): self.send_response(200); self.send_header("Content-Type", ct); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
         def _json(self, o): self._send(json.dumps(o).encode(), "application/json")
+        def _clave_ok(self):
+            tok, act = auth_leer()
+            if not act or not tok: return True                      # cerradura desactivada
+            if ("swt=" + tok) in (self.headers.get("Cookie") or ""): return True
+            q = urlparse.parse_qs(urlparse.urlparse(self.path).query)
+            return q.get("k", [""])[0] == tok
+        def _pedir_clave(self):
+            q = urlparse.parse_qs(urlparse.urlparse(self.path).query)
+            b = auth_pagina(error=bool(q.get("k"))).encode()
+            self.send_response(401); self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
         def do_GET(self):
+            tok, act = auth_leer()
+            if act and tok and ("swt=" + tok) not in (self.headers.get("Cookie") or ""):
+                q = urlparse.parse_qs(urlparse.urlparse(self.path).query)
+                if q.get("k", [""])[0] == tok:      # clave correcta: dejo cookie y limpio la URL
+                    self.send_response(302)
+                    self.send_header("Set-Cookie", "swt=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000" % tok)
+                    self.send_header("Location", "/"); self.end_headers(); return
+            if not self._clave_ok():
+                self._pedir_clave(); return
             if self.path.startswith("/api/state"):
                 heavy = [{"p": p, "size": s, "h": human(s), "drv": (p[:2] if len(p) > 1 and p[1] == ":" else "")} for s, p in state["heavy"][:300]]
                 dupes = [{"h": human(g["size"]), "wasteH": human(g["size"] * (len(g["files"]) - 1)), "files": g["files"]} for g in state["dupes"][:60]]
@@ -765,6 +844,10 @@ def serve(targets, port):
             else:
                 self._send(HTML.encode(), "text/html; charset=utf-8")
         def do_POST(self):
+            if not self._clave_ok():
+                b = json.dumps({"ok": False, "msg": "No autorizado"}).encode()
+                self.send_response(401); self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b); return
             n = int(self.headers.get("Content-Length", 0))
             raw = self.rfile.read(n) or b"{}"
             try: d = json.loads(raw)
@@ -812,16 +895,24 @@ def serve(targets, port):
                 threading.Thread(target=work, daemon=True).start()
             self._json({"ok": True})
     threading.Thread(target=work, daemon=True).start()
+    tok, act = auth_leer()
     with socketserver.ThreadingTCPServer(("127.0.0.1", port), H) as srv:
         srv.allow_reuse_address = True
         print(f"[Seawolf Tools] http://127.0.0.1:{port}  · discos: {', '.join(targets)}")
-        try: webbrowser.open(f"http://127.0.0.1:{port}")
+        if act and tok:
+            print("[Cerradura]  ACTIVA")
+            print(f"[Cerradura]  Clave de acceso ......... {tok}")
+            print(f"[Cerradura]  Entrada directa ......... http://127.0.0.1:{port}/?k={tok}")
+            print("[Cerradura]  (guardela. Sin ella no se entra desde el dominio.)")
+        else:
+            print("[Cerradura]  DESACTIVADA (solo uso local)")
+        try: webbrowser.open(f"http://127.0.0.1:{port}/?k={tok}" if (act and tok) else f"http://127.0.0.1:{port}")
         except Exception: pass
         srv.serve_forever()
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Seawolf Tools - Optimizacion")
-    ap.add_argument("cmd", choices=["drives", "scan", "dupes", "mant", "papeles", "rescatar", "limpiar", "serve"])
+    ap.add_argument("cmd", choices=["drives", "scan", "dupes", "mant", "papeles", "rescatar", "limpiar", "serve", "clave"])
     ap.add_argument("arg", nargs="?", default="ALL")
     ap.add_argument("--sub", default="")
     ap.add_argument("--top", type=int, default=30)
@@ -841,4 +932,17 @@ if __name__ == "__main__":
     elif a.cmd == "papeles": papeles()
     elif a.cmd == "rescatar": rescatar(int(a.arg) if a.arg.isdigit() else 0)
     elif a.cmd == "limpiar": limpiar([p for p in a.paths.split(",") if p], a.hard)
+    elif a.cmd == "clave":
+        if a.sub in ("nueva", "reset"):
+            tok, act = auth_guardar(token=secrets.token_urlsafe(18))
+            print(f"  clave NUEVA: {tok}")
+        elif a.sub in ("on", "activar"):
+            tok, act = auth_guardar(activo=True); print(f"  cerradura ACTIVADA · clave: {tok}")
+        elif a.sub in ("off", "desactivar"):
+            auth_guardar(activo=False); print("  cerradura DESACTIVADA (ojo: cualquiera entra)")
+        else:
+            tok, act = auth_leer()
+            print(f"  cerradura : {'ACTIVA' if act else 'DESACTIVADA'}")
+            print(f"  clave     : {tok}")
+            print(f"  entrada   : http://127.0.0.1:{a.port}/?k={tok}")
     elif a.cmd == "serve": serve(parse_targets(a.arg), a.port)

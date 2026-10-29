@@ -246,6 +246,305 @@ def rescatar(n):
 
 # ---------------- APLICATIVO WEB ----------------
 # ════════════════════════════════════════════════════════════════════════════
+#  SALUD DEL EQUIPO — diagnostico y mantenimiento del hierro
+#  Regla de oro: NADA se toca sin saber ANTES si el disco es SSD o HDD.
+#  Desfragmentar un SSD lo DESGASTA; a un SSD le toca TRIM, a un HDD defrag.
+# ════════════════════════════════════════════════════════════════════════════
+PS = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+
+AVISO_DISCOS = (
+ "ZONA DELICADA. Todo lo de aqui toca el disco fisico y el sistema de archivos. "
+ "Optimizar NO borra tus archivos, pero NUNCA se interrumpe ni se apaga el equipo mientras corre. "
+ "Este modulo NO modifica particiones: un cambio mal hecho ahi puede borrar un disco entero. "
+ "Si no estas seguro de algo, NO lo ejecutes."
+)
+
+AVISO_TRIM = (
+ "TRIM en SSD: es el mantenimiento CORRECTO para un disco solido. Le devuelve el espacio de lo "
+ "borrado y lo mantiene rapido. NO lo desgasta. No interrumpas el proceso."
+)
+
+AVISO_DEFRAG = (
+ "Desfragmentar en HDD: junta los datos repartidos para que el cabezal no salte tanto. Puede tardar "
+ "BASTANTE y necesita espacio libre (se pide al menos un 15%). Si el disco esta casi lleno es lento "
+ "y poco efectivo: mejor libera espacio primero. No interrumpas el proceso."
+)
+
+AVISO_USB = (
+ "Disco EXTRAIBLE o de tipo sin confirmar: este modulo NO lo toca. Si se desconecta a mitad de una "
+ "operacion el dano puede ser grave. Ademas, en un USB el mantenimiento rara vez aporta."
+)
+
+AVISO_VERIFICAR = (
+ "Verifica el disco SIN reparar y SIN borrar nada (chkdsk /scan en linea). Es solo lectura, asi que "
+ "es seguro. Puede tardar mucho en discos grandes: dejalo terminar. Requiere permisos de administrador."
+)
+
+
+FUNCIONES_SALUD = [
+ {"id": "discos", "nombre": "Discos: tipo y salud",
+  "desc": "Lista cada disco fisico con su tipo real (SSD, HDD, NVMe o USB), su estado de salud y "
+          "su estado operativo. Saber el tipo NO es un lujo: de ahi depende que mantenimiento le toca."},
+ {"id": "espacio", "nombre": "Espacio por volumen",
+  "desc": "Espacio total, libre y PORCENTAJE libre de cada unidad. Un disco lleno por encima del 90% "
+          "trabaja mal y envejece mas rapido. Aqui saltan los avisos antes de que sea un problema."},
+ {"id": "particiones", "nombre": "Mapa de particiones (solo lectura)",
+  "desc": "Que disco fisico contiene que unidad logica, de que tamano y con que formato. "
+          "Es informacion: este modulo NO modifica particiones, porque un cambio mal hecho "
+          "puede borrar un disco entero."},
+ {"id": "optimizar", "nombre": "Optimizar (TRIM o desfragmentar, automatico)",
+  "desc": "Mantenimiento del disco segun su tipo. En SSD ejecuta TRIM (le devuelve el espacio de lo "
+          "borrado y lo mantiene rapido). En HDD desfragmenta (junta los datos para que el cabezal "
+          "no salte). Si no puede confirmar el tipo de disco, NO toca nada."},
+ {"id": "verificar", "nombre": "Verificar disco (solo lectura)",
+  "desc": "Revisa la integridad del disco y del sistema de archivos SIN reparar y SIN borrar nada "
+          "(chkdsk /scan en modo en linea). Detecta errores antes de que se conviertan en perdida "
+          "de datos. Requiere permisos de administrador."},
+ {"id": "cpu_ram", "nombre": "CPU y memoria",
+  "desc": "Uso actual del procesador y memoria libre. Si la RAM libre baja de forma sostenida, "
+          "el equipo empieza a usar el disco como memoria y todo se vuelve lento."},
+ {"id": "arranque", "nombre": "Programas de arranque",
+  "desc": "Todo lo que arranca solo con Windows. Cada programa aqui alarga el arranque y consume "
+          "memoria desde el primer segundo del dia."},
+ {"id": "temperatura", "nombre": "Temperatura y desgaste (requiere extra)",
+  "desc": "Temperatura real, desgaste y horas de encendido del disco. NO viene en Windows: hace falta "
+          "la herramienta libre 'smartmontools'. Sin ella, aqui no te miento mostrando un dato inventado."},
+]
+
+
+def _ps(cmd, timeout=90):
+    """Ejecuta PowerShell en segundo plano (sin ventana) y devuelve stdout+stderr."""
+    for exe in (PS, "powershell.exe"):
+        try:
+            r = subprocess.run([exe, "-NoProfile", "-NonInteractive", "-Command", cmd],
+                               capture_output=True, text=True, timeout=timeout,
+                               creationflags=0x08000000)      # CREATE_NO_WINDOW
+            return (r.stdout or "") + (r.stderr or "")
+        except FileNotFoundError:
+            continue
+        except subprocess.TimeoutExpired:
+            return "ERROR: tiempo agotado"
+        except Exception as e:
+            return f"ERROR: {e}"
+    return "ERROR: no encontre PowerShell"
+
+
+def _ps_json(cmd, timeout=90):
+    """Igual que _ps pero parsea JSON (tolerando avisos previos de PowerShell)."""
+    txt = (_ps(cmd, timeout) or "").strip()
+    if not txt:
+        return None
+    try:
+        return json.loads(txt)
+    except Exception:
+        pass
+    for i, ch in enumerate(txt):
+        if ch in "[{":
+            try:
+                return json.loads(txt[i:])
+            except Exception:
+                continue
+    return None
+
+
+def _lista(x):
+    """PowerShell devuelve un objeto suelto si hay un solo elemento: lo normalizo a lista."""
+    if x is None:
+        return []
+    return x if isinstance(x, list) else [x]
+
+
+def salud_discos():
+    """Discos fisicos con su TIPO real y su salud. Es la base de todo lo demas."""
+    d = _ps_json('Get-PhysicalDisk | Select-Object DeviceId,FriendlyName,MediaType,BusType,'
+                 'HealthStatus,OperationalStatus,@{n="GB";e={[math]::Round($_.Size/1GB)}} | '
+                 'ConvertTo-Json -Compress')
+    out = []
+    for x in _lista(d):
+        if not isinstance(x, dict):
+            continue
+        tipo = str(x.get("MediaType") or "")
+        bus = str(x.get("BusType") or "")
+        if "SSD" in tipo:
+            clase, mant = "SSD", "TRIM"
+        elif "HDD" in tipo:
+            clase, mant = "HDD", "Desfragmentar"
+        elif "USB" in bus:
+            clase, mant = "USB", "No tocar (extraible)"
+        else:
+            clase, mant = "Desconocido", "No tocar (tipo sin confirmar)"
+        if clase == "SSD":
+            riesgo, motivo = "recomendado", AVISO_TRIM
+        elif clase == "HDD":
+            riesgo, motivo = "cuidado", AVISO_DEFRAG
+        else:
+            riesgo, motivo = "prohibido", AVISO_USB
+        out.append({"id": x.get("DeviceId"), "modelo": x.get("FriendlyName"), "tipo": clase,
+                    "bus": bus, "salud": x.get("HealthStatus"), "estado": x.get("OperationalStatus"),
+                    "gb": x.get("GB"), "mantenimiento": mant, "riesgo": riesgo, "motivo": motivo})
+    return out
+
+
+def salud_volumenes():
+    """Espacio por unidad + EN QUE DISCO FISICO vive (es lo que decide TRIM o defrag)."""
+    mapa = {}
+    for m in _lista(_ps_json('Get-Volume | Where-Object {$_.DriveLetter} | ForEach-Object { $v=$_; '
+                             '$pd = Get-Partition -DriveLetter $v.DriveLetter -ErrorAction SilentlyContinue | '
+                             'Get-Disk | Get-PhysicalDisk -ErrorAction SilentlyContinue; '
+                             '[PSCustomObject]@{L=$v.DriveLetter; Tipo=$pd.MediaType; Modelo=$pd.FriendlyName} } | '
+                             'ConvertTo-Json -Compress')):
+        if isinstance(m, dict):
+            mapa[str(m.get("L"))] = (str(m.get("Tipo") or ""), str(m.get("Modelo") or ""))
+    v = _ps_json('Get-Volume | Where-Object {$_.DriveLetter} | Select-Object DriveLetter,FileSystem,'
+                 'HealthStatus,@{n="TotalGB";e={[math]::Round($_.Size/1GB)}},'
+                 '@{n="LibreGB";e={[math]::Round($_.SizeRemaining/1GB)}},'
+                 '@{n="LibrePct";e={[math]::Round(100*$_.SizeRemaining/$_.Size)}} | ConvertTo-Json -Compress')
+    out = []
+    for x in _lista(v):
+        if not isinstance(x, dict):
+            continue
+        pct = x.get("LibrePct") or 0
+        aviso = ("CRITICO: casi lleno" if pct <= 5 else
+                 "Atencion: poco espacio" if pct <= 10 else
+                 "Vigilar" if pct <= 20 else "")
+        tipo_fis, modelo_fis = mapa.get(str(x.get("DriveLetter")), ("", ""))
+        if "SSD" in tipo_fis:
+            mant, riesgo = "TRIM", "recomendado"
+        elif "HDD" in tipo_fis:
+            mant, riesgo = "Desfragmentar", "cuidado"
+        else:
+            mant, riesgo = "No tocar (extraible o sin confirmar)", "prohibido"
+        out.append({"letra": x.get("DriveLetter"), "fs": x.get("FileSystem"),
+                    "salud": x.get("HealthStatus"), "totalGB": x.get("TotalGB"),
+                    "libreGB": x.get("LibreGB"), "librePct": pct, "aviso": aviso,
+                    "discoTipo": (tipo_fis or "?"), "discoModelo": modelo_fis,
+                    "mantenimiento": mant, "riesgo": riesgo})
+    out.sort(key=lambda z: z.get("librePct") or 100)
+    return out
+
+
+def salud_particiones():
+    """Mapa disco fisico -> unidad logica. SOLO LECTURA (no modifica nada)."""
+    p = _ps_json('Get-Partition | Where-Object {$_.DriveLetter} | Select-Object DiskNumber,'
+                 'DriveLetter,@{n="GB";e={[math]::Round($_.Size/1GB)}},Type,IsBoot,IsSystem | '
+                 'ConvertTo-Json -Compress')
+    return [x for x in _lista(p) if isinstance(x, dict)]
+
+
+def salud_cpu_ram():
+    """Uso de CPU y memoria libre."""
+    c = _ps_json('$c=Get-CimInstance Win32_Processor; $o=Get-CimInstance Win32_OperatingSystem; '
+                 '[PSCustomObject]@{cpu=$c.Name; carga=$c.LoadPercentage; nucleos=$c.NumberOfCores; '
+                 'hilos=$c.NumberOfLogicalProcessors; ramTotalGB=[math]::Round($o.TotalVisibleMemorySize/1MB,1); '
+                 'ramLibreGB=[math]::Round($o.FreePhysicalMemory/1MB,1)} | ConvertTo-Json -Compress')
+    return c if isinstance(c, dict) else {}
+
+
+def salud_arranque():
+    """Programas que arrancan con Windows."""
+    a = _ps_json('Get-CimInstance Win32_StartupCommand | Select-Object Name,Location,Command | '
+                 'ConvertTo-Json -Compress')
+    out = []
+    for x in _lista(a):
+        if isinstance(x, dict):
+            out.append({"nombre": x.get("Name"), "ubicacion": x.get("Location"),
+                        "comando": x.get("Command")})
+    return out
+
+
+def salud_tipo_de(letra):
+    """Devuelve 'SSD', 'HDD' o '' para una unidad logica (letra sin dos puntos)."""
+    t = _ps(f'(Get-Partition -DriveLetter {letra} | Get-Disk | Get-PhysicalDisk).MediaType', 60)
+    t = (t or "").strip()
+    if "SSD" in t:
+        return "SSD"
+    if "HDD" in t:
+        return "HDD"
+    return ""
+
+
+def salud_optimizar(letra):
+    """TRIM en SSD / desfragmentar en HDD. Si no puede confirmar el tipo, NO TOCA NADA."""
+    letra = (letra or "").strip().rstrip(":").upper()
+    if len(letra) != 1 or not letra.isalpha():
+        return {"ok": False, "msg": "Letra de unidad no valida"}
+    tipo = salud_tipo_de(letra)
+    if tipo == "SSD":
+        accion, verbo = "ReTrim", "TRIM (mantenimiento de SSD: NO lo desgasta)"
+    elif tipo == "HDD":
+        accion, verbo = "Defrag", "Desfragmentado (mantenimiento de disco mecanico)"
+    else:
+        return {"ok": False, "msg": f"{letra}: no pude confirmar si es SSD o HDD. POR SEGURIDAD no toco nada.",
+                "tipo": "?", "aviso": AVISO_USB}
+    # ── GUARDIA 1: desfragmentar necesita hueco libre. Un disco casi lleno se queda a medias. ──
+    try:
+        tot, us, lib = shutil.disk_usage(letra + ":\\")
+        pct = 100.0 * lib / tot
+    except Exception:
+        pct = 100.0
+    if tipo == "HDD" and pct < 15:
+        return {"ok": False, "tipo": tipo, "bloqueado": True,
+                "msg": (f"{letra}: solo {pct:.0f}% libre ({human(lib)}). Desfragmentar un disco casi lleno "
+                        f"es lento, poco efectivo y puede quedarse a medias. Libere espacio primero "
+                        f"(deje ~15%) y vuelva a intentarlo. NO lo ejecuto."),
+                "aviso": AVISO_DEFRAG}
+    salida = _ps(f'Optimize-Volume -DriveLetter {letra} -{accion} -Verbose', 1800)
+    fallo = any(w in salida.lower() for w in ("denied", "denegado", "error", "no se puede"))
+    return {"ok": not fallo, "tipo": tipo, "accion": verbo, "letra": letra,
+            "msg": ("Listo. " if not fallo else "Fallo (probablemente faltan permisos de administrador). ")
+                   + accion + f" en {letra}:",
+            "salida": (salida or "")[-1200:]}
+
+
+def salud_verificar(letra):
+    """chkdsk /scan: revisa SIN reparar y SIN borrar. Solo lectura."""
+    letra = (letra or "").strip().rstrip(":").upper()
+    if len(letra) != 1 or not letra.isalpha():
+        return {"ok": False, "msg": "Letra de unidad no valida"}
+    salida = _ps(f'chkdsk {letra}: /scan', 3600)
+    texto = (salida or "")
+    fallo = any(w in texto.lower() for w in ("denied", "denegado", "administrador", "privilegio"))
+    limpio = ("no se encontraron problemas" in texto.lower()) or ("no problems" in texto.lower())
+    return {"ok": not fallo, "letra": letra, "limpio": limpio,
+            "msg": ("Requiere permisos de administrador." if fallo else
+                    ("Sin problemas detectados." if limpio else "Revision terminada: revisa la salida.")),
+            "salida": texto[-1500:]}
+
+
+def salud_todo():
+    """Todo el diagnostico de una sola vez + AVISOS automaticos."""
+    discos = salud_discos()
+    volumenes = salud_volumenes()
+    cpu = salud_cpu_ram()
+    avisos = []
+    for v in volumenes:
+        if v.get("aviso"):
+            avisos.append(f"{v['letra']}: {v['aviso']} ({v['librePct']}% libre, quedan {v['libreGB']} GB)")
+    for d in discos:
+        if str(d.get("salud")) != "Healthy":
+            avisos.append(f"DISCO {d['modelo']}: salud = {d.get('salud')} (revisar ya)")
+        if str(d.get("estado")) not in ("OK", "Online", ""):
+            avisos.append(f"DISCO {d['modelo']}: estado = {d.get('estado')}")
+    libre = cpu.get("ramLibreGB") or 0
+    if libre and libre < 3:
+        avisos.append(f"Memoria libre baja: {libre} GB")
+    n_ssd = sum(1 for d in discos if d["tipo"] == "SSD")
+    n_hdd = sum(1 for d in discos if d["tipo"] == "HDD")
+    bloq = [v["letra"] for v in volumenes if v.get("discoTipo", "").startswith("HDD") and (v.get("librePct") or 0) < 15]
+    if bloq:
+        avisos.append("Desfragmentado BLOQUEADO en " + ", ".join(bloq)
+                      + ": menos del 15% libre. Libere espacio primero.")
+    return {"discos": discos, "volumenes": volumenes, "cpu": cpu,
+            "arranque": salud_arranque(), "particiones": salud_particiones(),
+            "avisos": avisos, "resumen": {"ssd": n_ssd, "hdd": n_hdd,
+                                          "unidades": len(volumenes), "discos": len(discos)},
+            "funciones": FUNCIONES_SALUD,
+            "aviso_general": AVISO_DISCOS,
+            "avisos_accion": {"optimizar_ssd": AVISO_TRIM, "optimizar_hdd": AVISO_DEFRAG,
+                              "prohibido": AVISO_USB, "verificar": AVISO_VERIFICAR}}
+
+
+# ════════════════════════════════════════════════════════════════════════════
 #  CERRADURA — sin la clave no se entra. OBLIGATORIA al publicar en un dominio:
 #  este aplicativo MUEVE y BORRA archivos del disco, no puede quedar abierto.
 # ════════════════════════════════════════════════════════════════════════════
@@ -638,6 +937,18 @@ button{font:inherit;cursor:pointer;border-radius:7px;font-size:12px;padding:5px 
 .tf b{display:block;color:var(--sw);font-size:14px}.tf .n{color:var(--mut);font-size:11px;word-break:break-all}
 .toast{position:fixed;right:18px;bottom:18px;background:#04120f;border:1px solid var(--sw);color:var(--sw);border-radius:10px;padding:10px 14px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;z-index:9}.toast.on{opacity:1;transform:translateY(0)}
 .empty{color:var(--mut);font-size:13px;padding:14px 0}
+.warn{border:1px solid var(--warn);background:rgba(255,184,107,.08);border-radius:10px;padding:10px 12px;font-size:12.5px;margin:9px 0;color:#ffd9ad;line-height:1.5}
+.danger{border:2px solid var(--bad);background:rgba(255,77,77,.10);border-radius:10px;padding:11px 13px;font-size:12.5px;margin:10px 0;color:#ffc9c9;line-height:1.55}
+.danger b{color:var(--bad)}
+.good{border:1px solid var(--ok);background:rgba(72,232,160,.08);border-radius:10px;padding:10px 12px;font-size:12.5px;margin:9px 0;color:#b6f5d6;line-height:1.5}
+.pill{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;border:1px solid var(--bd);white-space:nowrap}
+.pill.g{color:var(--ok);border-color:var(--ok)}.pill.y{color:var(--warn);border-color:var(--warn)}
+.pill.r{color:var(--bad);border-color:var(--bad)}.pill.n{color:var(--mut)}
+.saludgrid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.dsk{border:1px solid var(--bd);border-radius:10px;padding:9px 11px;background:#0d1a1a;min-width:250px;flex:1}
+.dsk b{color:var(--sw);display:block;font-size:13px}
+.dsk .m{color:var(--mut);font-size:11px;margin:2px 0 6px}
+button:disabled{opacity:.4;cursor:not-allowed}
 </style></head><body><div class="wrap">
 <h1>SEAWOLF <span class="b">TOOLS</span> · Optimizacion</h1><div class="sub">Multi-disco · Pesados · Mapa · Duplicados · Mantenimiento · Papelera · REA. Nada se borra sin tu orden.</div>
 <div class="chips" id="chips"></div><div class="drives" id="drives"></div>
@@ -645,12 +956,13 @@ button{font:inherit;cursor:pointer;border-radius:7px;font-size:12px;padding:5px 
 <button class="tab on" data-t="heavy">🔥 Pesados</button><button class="tab" data-t="map">🗺️ Mapa</button>
 <button class="tab" data-t="dupes">🧬 Duplicados</button><button class="tab" data-t="mant">🛠️ Mantenimiento</button>
 <button class="tab" data-t="rea">🔎 REA</button><button class="tab" data-t="ren">✏️ Renombrador</button>
+<button class="tab" data-t="salud">🩺 Salud</button>
 <button class="tab" data-t="bin">🗑️ Papelera</button>
 <button class="tab" id="rescan">↻ Re-escanear</button></div>
 <div class="tools"><input type="search" id="q" placeholder="Filtrar por nombre, extensión o disco…"><span id="selinfo" class="sub"></span><button class="sw" id="b-trash">♻️ Mover marcados</button><button class="bad" id="b-hard">💀 Borrar marcados</button><span id="stat" class="sub"></span></div>
 <div id="view"></div></div><div class="toast" id="toast"></div>
 <script>
-var S={busy:true,heavy:[],dupes:[],bin:[],drives:[],map:[],manten:[],rea:null,tab:'heavy',q:'',sort:'size',desc:true,scanned:0,sel:{},renreglas:[],renpresets:{},rensel:['fecha'],renvals:{},rencar:'',renprev:null,renundo:null,rencv:null};
+var S={busy:true,heavy:[],dupes:[],bin:[],drives:[],map:[],manten:[],rea:null,tab:'heavy',q:'',sort:'size',desc:true,scanned:0,sel:{},renreglas:[],renpresets:{},rensel:['fecha'],renvals:{},rencar:'',renprev:null,renundo:null,rencv:null,salud:null,saludBusy:false,saludMsg:null};
 function H(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},1900);}
 function humanaB(n){if(n<1024)return n+' B';var u=['KB','MB','GB','TB'],i=-1;do{n/=1024;i++}while(n>=1024&&i<3);return n.toFixed(1)+' '+u[i];}
 /* esc(): neutraliza caracteres peligrosos antes de pintar NOMBRES DE ARCHIVO en el HTML.
@@ -737,6 +1049,72 @@ function draw(){
    }
   }
   v.innerHTML=h+'</div>';
+ } else if(S.tab==='salud'){
+  var h='<div class="card"><h3>🩺 Salud del equipo</h3>'
+   +'<div class="sub">Analiza el hierro: discos, espacio, memoria y arranque. <b style="color:var(--ok)">Analizar es SOLO LECTURA</b>: no cambia ni borra nada.</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="sw" data-salud="analizar">'
+   +(S.saludBusy?'<span class="spin"></span> analizando…':'🔍 Analizar el equipo')+'</button></div></div>';
+  if(S.saludMsg){h+='<div class="'+(S.saludMsg.ok?'good':'warn')+'">'+esc(S.saludMsg.texto)+'</div>';}
+  if(!S.salud){v.innerHTML=h+'<div class="warn">Pulse <b>Analizar el equipo</b>. La primera lectura tarda unos segundos porque consulta el hardware de verdad.</div>';return;}
+  var Z=S.salud, esc2=esc;
+  h+='<div class="danger">🚨 <b>ZONA DELICADA</b><br>'+esc2(Z.aviso_general||'')+'</div>';
+  if(Z.avisos&&Z.avisos.length){
+   h+='<div class="card"><h3>⚠️ Avisos ('+Z.avisos.length+')</h3>';
+   Z.avisos.forEach(function(a){h+='<div class="warn">• '+esc2(a)+'</div>';});
+   h+='</div>';
+  } else {h+='<div class="good">✔ Sin avisos: discos sanos y espacio suficiente.</div>';}
+  h+='<div class="card"><h3>💽 Discos ('+Z.resumen.discos+') — '+Z.resumen.ssd+' SSD · '+Z.resumen.hdd+' HDD</h3>'
+   +'<div class="sub">El TIPO de disco decide el mantenimiento. Nunca al revés.</div><div class="saludgrid">';
+  (Z.discos||[]).forEach(function(d){
+   var cl=d.riesgo==='recomendado'?'g':(d.riesgo==='cuidado'?'y':'r');
+   h+='<div class="dsk"><b>'+esc2(d.modelo)+'</b><div class="m">'+d.gb+' GB · '+esc2(d.bus)+' · salud '+esc2(d.salud)+' · '+esc2(d.estado)+'</div>'
+    +'<span class="pill '+cl+'">'+esc2(d.tipo)+'</span> <span class="pill '+(d.riesgo==='prohibido'?'r':'n')+'">'+esc2(d.mantenimiento)+'</span>'
+    +'<div class="sub" style="margin-top:7px">'+esc2(d.motivo)+'</div></div>';
+  });
+  h+='</div></div>';
+  h+='<div class="card"><h3>📦 Unidades y espacio</h3><div class="sub">Ordenadas de más a menos apretadas. Aquí saltan los avisos antes de que sea un problema.</div>'
+   +'<table><thead><tr><th>Unidad</th><th>Disco</th><th>Total</th><th>Libre</th><th>%</th><th>Le toca</th><th></th></tr></thead><tbody>';
+  (Z.volumenes||[]).forEach(function(u){
+   var cl2=u.riesgo==='recomendado'?'g':(u.riesgo==='cuidado'?'y':'r');
+   var puede=(u.riesgo!=='prohibido');
+   h+='<tr><td><b class="dv">'+esc2(u.letra)+':</b>'+(u.aviso?(' <span class="pill '+(u.librePct<=10?'r':'y')+'">'+esc2(u.aviso)+'</span>'):'')+'</td>'
+    +'<td>'+esc2(u.discoTipo)+' <span class="path">'+esc2((u.discoModelo||'').substring(0,18))+'</span></td>'
+    +'<td class="size">'+u.totalGB+' GB</td><td class="size">'+u.libreGB+' GB</td><td class="size">'+u.librePct+'%</td>'
+    +'<td><span class="pill '+cl2+'">'+esc2(u.mantenimiento)+'</span></td>'
+    +'<td style="white-space:nowrap">'
+    +'<button data-optim="'+esc2(u.letra)+'"'+(puede?'':' disabled title="Prohibido: disco extraíble o sin confirmar"')+'>⚡ Optimizar</button> '
+    +'<button data-verif="'+esc2(u.letra)+'">🔍 Verificar</button></td></tr>';
+  });
+  h+='</tbody></table>'
+   +'<div class="warn">⚡ <b>Optimizar</b>: en SSD hace TRIM · en HDD desfragmenta. <b>🔍 Verificar</b>: solo lectura (chkdsk /scan), no repara ni borra. Ambas pueden tardar y <b>NUNCA se interrumpen</b>. Necesitan permisos de administrador.</div>';
+  if(Z.avisos_accion){
+   h+='<div class="sub">Antes de ejecutar, lea: <b>'+esc2(Z.avisos_accion.optimizar_ssd)+'</b></div>';
+   h+='<div class="warn" style="border-color:var(--bd)">'+esc2(Z.avisos_accion.optimizar_hdd)+'</div>';
+  }
+  h+='</div>';
+  var c=Z.cpu||{};
+  h+='<div class="card"><h3>🧠 Procesador y memoria</h3><div class="saludgrid">'
+   +'<div class="dsk"><b>'+esc2(c.cpu||'—')+'</b><div class="m">'+c.nucleos+' núcleos · '+c.hilos+' hilos</div><span class="pill '+(c.carga>85?'r':(c.carga>60?'y':'g'))+'">carga '+c.carga+'%</span></div>'
+   +'<div class="dsk"><b>Memoria RAM</b><div class="m">'+c.ramLibreGB+' GB libres de '+c.ramTotalGB+' GB</div><span class="pill '+(c.ramLibreGB<3?'r':(c.ramLibreGB<8?'y':'g'))+'">'+Math.round(100*c.ramLibreGB/Math.max(1,c.ramTotalGB))+'% libre</span></div>'
+   +'</div></div>';
+  h+='<div class="card"><h3>🗺️ Mapa de particiones <span class="pill n">SOLO LECTURA</span></h3>'
+   +'<div class="warn">Este módulo <b>NO modifica particiones</b>. Cambiar particiones puede borrar un disco entero: para eso, una herramienta dedicada y con respaldo hecho.</div>'
+   +'<table><thead><tr><th>Disco físico</th><th>Unidad</th><th>Tamaño</th><th>Tipo</th><th>Sistema</th></tr></thead><tbody>';
+  (Z.particiones||[]).forEach(function(p){
+   h+='<tr><td>#'+esc2(p.DiskNumber)+'</td><td><b class="dv">'+esc2(p.DriveLetter)+':</b></td><td class="size">'+p.GB+' GB</td>'
+    +'<td>'+esc2(p.Type)+'</td><td>'+(p.IsBoot?'<span class="pill y">arranque</span> ':'')+(p.IsSystem?'<span class="pill n">sistema</span>':'')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div class="card"><h3>🚀 Arranque de Windows ('+(Z.arranque||[]).length+')</h3><div class="sub">Todo lo que arranca solo. Cada uno alarga el arranque y come memoria.</div>'
+   +'<table><thead><tr><th>Programa</th><th>Ubicación</th></tr></thead><tbody>';
+  (Z.arranque||[]).forEach(function(a){
+   h+='<tr><td>'+esc2(a.nombre)+'</td><td class="path">'+esc2((a.ubicacion||'').substring(0,52))+'</td></tr>';
+  });
+  h+='</tbody></table><div class="warn">Para <b>desactivar</b> algo del arranque: Administrador de tareas (Ctrl+Shift+Esc) → pestaña <b>Inicio</b>. Aquí solo se muestra: no lo apagamos por usted.</div></div>';
+  h+='<div class="card"><h3>📖 Qué hace cada función</h3>';
+  (Z.funciones||[]).forEach(function(f){h+='<div style="border-top:1px dashed var(--bd);padding:8px 0"><b>'+esc2(f.nombre)+'</b><div class="sub" style="margin-top:3px">'+esc2(f.desc)+'</div></div>';});
+  h+='</div>';
+  v.innerHTML=h;
  } else if(S.tab==='rea'){
   v.innerHTML='<div class="card"><h3>🔎 Analizar con REA</h3><div class="sub">Ruta de una app/carpeta o archivo. REA devuelve Evidence sellada (hash).</div>'+
    '<div class="tools"><input type="text" id="reapath" placeholder="C:\\ruta\\app" style="flex:1"><button class="sw" data-rea="js">App JS/Electron</button><button data-rea="bin">Binario</button></div>'+
@@ -758,7 +1136,44 @@ function draw(){
  document.querySelectorAll('button[data-hor]').forEach(function(b){b.onclick=async function(){var h=prompt('Horario:',b.textContent);if(h)await fetch('/manten',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.hor,horario:h})});refrescar();};});
  document.querySelectorAll('button[data-run]').forEach(function(b){b.onclick=async function(){H('Ejecutando…');var r=await fetch('/manten-run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.run})});var j=await r.json();H(j.msg||'Hecho');refrescar();};});
  document.querySelectorAll('button[data-rea]').forEach(function(b){b.onclick=async function(){var p=document.getElementById('reapath').value;if(!p)return;H('Analizando con REA…');await fetch('/rea',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:p,kind:b.dataset.rea})});refrescar();};});
- // ─────────────── RENOMBRADOR ───────────────
+ // ─────────────── SALUD DEL EQUIPO ───────────────
+ // NOTA DE SEGURIDAD: todo dato de hardware que se pinta con innerHTML pasa antes por esc(),
+ // porque proviene de PowerShell (nombres de disco/modelo). No se interpola texto sin escapar.
+ document.querySelectorAll('button[data-salud]').forEach(function(b){b.onclick=async function(){
+  if(b.dataset.salud!=='analizar')return;
+  S.saludBusy=true;S.saludMsg=null;draw();
+  var j=await fetch('/salud',{method:'POST'}).then(function(r){return r.json();});
+  S.salud=j;S.saludBusy=false;draw();H('Análisis listo');
+ };});
+ document.querySelectorAll('button[data-optim]').forEach(function(b){b.onclick=async function(){
+  var L=b.dataset.optim;
+  var aviso='⚠️  OPTIMIZAR LA UNIDAD '+L+':\n\n'
+   +'· Si es SSD  ->  hace TRIM  (es lo correcto para SSD, NO lo desgasta)\n'
+   +'· Si es HDD  ->  DESFRAGMENTA  (puede TARDAR mucho rato)\n\n'
+   +'NUNCA interrumpa el proceso ni apague el equipo mientras corre.\n'
+   +'Si el disco estuviera casi lleno, el modulo lo bloquea por seguridad.\n\n'
+   +'¿Confirma que quiere optimizar '+L+': ?';
+  if(!confirm(aviso))return;
+  S.saludMsg={ok:true,texto:'Optimizando '+L+': …  no cierre esta ventana ni apague el equipo.'};draw();
+  H('Optimizando '+L+': … puede tardar');
+  var j=await fetch('/salud-optimizar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({letra:L})}).then(function(r){return r.json();});
+  S.saludMsg={ok:!!j.ok,texto:(j.msg||'')+(j.aviso?('\n\n'+j.aviso):'')+(j.salida?('\n\n'+j.salida):'')};
+  draw();H(j.ok?'Listo':'Revisa el aviso');
+ };});
+ document.querySelectorAll('button[data-verif]').forEach(function(b){b.onclick=async function(){
+  var L=b.dataset.verif;
+  var aviso='🔍  VERIFICAR LA UNIDAD '+L+':\n\n'
+   +'Es SOLO LECTURA: revisa el disco SIN reparar y SIN borrar nada.\n'
+   +'En discos grandes puede TARDAR BASTANTE: déjalo terminar.\n'
+   +'Requiere permisos de administrador.\n\n'
+   +'¿Empezar la verificación de '+L+': ?';
+  if(!confirm(aviso))return;
+  S.saludMsg={ok:true,texto:'Verificando '+L+': …  puede tardar bastante. No cierre esta ventana.'};draw();
+  H('Verificando '+L+': …');
+  var j=await fetch('/salud-verificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({letra:L})}).then(function(r){return r.json();});
+  S.saludMsg={ok:!!j.ok,texto:(j.msg||'')+(j.salida?('\n\n'+j.salida):'')};draw();H(j.msg||'Hecho');
+ };});
+ // ─────────────── fin salud ───────────────
  function renSel(){var o=[];document.querySelectorAll('.renck').forEach(function(c){if(c.checked)o.push(c.dataset.id);});return o;}
  function renVals(){var v={};document.querySelectorAll('.renval').forEach(function(i){v[i.dataset.id]=i.value;});return v;}
  function renCar(){var e=document.getElementById('rencar');return e?e.value.trim():S.rencar;}
@@ -912,6 +1327,12 @@ def serve(targets, port, abrir=True):
                 def go():
                     state["rea"] = rea_run(path, kind); state["rea"]["status"] = "listo" if state["rea"].get("ok") else "error"
                 threading.Thread(target=go, daemon=True).start()
+            elif self.path.startswith("/salud-optimizar"):
+                self._json(salud_optimizar(d.get("letra", ""))); return
+            elif self.path.startswith("/salud-verificar"):
+                self._json(salud_verificar(d.get("letra", ""))); return
+            elif self.path.startswith("/salud"):
+                self._json(salud_todo()); return
             elif self.path.startswith("/ren-preview"):
                 self._json(ren_preview(d.get("carpeta", ""), _ren_reglas_req(d), bool(d.get("solo_video", True)))); return
             elif self.path.startswith("/ren-aplicar"):
@@ -945,7 +1366,7 @@ def serve(targets, port, abrir=True):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Seawolf Tools - Optimizacion")
-    ap.add_argument("cmd", choices=["drives", "scan", "dupes", "mant", "papeles", "rescatar", "limpiar", "serve", "clave"])
+    ap.add_argument("cmd", choices=["drives", "scan", "dupes", "mant", "papeles", "rescatar", "limpiar", "serve", "clave", "salud"])
     ap.add_argument("arg", nargs="?", default="ALL")
     ap.add_argument("--sub", default="")
     ap.add_argument("--top", type=int, default=30)
@@ -979,4 +1400,19 @@ if __name__ == "__main__":
             print(f"  cerradura : {'ACTIVA' if act else 'DESACTIVADA'}")
             print(f"  clave     : {tok}")
             print(f"  entrada   : http://127.0.0.1:{a.port}/?k={tok}")
+    elif a.cmd == "salud":
+        t = salud_todo()
+        print("=" * 68)
+        print(f"  SALUD DEL EQUIPO — {t['resumen']['discos']} discos "
+              f"({t['resumen']['ssd']} SSD · {t['resumen']['hdd']} HDD)")
+        print("=" * 68)
+        for d in t["discos"]:
+            print(f"  [{d['id']}] {str(d['modelo'])[:30]:<32} {d['tipo']:<12} {str(d['salud']):<9} -> {d['mantenimiento']}")
+        print("\n  UNIDADES (de mas a menos apretadas):")
+        for v in t["volumenes"]:
+            print(f"   {v['letra']}:  {v['libreGB']:>5}/{v['totalGB']:>5} GB  ({v['librePct']}% libre)"
+                  + ("   << " + v["aviso"] if v["aviso"] else ""))
+        print("\n  AVISOS:")
+        for x in (t["avisos"] or ["ninguno"]): print("   -", x)
+        print("\n  " + AVISO_DISCOS)
     elif a.cmd == "serve": serve(parse_targets(a.arg), a.port, abrir=not a.no_open)

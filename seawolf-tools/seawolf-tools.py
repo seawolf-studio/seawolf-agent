@@ -770,9 +770,13 @@ def serve(targets, port):
             try: d = json.loads(raw)
             except Exception:
                 d = {}
-                # tolerante con rutas de Windows escritas con barras invertidas SIN escapar
-                m = re.search(r'"carpeta"\s*:\s*"([^"]+)"', raw.decode("utf-8", "ignore"))
-                if m: d["carpeta"] = m.group(1).replace("\\\\", "\\")
+                try:
+                    # Repara rutas de Windows con barras invertidas sin escapar ("H:\caida" -> "H:/caida")
+                    # y vuelve a parsear COMPLETO (asi no se pierden 'sel' ni 'valores').
+                    txt = re.sub(r'(?<!\\)\\(?!["\\/bfnrtu])', "/", raw.decode("utf-8", "ignore"))
+                    d = json.loads(txt)
+                except Exception:
+                    d = {}
             if self.path.startswith("/mover-muchos"): limpiar(d.get("paths", []), bool(d.get("hard")))
             elif self.path.startswith("/mover-grupo"): limpiar(d.get("files", [])[1:])
             elif self.path.startswith("/mover"): limpiar([d.get("p", "")])

@@ -306,9 +306,12 @@ FUNCIONES_SALUD = [
  {"id": "arranque", "nombre": "Programas de arranque",
   "desc": "Todo lo que arranca solo con Windows. Cada programa aqui alarga el arranque y consume "
           "memoria desde el primer segundo del dia."},
- {"id": "temperatura", "nombre": "Temperatura y desgaste (requiere extra)",
-  "desc": "Temperatura real, desgaste y horas de encendido del disco. NO viene en Windows: hace falta "
-          "la herramienta libre 'smartmontools'. Sin ella, aqui no te miento mostrando un dato inventado."},
+ {"id": "smart", "nombre": "Temperatura, desgaste y horas (SMART)",
+  "desc": "Lo que el propio disco reporta de si mismo: temperatura, PORCENTAJE DE DESGASTE (en SSD), "
+          "horas de encendido, terabytes escritos, apagados inseguros y salud general. Es el dato que "
+          "de verdad avisa de un fallo ANTES de perder datos. Se lee con smartmontools. En algunos discos "
+          "Windows no lo entrega sin permisos de administrador: en ese caso se dice y se ofrece el boton "
+          "para leerlo con permisos (solo lectura)."},
 ]
 
 
@@ -356,7 +359,7 @@ def _lista(x):
 
 def salud_discos():
     """Discos fisicos con su TIPO real y su salud. Es la base de todo lo demas."""
-    d = _ps_json('Get-PhysicalDisk | Select-Object DeviceId,FriendlyName,MediaType,BusType,'
+    d = _ps_json('Get-PhysicalDisk | Select-Object DeviceId,FriendlyName,SerialNumber,MediaType,BusType,'
                  'HealthStatus,OperationalStatus,@{n="GB";e={[math]::Round($_.Size/1GB)}} | '
                  'ConvertTo-Json -Compress')
     out = []
@@ -381,7 +384,8 @@ def salud_discos():
             riesgo, motivo = "prohibido", AVISO_USB
         out.append({"id": x.get("DeviceId"), "modelo": x.get("FriendlyName"), "tipo": clase,
                     "bus": bus, "salud": x.get("HealthStatus"), "estado": x.get("OperationalStatus"),
-                    "gb": x.get("GB"), "mantenimiento": mant, "riesgo": riesgo, "motivo": motivo})
+                    "gb": x.get("GB"), "mantenimiento": mant, "riesgo": riesgo, "motivo": motivo,
+                    "serial": str(x.get("SerialNumber") or "").strip()})
     return out
 
 
@@ -450,6 +454,174 @@ def salud_arranque():
             out.append({"nombre": x.get("Name"), "ubicacion": x.get("Location"),
                         "comando": x.get("Command")})
     return out
+
+
+SMARTCTL = r"C:\Program Files\smartmontools\bin\smartctl.exe"
+SMART_CFG = os.path.join(HERE, "seawolf-smart.json")
+
+
+def _sc(args, timeout=90):
+    """Ejecuta smartctl sin ventana y devuelve su salida."""
+    for exe in (SMARTCTL, "smartctl.exe"):
+        try:
+            r = subprocess.run([exe] + args, capture_output=True, text=True, timeout=timeout,
+                               creationflags=0x08000000)
+            return (r.stdout or "") + (r.stderr or "")
+        except FileNotFoundError:
+            continue
+        except Exception as e:
+            return f"ERROR: {e}"
+    return ""
+
+
+def _sc_json(args, timeout=90):
+    """smartctl -j: devuelve el JSON ya parseado (o {} si no se pudo)."""
+    txt = _sc(args, timeout)
+    i = txt.find("{")
+    if i < 0:
+        return {}
+    try:
+        return json.loads(txt[i:])
+    except Exception:
+        return {}
+
+
+def smart_instalado():
+    """¿Esta smartmontools disponible?"""
+    v = _sc(["--version"], 20)
+    if v and not v.startswith("ERROR"):
+        m = re.search(r"smartctl\s+([\d.]+)", v)
+        return m.group(1) if m else "si"
+    return ""
+
+
+def _smart_de_dev(dev, tipo, crudo=None):
+    """Lee un disco con smartctl y extrae lo importante (NVMe o ATA).
+
+    Si se le pasa `crudo` (el JSON ya obtenido, por ejemplo por el lector elevado),
+    lo usa en vez de ejecutar smartctl."""
+    d = crudo if isinstance(crudo, dict) else _sc_json(["-j", "-a", "-d", tipo, dev])
+    if not d:
+        return {"dev": dev, "tipo": tipo, "acceso": "denegado",
+                "msg": "Requiere permisos de administrador para leerlo"}
+    disp = d.get("device") or {}
+    modelo = (d.get("model_name") or d.get("device", {}).get("info_name") or disp.get("name") or "").strip()
+    serial = str(d.get("serial_number") or "").strip()
+    sal = {"dev": dev, "tipo": tipo, "modelo": modelo, "serial": serial,
+           "salud": None, "temp": None, "desgaste": None, "horas": None,
+           "escrito_tb": None, "apagados_inseguros": None, "aviso_critico": None,
+           "smart_activo": bool(d.get("smart_support", {}).get("enabled")), "acceso": "ok"}
+    st = d.get("smart_status") or {}
+    if "passed" in st:
+        sal["salud"] = "PASSED" if st["passed"] else "FALLANDO"
+    t = d.get("temperature") or {}
+    if t.get("current") is not None:
+        sal["temp"] = t.get("current")
+    nv = d.get("nvme_smart_health_information_log") or {}
+    if nv:
+        sal["desgaste"] = nv.get("percentage_used")
+        sal["horas"] = nv.get("power_on_hours")
+        sal["apagados_inseguros"] = nv.get("unsafe_shutdowns")
+        escrito = nv.get("data_units_written")
+        if isinstance(escrito, int):
+            sal["escrito_tb"] = round(escrito * 512000 / 1e12, 1)   # unidades de 512.000 bytes
+        sal["aviso_critico"] = nv.get("critical_warning")
+        if sal["temp"] is None and nv.get("temperature") is not None:
+            sal["temp"] = nv.get("temperature")
+    else:
+        # ATA: buscar en la tabla de atributos
+        tabla = (((d.get("ata_smart_attributes") or {}).get("table")) or [])
+        for at in tabla:
+            nom = str(at.get("name") or "")
+            val = at.get("raw", {}).get("value")
+            if nom == "Temperature_Celsius" and val is not None:
+                sal["temp"] = val
+            elif nom == "Power_On_Hours" and val is not None:
+                sal["horas"] = val
+            elif nom in ("Wear_Leveling_Count", "SSD_Life_Left", "Media_Wearout_Indicator") and val is not None:
+                sal["desgaste"] = val
+            elif nom == "Reallocated_Sector_Ct" and val:
+                sal["sectores_reasignados"] = val
+    if (sal["salud"] is None and sal["temp"] is None and sal["horas"] is None
+            and sal["desgaste"] is None):
+        sal["acceso"] = "sin_datos"
+        sal["msg"] = ("SMART desactivado en este disco, o Windows no entrega los datos sin "
+                      "administrador. Ejecuta LEER-SMART-ADMIN.bat (un clic) para leerlo.")
+    return sal
+
+
+def salud_smart():
+    """Temperatura, desgaste y horas de cada disco, leidos con smartctl.
+
+    Sin permisos de administrador Windows deja leer pocos (en este equipo solo el NVMe).
+    Los que no se dejen se marcan como tales en vez de inventar un dato."""
+    ver = smart_instalado()
+    if not ver:
+        return {"disponible": False, "version": "", "smartctl": SMARTCTL,
+                "msg": ("smartmontools no esta instalado. Instalalo con: "
+                        "winget install smartmontools.smartmontools"),
+                "discos": []}
+    devs = []
+    for linea in (_sc(["--scan"], 60) or "").splitlines():
+        m = re.match(r"^(/dev/\w+)\s+-d\s+(\w+)", linea.strip())
+        if m:
+            devs.append((m.group(1), m.group(2)))
+    # Lectura elevada previa (la deja LEER-SMART-ADMIN.bat): sirve para los discos que
+    # Windows no entrega a un usuario normal.
+    cache, cache_fecha = {}, ""
+    try:
+        cinfo = json.load(open(SMART_CFG, encoding="utf-8-sig"))
+        cache = cinfo.get("dispositivos") or {}
+        cache_fecha = cinfo.get("fecha") or ""
+    except Exception:
+        cache, cache_fecha = {}, ""
+    lecturas = []
+    origen = "en vivo"
+    for dev, tipo in devs:
+        crudo = None
+        if dev in cache:
+            try:
+                crudo = json.loads(cache[dev])
+            except Exception:
+                crudo = None
+        l = _smart_de_dev(dev, tipo, crudo)
+        if crudo is not None and l.get("acceso") == "ok":
+            l["origen"] = "lectura elevada"
+        lecturas.append(l)
+    if lecturas and all(l.get("acceso") != "ok" for l in lecturas) and cache:
+        origen = "lectura elevada del " + cache_fecha
+    # emparejar con los discos fisicos por SERIAL (y si no, por modelo)
+    fisicos = salud_discos()
+    usados = set()
+    for l in lecturas:
+        s_l = (l.get("serial") or "").upper().replace(" ", "")
+        m_l = (l.get("modelo") or "").upper().strip()
+        pareja = None
+        for d in fisicos:
+            if d["id"] in usados:
+                continue
+            s_d = str(d.get("serial") or "").upper().replace(" ", "")
+            m_d = str(d.get("modelo") or "").upper().strip()
+            if s_l and s_d and (s_l == s_d or s_l in s_d or s_d in s_l):
+                pareja = d; break
+        if not pareja:
+            for d in fisicos:
+                if d["id"] in usados:
+                    continue
+                if m_l and m_l and (m_l in str(d.get("modelo") or "").upper()):
+                    pareja = d; break
+        if pareja:
+            usados.add(pareja["id"])
+            l["discoId"] = pareja["id"]
+            l["discoModelo"] = pareja["modelo"]
+            l["discoTipo"] = pareja["tipo"]
+        else:
+            l["discoId"] = None
+    return {"disponible": True, "version": ver, "smartctl": SMARTCTL,
+            "instalado": True, "msg": "", "discos": lecturas,
+            "origen": origen, "cacheFecha": cache_fecha,
+            "leidos": sum(1 for l in lecturas if l.get("acceso") == "ok"),
+            "bloqueados": sum(1 for l in lecturas if l.get("acceso") != "ok")}
 
 
 def salud_tipo_de(letra):
@@ -539,9 +711,24 @@ def salud_todo():
             "avisos": avisos, "resumen": {"ssd": n_ssd, "hdd": n_hdd,
                                           "unidades": len(volumenes), "discos": len(discos)},
             "funciones": FUNCIONES_SALUD,
+            "smart": salud_smart(),
             "aviso_general": AVISO_DISCOS,
             "avisos_accion": {"optimizar_ssd": AVISO_TRIM, "optimizar_hdd": AVISO_DEFRAG,
                               "prohibido": AVISO_USB, "verificar": AVISO_VERIFICAR}}
+
+
+def salud_smart_admin():
+    """Lanza LEER-SMART-ADMIN.bat para leer el SMART con permisos (saldra una ventana de
+    Windows pidiendo autorizacion: la pulsa el Monarca). Solo LEE."""
+    ruta = os.path.join(os.path.dirname(HERE), "LEER-SMART-ADMIN.bat")
+    if not os.path.exists(ruta):
+        return {"ok": False, "msg": f"No encontre {ruta}"}
+    try:
+        subprocess.Popen(["cmd", "/c", ruta], creationflags=0x00000010)   # NEW_CONSOLE
+        return {"ok": True, "msg": ("Lanzado. Windows va a pedir permiso: pulse 'Si'. "
+                                    "Cuando termine, pulse Analizar otra vez.")}
+    except Exception as e:
+        return {"ok": False, "msg": str(e)}
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -1072,6 +1259,40 @@ function draw(){
     +'<div class="sub" style="margin-top:7px">'+esc2(d.motivo)+'</div></div>';
   });
   h+='</div></div>';
+  var sm=Z.smart||{};
+  if(sm.disponible===false){
+   h+='<div class="card"><h3>🌡️ Temperatura, desgaste y horas</h3><div class="warn">'+esc2(sm.msg||'No disponible')+'</div></div>';
+  } else {
+   h+='<div class="card"><h3>🌡️ Temperatura, desgaste y horas <span class="pill n">smartctl '+esc2(sm.version||'')+'</span></h3>'
+    +'<div class="sub">Leído del propio disco (SMART). Esto es lo que de verdad avisa de un fallo <b>antes</b> de perder datos.</div>'
+    +'<div class="saludgrid">';
+   (sm.discos||[]).forEach(function(d){
+    var nom=d.discoModelo||d.modelo||d.dev;
+    if(d.acceso==='ok'){
+     var tcl=(d.temp>=50?'r':(d.temp>=45?'y':'g')), dcl=(d.desgaste>=80?'r':(d.desgaste>=50?'y':'g'));
+     h+='<div class="dsk"><b>'+esc2(nom)+'</b><div class="m">'+esc2(d.discoTipo||d.tipo||'')+' · '+esc2(d.dev||'')+'</div>'
+      +'<span class="pill '+tcl+'">'+(d.temp!=null?d.temp+' °C':'temp —')+'</span> '
+      +'<span class="pill '+dcl+'">'+(d.desgaste!=null?'desgaste '+d.desgaste+'%':'desgaste —')+'</span> '
+      +'<span class="pill '+(d.salud==='PASSED'?'g':'r')+'">'+esc2(d.salud||'sin salud')+'</span>'
+      +'<div class="sub" style="margin-top:6px">'+(d.horas!=null?('<b>'+Math.round(d.horas))+' h</b> encendido (~'+Math.round(d.horas/24/365*10)/10+' años)'):'horas —')
+      +(d.escrito_tb!=null?(' · <b>'+d.escrito_tb+' TB</b> escritos'):'')
+      +(d.apagados_inseguros?(' · ⚠️ <b>'+d.apagados_inseguros+'</b> apagados inseguros'):'')+'</div></div>';
+    } else {
+     h+='<div class="dsk" style="border-color:var(--warn)"><b>'+esc2(nom)+'</b><div class="m">'+esc2(d.discoTipo||d.tipo||'')+' · '+esc2(d.dev||'')+'</div>'
+      +'<span class="pill y">sin leer</span><div class="sub" style="margin-top:6px">'+esc2(d.msg||'requiere permisos')+'</div></div>';
+    }
+   });
+   h+='</div>';
+   if(sm.bloqueados){
+    h+='<div class="warn">🔒 <b>'+sm.bloqueados+' disco(s) sin leer</b>: Windows no entrega el SMART a un usuario normal. '
+     +'Pulse el botón: se abrirá una ventana de Windows pidiendo permiso (la aprueba usted) y solo <b>LEE</b> el estado.</div>'
+     +'<button class="sw" data-salud="smartadmin">🛡️ Leer con permisos de administrador</button>';
+   } else if(sm.leidos){
+    h+='<div class="good">✔ Se leyeron los '+sm.leidos+' discos sin necesidad de permisos.</div>';
+   }
+   if(sm.origen&&sm.origen!=='en vivo')h+='<div class="sub">Origen de los datos: '+esc2(sm.origen)+'</div>';
+   h+='</div>';
+  }
   h+='<div class="card"><h3>📦 Unidades y espacio</h3><div class="sub">Ordenadas de más a menos apretadas. Aquí saltan los avisos antes de que sea un problema.</div>'
    +'<table><thead><tr><th>Unidad</th><th>Disco</th><th>Total</th><th>Libre</th><th>%</th><th>Le toca</th><th></th></tr></thead><tbody>';
   (Z.volumenes||[]).forEach(function(u){
@@ -1140,7 +1361,19 @@ function draw(){
  // NOTA DE SEGURIDAD: todo dato de hardware que se pinta con innerHTML pasa antes por esc(),
  // porque proviene de PowerShell (nombres de disco/modelo). No se interpola texto sin escapar.
  document.querySelectorAll('button[data-salud]').forEach(function(b){b.onclick=async function(){
-  if(b.dataset.salud!=='analizar')return;
+  var acc=b.dataset.salud;
+  if(acc==='smartadmin'){
+   if(!confirm('🛡️  LEER EL ESTADO (SMART) CON PERMISOS\n\n'
+     +'Windows no entrega estos datos a un usuario normal.\n'
+     +'Se va a abrir una ventana pidiendo permiso: púlsela usted.\n\n'
+     +'IMPORTANTE: la lectura SOLO LEE. No borra, no repara y no cambia nada.\n'
+     +'Lo único que enciende es el registro SMART si estuviera apagado.\n\n'
+     +'¿Lanzarla?'))return;
+   H('Lanzando… apruebe la ventana de Windows');
+   var j=await fetch('/salud-smart-admin',{method:'POST'}).then(function(r){return r.json();});
+   S.saludMsg={ok:!!j.ok,texto:j.msg||''};draw();return;
+  }
+  if(acc!=='analizar')return;
   S.saludBusy=true;S.saludMsg=null;draw();
   var j=await fetch('/salud',{method:'POST'}).then(function(r){return r.json();});
   S.salud=j;S.saludBusy=false;draw();H('Análisis listo');
@@ -1327,6 +1560,8 @@ def serve(targets, port, abrir=True):
                 def go():
                     state["rea"] = rea_run(path, kind); state["rea"]["status"] = "listo" if state["rea"].get("ok") else "error"
                 threading.Thread(target=go, daemon=True).start()
+            elif self.path.startswith("/salud-smart-admin"):
+                self._json(salud_smart_admin()); return
             elif self.path.startswith("/salud-optimizar"):
                 self._json(salud_optimizar(d.get("letra", ""))); return
             elif self.path.startswith("/salud-verificar"):

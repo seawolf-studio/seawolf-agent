@@ -473,6 +473,38 @@ def ren_aplicar(carpeta, reglas, solo_video=False):
             "total_errores": len(errores), "truncado": truncado}
 
 
+def ren_aplicar_lote(carpetas, reglas, solo_video=False):
+    """Aplica las reglas a VARIAS carpetas y deja UN SOLO registro de deshacer con todo.
+
+    Pensado para lotes: 'las 42 carpetas de esta serie'. Si fallara algo, el DESHACER
+    devuelve TODO el lote de una vez, no solo la ultima carpeta."""
+    pares, errores, revisados = [], [], 0
+    for c in (carpetas or []):
+        plan, total, _trunc, err = ren_plan(c, reglas, solo_video)
+        revisados += total
+        if err:
+            errores.append([str(c), err]); continue
+        for viejo, nuevo in plan:
+            try:
+                if os.path.exists(nuevo):
+                    errores.append([os.path.basename(viejo), "ya existe el destino"]); continue
+                os.rename(viejo, nuevo)
+                pares.append([viejo, nuevo])
+            except Exception as e:
+                errores.append([os.path.basename(viejo), str(e)[:90]])
+    if pares:
+        sello = hashlib.sha256(json.dumps(pares, ensure_ascii=False).encode()).hexdigest()[:16]
+        op = {"fecha": datetime.now().isoformat(timespec="seconds"),
+              "carpeta": f"LOTE de {len(carpetas)} carpetas", "tipo": "archivos",
+              "n": len(pares), "sello": sello, "pares": pares}
+        json.dump(op, open(REN_UNDO, "w", encoding="utf-8"), ensure_ascii=False)
+        with open(REN_HIST, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps({k: v for k, v in op.items() if k != "pares"},
+                                ensure_ascii=False) + "\n")
+    return {"ok": len(pares), "revisados": revisados, "carpetas": len(carpetas or []),
+            "errores": errores[:15], "total_errores": len(errores)}
+
+
 def ren_carpetas_preview(carpeta):
     """Busca carpetas tipo 'Temporada 01' / 'Temporada 1' y propone 'Season 01'."""
     if not carpeta or not os.path.isdir(carpeta):
@@ -480,7 +512,7 @@ def ren_carpetas_preview(carpeta):
     plan = []
     for dirpath, dirnames, _ in os.walk(carpeta):
         for d in dirnames:
-            m = re.match(r"^(?:temporada|season|temp|t)\s*0*(\d{1,3})$", d.strip(), re.I)
+            m = re.match(r"^(?:temporada|season|temp)\s*0*(\d{1,3})$", d.strip(), re.I)
             if m:
                 nuevo = f"Season {int(m.group(1)):02d}"
                 if nuevo != d:
@@ -499,7 +531,7 @@ def ren_carpetas(carpeta):
     plan, hechos, errores = [], [], []
     for dirpath, dirnames, _ in os.walk(carpeta):     # recalcular completo (no solo la muestra)
         for d in dirnames:
-            m = re.match(r"^(?:temporada|season|temp|t)\s*0*(\d{1,3})$", d.strip(), re.I)
+            m = re.match(r"^(?:temporada|season|temp)\s*0*(\d{1,3})$", d.strip(), re.I)
             if m:
                 nuevo = f"Season {int(m.group(1)):02d}"
                 if nuevo != d:

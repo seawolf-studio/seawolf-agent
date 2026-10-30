@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Trastienda — El Cuadre</title>
+<style>
+:root{
+  --bg:#0b1414; --panel:#121E1E; --panel2:#162626; --border:#1f3030;
+  --fg:#e6f2f2; --muted:#7f9a9a; --accent:#4CE8E7; --accent2:#48E8D8;
+  --warn:#f2b34c; --danger:#ff6b6b; --good:#48E8D8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);
+  font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45}
+#wrap{width:980px;max-width:100%;padding:18px 20px 60px}
+a{color:var(--accent)}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.mut{color:var(--muted)}
+.sm{font-size:12.5px}
+.tag{display:inline-block;padding:2px 8px;border:1px solid var(--border);border-radius:999px;font-size:11.5px;color:var(--muted)}
+.tag.ok{color:var(--accent);border-color:#26514f}
+.tag.bad{color:var(--danger);border-color:#5a2a2a}
+.tag.warn{color:var(--warn);border-color:#5a4a22}
+h1{font-size:26px;margin:0 0 2px}
+h2{font-size:16px;margin:26px 0 10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kpi .v{font-size:26px;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+.v.good{color:var(--good)} .v.bad{color:var(--danger)} .v.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid #162626;font-variant-numeric:tabular-nums;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.num{text-align:right}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border);
+  background:#16302f;color:var(--fg);padding:6px 11px}
+button:hover{border-color:var(--accent)}
+button.pri{background:var(--accent);color:#06201f;border-color:var(--accent);font-weight:600}
+button.ghost{background:transparent}
+button.done{background:#10312f;border-color:#26514f;color:var(--accent2)}
+.tabs{display:flex;gap:6px;margin:22px 0 16px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;
+  padding:10px 14px;color:var(--muted)}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.bar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.fee{display:flex;gap:22px;align-items:center;background:linear-gradient(180deg,#122424,#0f1c1c);
+  border:1px solid #26514f;border-radius:12px;padding:14px 18px}
+.fee .big{font-size:24px;font-variant-numeric:tabular-nums}
+.gate{max-width:460px;margin:7vh auto 0;background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:26px}
+.gate input{width:100%;margin:6px 0 12px;padding:10px 12px;border-radius:9px;border:1px solid var(--border);
+  background:#0e1b1b;color:var(--fg);font:inherit}
+.lbl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.roles{display:flex;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block}
+.li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed #1c2e2e}
+.li:last-child{border-bottom:0}
+.note{border-left:3px solid var(--warn);background:#1a1a12;padding:10px 14px;border-radius:0 10px 10px 0;font-size:13.5px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+<!-- ============ PUERTA: registro / entrada ============ -->
+<div id="gate" class="gate">
+  <h1 style="font-size:22px">La Trastienda</h1>
+  <p class="mut sm" style="margin-top:4px">La plataforma donde su restaurante ve lo que nadie le muestra: <b>cuánta plata le queda de verdad</b>.</p>
+  <div class="tabs" style="margin:18px 0 14px">
+    <button class="tab on" data-g="in">Entrar</button>
+    <button class="tab" data-g="up">Registrar mi restaurante</button>
+  </div>
+
+  <div id="g-in">
+    <div class="lbl">Su WhatsApp</div>
+    <input id="in-tel" placeholder="+57 300 000 0000" autocomplete="off">
+    <button class="pri" id="btn-in" style="width:100%">Entrar con enlace a mi WhatsApp</button>
+    <p class="mut sm" style="margin-top:12px">Sin contraseñas. Le mandamos un enlace de un solo uso al chat — el mismo donde ya atiende a sus clientes.</p>
+  </div>
+
+  <div id="g-up" class="hide">
+    <div class="lbl">Nombre del restaurante</div>
+    <input id="up-nom" placeholder="Sazón de la Abuela" autocomplete="off">
+    <div class="lbl">WhatsApp del negocio</div>
+    <input id="up-tel" placeholder="+57 300 000 0000" autocomplete="off">
+    <div class="lbl">Ciudad</div>
+    <input id="up-ciu" placeholder="Medellín" autocomplete="off">
+    <button class="pri" id="btn-up" style="width:100%">Crear mi cuenta</button>
+    <p class="mut sm" style="margin-top:12px">Cada restaurante entra a <b>su</b> cuenta y ve <b>solo lo suyo</b>. Los demás no lo ven, y usted no ve los demás.</p>
+  </div>
+
+  <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+  <button class="ghost sm" id="btn-sombra" style="width:100%">Entrar como <b>La Sombra</b> (nuestro lado)</button>
+</div>
+
+<!-- ============ APLICATIVO ============ -->
+<div id="app" class="hide">
+  <div class="bar">
+    <div>
+      <h1 id="tenant-nom">—</h1>
+      <div class="mut sm" id="tenant-sub">—</div>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center">
+      <div class="roles">
+        <button class="tab on" data-r="res">Mi restaurante</button>
+        <button class="tab" data-r="som">La Sombra</button>
+      </div>
+      <button class="ghost sm" id="btn-out">Salir</button>
+    </div>
+  </div>
+
+  <div id="solorest">
+    <div class="tabs">
+      <button class="tab on" data-t="hoy">Hoy</button>
+      <button class="tab" data-t="ped">Pedidos</button>
+      <button class="tab" data-t="que">Quejas</button>
+      <button class="tab" data-t="men">Menú</button>
+    </div>
+    <div id="v-hoy"></div>
+    <div id="v-ped" class="hide"></div>
+    <div id="v-que" class="hide"></div>
+    <div id="v-men" class="hide"></div>
+  </div>
+
+  <div id="solosom" class="hide"></div>
+</div>
+
+</div>
+
+<script>
+/* ================= LA TRASTIENDA — demo autocontenida =================
+   Sin backend. Datos de ejemplo. Estado en localStorage.
+   Regla del proyecto: cada inquilino ve SOLO lo suyo; la plazoleta (todos
+   los restaurantes) la ve unicamente La Sombra.                      */
+
+var FEE = 500, CAP = 59900, CUPO_GRATIS = 50;
+var LLAVE = 'seawolf_trastienda_v1';
+
+/* ---------- datos de ejemplo ---------- */
+var BASE = { entrantes:412, intencion:47, cerrados:31, perdidos:16, respMin:8, ticket:24500 };
+
+var S = {
+  dentro:false, rol:'res',
+  tenant:{ nom:'Sazón de la Abuela', tel:'+57 300 123 4567', ciudad:'Medellín' },
+  hoy:{ vendiste:1240000, gastaste:948000, pedidos:41, perdidos:3 },
+  fugas:[
+    { k:'Merma no registrada',   d:'3 productos con vencimiento esta semana', v:38000 },
+    { k:'Pedidos que se perdieron', d:'3 conversaciones del día sin cerrar',    v:61000 },
+    { k:'Plato que rinde mal',    d:'Milanesa: food cost 41% (el resto va en 30%)', v:24000 }
+  ],
+  pedidos:[
+    { id:'P-1041', hora:'12:14', cli:'María P.',  monto:32000, via:'agente', sello:'9c1f4a7b2e8d3c60' },
+    { id:'P-1042', hora:'12:31', cli:'Andrés G.', monto:18500, via:'agente', sello:'3a7d0f5e1b9c2a44' },
+    { id:'P-1043', hora:'12:47', cli:'Sofía R.',  monto:47500, via:'humano', sello:null },
+    { id:'P-1044', hora:'13:02', cli:'Julián M.', monto:21000, via:'agente', sello:'b2e6c8a4d17f9031' },
+    { id:'P-1045', hora:'13:15', cli:'Camilo T.', monto:56000, via:'agente', sello:'77af21c0de9b4413' },
+    { id:'P-1046', hora:'13:40', cli:'Luisa V.',  monto:27000, via:'humano', sello:null },
+    { id:'P-1047', hora:'14:03', cli:'Diego H.',  monto:39000, via:'agente', sello:'f04b8e6d2a17c995' },
+    { id:'P-1048', hora:'14:22', cli:'Paula N.',  monto:15500, via:'agente', sello:'1d83ba47f0e6c250' }
+  ],
+  quejas:[
+    { id:'Q-118', hora:'12:52', cli:'Sofía R.', txt:'El domicilio llegó frío y faltaba la gaseosa.', ord:'P-1043', est:'nueva' },
+    { id:'Q-119', hora:'13:31', cli:'Camilo T.', txt:'Me cobraron dos veces el domicilio.',         ord:'P-1045', est:'nueva' },
+    { id:'Q-120', hora:'11:08', cli:'María P.',  txt:'La porción de hoy estaba más pequeña.',      ord:'P-1041', est:'respondida' },
+    { id:'Q-121', hora:'10:15', cli:'Nuevo N.',  txt:'Preguntó si hay opción sin gluten y no le contestaron.', ord:null, est:'cerrada' }
+  ],
+  menu:[
+    { n:'Bandeja paisa',       p:32000, d:true },
+    { n:'Milanesa de pollo',   p:27000, d:true },
+    { n:'Sopa del día',        p:14500, d:true },
+    { n:'Churrasco',           p:47000, d:true },
+    { n:'Limonada de coco',    p: 9000, d:true },
+    { n:'Postre del día',      p:11000, d:false }
+  ],
+  plazoleta:[
+    { nom:'Sazón de la Abuela', ciudad:'Medellín', sesion:'conectada', ped:41, perd:3,  quejas:4, fee:9900 },
+    { nom:'El Fogón de Beto',   ciudad:'Medellín', sesion:'conectada', ped:63, perd:9,  quejas:1, fee:21500 },
+    { nom:'Arepas La 70',       ciudad:'Medellín', sesion:'conectada', ped:22, perd:11, quejas:2, fee:7500 },
+    { nom:'Mariscos Don Paz',   ciudad:'Bello',    sesion:'reconectar',ped:48, perd:4,  quejas:6, fee:18600 },
+    { nom:'Pizza del Parque',   ciudad:'Envigado', sesion:'conectada', ped:77, perd:2,  quejas:0, fee:33400 }
+  ]
+};
+
+/* ---------- dinero ---------- */
+function cop(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
+function pct(a,b){ return b ? Math.round(a*100/b) : 0; }
+/* esc(): TODO lo que se pinta con innerHTML pasa por aquí. La frontera de confianza
+   de esta demo es localStorage (el estado se puede editar a mano): sin esto, un
+   estado manipulado inyecta HTML en el panel. */
+function esc(s){ var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+
+/* ---------- persistencia ---------- */
+function guardar(){ try{ localStorage.setItem(LLAVE, JSON.stringify({
+  dentro:S.dentro, rol:S.rol, tenant:S.tenant, pedidos:S.pedidos, quejas:S.quejas, menu:S.menu
+})); }catch(e){} }
+function cargar(){
+  try{
+    var r = JSON.parse(localStorage.getItem(LLAVE) || 'null');
+    if(!r) return;
+    S.dentro = !!r.dentro; S.rol = r.rol || 'res';
+    if(r.tenant) S.tenant = r.tenant;
+    if(r.pedidos) S.pedidos = r.pedidos;
+    if(r.quejas) S.quejas = r.quejas;
+    if(r.menu) S.menu = r.menu;
+  }catch(e){}
+}
+
+/* ---------- facturacion: solo pedidos cerrados por el agente ---------- */
+function facturables(){ return S.pedidos.filter(function(p){ return p.via==='agente'; }); }
+function montoFee(){
+  var n = facturables().length;
+  var bruto = n * FEE;
+  return { n:n, bruto:bruto, cobrado: Math.min(bruto, CAP), tope: bruto >= CAP, gratis: Math.max(0, CUPO_GRATIS - n) };
+}
+
+/* ---------- vista 1: HOY ---------- */
+function vHoy(){
+  var queda = S.hoy.vendiste - S.hoy.gastaste;
+  var recup = BASE.perdidos - S.hoy.perdidos;
+  var h = '';
+  h += '<h2>El cuadre de hoy</h2>';
+  h += '<div class="kpis">';
+  h += kpi('Vendiste', cop(S.hoy.vendiste), S.hoy.pedidos + ' pedidos cerrados', '');
+  h += kpi('Gastaste', cop(S.hoy.gastaste), 'compras + mermas registradas', '');
+  h += kpi('Te queda de verdad', cop(queda), Math.round(queda*100/S.hoy.vendiste) + '% de lo que vendiste', queda>0?'good':'bad');
+  h += kpi('Pedidos perdidos', String(S.hoy.perdidos), 'antes de nosotros: ' + BASE.perdidos, S.hoy.perdidos<BASE.perdidos?'good':'bad');
+  h += '</div>';
+
+  h += '<div class="note" style="margin-top:16px"><b>Pedidos rescatados:</b> hoy se cerraron <b>'+recup+'</b> conversaciones que el mes pasado se quedaban sin respuesta. A ticket promedio, eso son <b>'+cop(recup*BASE.ticket)+'</b> que ayer no existían.</div>';
+
+  h += '<h2>Dónde se te fue la plata hoy</h2><div class="card"><div class="li" style="border-bottom:1px solid var(--border);padding-bottom:8px"><span class="mut sm">CAUSA</span><span class="mut sm num">MONTO</span></div>';
+  S.fugas.forEach(function(f){
+    h += '<div class="li"><div><div>'+esc(f.k)+'</div><div class="mut sm">'+esc(f.d)+'</div></div><div class="num" style="color:var(--danger)">'+cop(f.v)+'</div></div>';
+  });
+  var tot = S.fugas.reduce(function(a,f){ return a+f.v; },0);
+  h += '<div class="li" style="padding-top:12px"><b>Total fugándose</b><b class="num" style="color:var(--danger)">'+cop(tot)+'</b></div></div>';
+
+  h += '<h2>La línea base que firmamos (semana 0)</h2>';
+  h += '<table><tr><th>Métrica</th><th class="num">Antes</th><th class="num">Ahora</th><th>Lectura</th></tr>';
+  h += fila('Mensajes entrantes', BASE.entrantes, 438, 'suben: más gente escribe');
+  h += fila('Con intención de compra', BASE.intencion, 52, 'sube');
+  h += fila('Pedidos cerrados', BASE.cerrados, 41, 'sube');
+  h += fila('Pedidos perdidos', BASE.perdidos, S.hoy.perdidos, 'baja = plata recuperada');
+  h += fila('1ª respuesta (mediana)', BASE.respMin+' min', '1 min', 'el agente no deja esperando');
+  h += fila('Ticket promedio', cop(BASE.ticket), cop(24350), 'estable');
+  h += '</table>';
+  h += '<p class="mut sm">Todo esto lo medimos nosotros, sobre su propio WhatsApp. Nunca tocamos su contabilidad.</p>';
+  return h;
+}
+function kpi(l,v,s,c){ return '<div class="kpi"><div class="l">'+l+'</div><div class="v '+c+'">'+v+'</div><div class="s">'+s+'</div></div>'; }
+function fila(m,a,n,l){
+  var aN = (typeof a==='number'), nN = (typeof n==='number');
+  var mejora = aN && nN ? (m.indexOf('perdidos')>=0 ? n<a : n>a) : null;
+  var c = mejora===null ? '' : (mejora?'good':'bad');
+  return '<tr><td>'+m+'</td><td class="num mut">'+a+'</td><td class="num '+c+'">'+n+'</td><td class="mut sm">'+l+'</td></tr>';
+}
+
+/* ---------- vista 2: PEDIDOS ---------- */
+function vPed(){
+  var f = montoFee();
+  var h = '';
+  h += '<div class="fee">'
+    + '<div><div class="lbl">Pedidos cerrados por el agente</div><div class="big">'+f.n+'</div></div>'
+    + '<div><div class="lbl">Su factura de hoy</div><div class="big">'+cop(f.cobrado)+'</div>'
+    + '<div class="mut sm">'+cop(FEE)+' por pedido'+(f.tope?' · tope '+cop(CAP)+' alcanzado':'')+'</div></div>'
+    + '<div style="margin-left:auto;text-align:right"><div class="lbl">Pedidos gratis que le quedan</div><div class="big">'+f.gratis+'</div></div>'
+    + '</div>';
+  h += '<div class="note" style="margin-top:14px">Si el pedido lo atendió usted, <b>no se cobra nada</b>. Márquelo y desaparece de la factura al instante.</div>';
+
+  h += '<h2>Pedidos de hoy</h2>';
+  h += '<table><tr><th>Pedido</th><th>Hora</th><th>Cliente</th><th class="num">Monto</th><th>Atendió</th><th>Sello</th><th></th></tr>';
+  S.pedidos.forEach(function(p){
+    var ag = p.via==='agente';
+    h += '<tr><td class="mono">'+esc(p.id)+'</td><td>'+esc(p.hora)+'</td><td>'+esc(p.cli)+'</td>'
+      + '<td class="num">'+cop(p.monto)+'</td>'
+      + '<td><span class="tag '+(ag?'ok':'')+'">'+(ag?'el agente':'yo')+'</span></td>'
+      + '<td class="mono mut sm">'+(p.sello ? esc(p.sello) : '—')+'</td>'
+      + '<td><button class="sm '+(ag?'':'done')+'" data-via="'+p.id+'">'+(ag?'Lo atendí yo':'Cobrar al agente')+'</button></td></tr>';
+  });
+  h += '</table>';
+  h += '<p class="mut sm">El <b>sello</b> es la huella SHA-256 de cada pedido: su factura se puede auditar uno por uno. Usted ve exactamente por qué paga.</p>';
+  return h;
+}
+
+/* ---------- vista 3: QUEJAS ---------- */
+function vQue(){
+  var nuevas = S.quejas.filter(function(q){ return q.est==='nueva'; }).length;
+  var h = '';
+  h += '<h2>Quejas capturadas en el chat</h2>';
+  h += '<div class="kpis" style="grid-template-columns:repeat(3,1fr)">';
+  h += kpi('Sin atender', String(nuevas), 'el agente las detectó solo', nuevas?'bad':'good');
+  h += kpi('Total del día', String(S.quejas.length), 'conversaciones marcadas como queja', '');
+  h += kpi('Pedido asociado', String(S.quejas.filter(function(q){return q.ord;}).length), 'se puede rastrear el pedido exacto', '');
+  h += '</div>';
+
+  h += '<table style="margin-top:16px"><tr><th>ID</th><th>Hora</th><th>Cliente</th><th>Queja</th><th>Pedido</th><th>Estado</th><th></th></tr>';
+  S.quejas.forEach(function(q){
+    var t = q.est==='nueva' ? 'bad' : (q.est==='respondida' ? 'warn' : 'ok');
+    h += '<tr><td class="mono">'+esc(q.id)+'</td><td>'+esc(q.hora)+'</td><td>'+esc(q.cli)+'</td>'
+      + '<td style="max-width:320px">'+esc(q.txt)+'</td>'
+      + '<td class="mono mut">'+(q.ord?esc(q.ord):'—')+'</td>'
+      + '<td><span class="tag '+t+'">'+q.est+'</span></td>'
+      + '<td><button class="sm" data-que="'+q.id+'">'+(q.est==='nueva'?'Responder':'Avanzar')+'</button></td></tr>';
+  });
+  h += '</table>';
+  h += '<p class="mut sm">El agente marca como <b>queja</b> todo mensaje con reclamo, y lo amarra al pedido. Nada se pierde en el chat. <b>Estas quejas son suyas, no nuestras:</b> nosotros solo vemos el conteo, para saber qué se está rompiendo en la plaza.</p>';
+  return h;
+}
+
+/* ---------- vista 4: MENÚ ---------- */
+function vMen(){
+  var h = '<h2>Lo que el agente puede vender</h2>';
+  h += '<div class="note" style="margin-bottom:14px">Si un plato se acabó, apáguelo aquí y el agente deja de ofrecerlo. <b>No inventa</b>: solo vende lo que usted tiene.</div>';
+  h += '<table><tr><th>Plato</th><th class="num">Precio</th><th>Estado</th><th></th></tr>';
+  S.menu.forEach(function(m,i){
+    h += '<tr><td>'+esc(m.n)+'</td><td class="num">'+cop(m.p)+'</td>'
+      + '<td><span class="tag '+(m.d?'ok':'bad')+'">'+(m.d?'disponible':'agotado')+'</span></td>'
+      + '<td><button class="sm" data-men="'+i+'">'+(m.d?'Apagar':'Prender')+'</button></td></tr>';
+  });
+  h += '</table>';
+  return h;
+}
+
+/* ---------- vista La Sombra: la plazoleta ---------- */
+function vSom(){
+  var h = '';
+  var tot = S.plazoleta.reduce(function(a,t){ return a+t.ped; },0);
+  var perd = S.plazoleta.reduce(function(a,t){ return a+t.perd; },0);
+  var quej = S.plazoleta.reduce(function(a,t){ return a+t.quejas; },0);
+  var fee  = S.plazoleta.reduce(function(a,t){ return a+t.fee; },0);
+  h += '<h2>La plazoleta — solo nuestro lado</h2>';
+  h += '<div class="kpis">';
+  h += kpi('Restaurantes', String(S.plazoleta.length), 'inquilinos en la plataforma', '');
+  h += kpi('Pedidos del día', String(tot), 'cerrados por los agentes', '');
+  h += kpi('Pedidos perdidos', String(perd), 'la plaza entera', 'warn');
+  h += kpi('Nuestra factura', cop(fee), 'suma de los ' + S.plazoleta.length + ' inquilinos', 'good');
+  h += '</div>';
+
+  h += '<h2>Inquilinos</h2>';
+  h += '<table><tr><th>Restaurante</th><th>Ciudad</th><th>Sesión de WhatsApp</th><th class="num">Pedidos</th><th class="num">Perdidos</th><th class="num">Quejas</th><th class="num">Nuestra factura</th></tr>';
+  S.plazoleta.forEach(function(t){
+    var ok = t.sesion==='conectada';
+    h += '<tr><td>'+esc(t.nom)+'</td><td class="mut">'+esc(t.ciudad)+'</td>'
+      + '<td><span class="pill"><span class="dot" style="background:'+(ok?'var(--accent)':'var(--warn)')+'"></span>'+esc(t.sesion)+'</span></td>'
+      + '<td class="num">'+t.ped+'</td><td class="num">'+t.perd+'</td><td class="num">'+t.quej+'</td>'
+      + '<td class="num">'+cop(t.fee)+'</td></tr>';
+  });
+  h += '</table>';
+
+  h += '<h2>El foso: lo que solo sabemos porque somos la plaza entera</h2>';
+  h += '<div class="card"><div class="li"><div><div>Ticket promedio de la plaza</div><div class="mut sm">5 restaurantes, Medellín y área</div></div><div class="num">'+cop(28700)+'</div></div>';
+  h += '<div class="li"><div><div>% de conversaciones que se pierden sin respuesta</div><div class="mut sm">antes de entrar a la plataforma</div></div><div class="num" style="color:var(--danger)">34%</div></div>';
+  h += '<div class="li"><div><div>Queja más repetida</div><div class="mut sm">en 5 restaurantes, hoy</div></div><div class="num">"llegó frío"</div></div>';
+  h += '<div class="li"><div><div>Hora pico real</div><div class="mut sm">no la que el dueño cree</div></div><div class="num">12:30 – 13:15</div></div></div>';
+  h += '<p class="mut sm">Cada restaurante ve <b>solo su fila</b>. Esto solo lo ve la trastienda — y es lo que nadie más puede vender.</p>';
+  return h;
+}
+
+/* ---------- pintado ---------- */
+function pintar(){
+  if(!S.dentro){ document.getElementById('gate').classList.remove('hide'); document.getElementById('app').classList.add('hide'); return; }
+  document.getElementById('gate').classList.add('hide');
+  document.getElementById('app').classList.remove('hide');
+  document.getElementById('tenant-nom').textContent = S.tenant.nom;
+  document.getElementById('tenant-sub').textContent = S.tenant.ciudad + ' · ' + S.tenant.tel + ' · su WhatsApp, su marca, su cliente';
+
+  var som = S.rol === 'som';
+  document.getElementById('solorest').classList.toggle('hide', som);
+  document.getElementById('solosom').classList.toggle('hide', !som);
+  if(som){ document.getElementById('solosom').innerHTML = vSom(); return; }
+
+  var t = document.querySelector('.tab.on[data-t]');
+  var act = t ? t.getAttribute('data-t') : 'hoy';
+  ['hoy','ped','que','men'].forEach(function(k){
+    document.getElementById('v-'+k).classList.toggle('hide', k!==act);
+  });
+  document.getElementById('v-hoy').innerHTML = vHoy();
+  document.getElementById('v-ped').innerHTML = vPed();
+  document.getElementById('v-que').innerHTML = vQue();
+  document.getElementById('v-men').innerHTML = vMen();
+  document.getElementById('v-'+act).classList.remove('hide');
+  ['hoy','ped','que','men'].forEach(function(k){ if(k!==act) document.getElementById('v-'+k).classList.add('hide'); });
+}
+
+/* ---------- eventos ---------- */
+document.getElementById('gate').addEventListener('click', function(e){
+  var g = e.target.closest('[data-g]');
+  if(g){
+    document.querySelectorAll('[data-g]').forEach(function(b){ b.classList.toggle('on', b===g); });
+    var up = g.getAttribute('data-g') === 'up';
+    document.getElementById('g-in').classList.toggle('hide', up);
+    document.getElementById('g-up').classList.toggle('hide', !up);
+    return;
+  }
+  if(e.target.id==='btn-in'){
+    var tel = (document.getElementById('in-tel').value || '').trim() || S.tenant.tel;
+    S.tenant.tel = tel; S.dentro = true; S.rol='res'; guardar(); pintar();
+  }
+  if(e.target.id==='btn-up'){
+    var n = (document.getElementById('up-nom').value || '').trim() || 'Mi Restaurante';
+    S.tenant = { nom:n, tel:(document.getElementById('up-tel').value||'').trim()||'+57 300 000 0000',
+                 ciudad:(document.getElementById('up-ciu').value||'').trim()||'Colombia' };
+    S.dentro = true; S.rol='res'; guardar(); pintar();
+  }
+  if(e.target.id==='btn-sombra'){ S.dentro = true; S.rol = 'som'; guardar(); pintar(); }
+});
+
+document.body.addEventListener('click', function(e){
+  var t = e.target.closest('.tab[data-t]');
+  if(t){ document.querySelectorAll('.tab[data-t]').forEach(function(b){ b.classList.toggle('on', b===t); }); pintar(); return; }
+  var r = e.target.closest('.tab[data-r]');
+  if(r){ document.querySelectorAll('.tab[data-r]').forEach(function(b){ b.classList.toggle('on', b===r); });
+         S.rol = r.getAttribute('data-r'); guardar(); pintar(); return; }
+  if(e.target.id==='btn-out'){ S.dentro=false; guardar(); pintar(); return; }
+
+  var via = e.target.closest('[data-via]');
+  if(via){
+    var id = via.getAttribute('data-via');
+    S.pedidos.forEach(function(p){ if(p.id===id){ p.via = (p.via==='agente'?'humano':'agente'); if(p.via==='humano') p.sello=null; else p.sello='e'+Math.random().toString(16).slice(2,10)+'a1c7'; } });
+    guardar(); pintar(); return;
+  }
+  var que = e.target.closest('[data-que]');
+  if(que){
+    var qid = que.getAttribute('data-que');
+    S.quejas.forEach(function(q){ if(q.id===qid){ q.est = q.est==='nueva' ? 'respondida' : (q.est==='respondida' ? 'cerrada' : 'nueva'); } });
+    guardar(); pintar(); return;
+  }
+  var men = e.target.closest('[data-men]');
+  if(men){
+    var i = parseInt(men.getAttribute('data-men'),10);
+    if(S.menu[i]){ S.menu[i].d = !S.menu[i].d; guardar(); pintar(); }
+    return;
+  }
+});
+
+/* ---------- arranque ---------- */
+cargar();
+pintar();
+</script>
+</body>
+</html>

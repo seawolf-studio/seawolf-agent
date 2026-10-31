@@ -117,7 +117,8 @@ def main():
         return 2
 
     archivos = []
-    for base, _, fs in os.walk(a.raiz):
+    for base, dirs, fs in os.walk(a.raiz):
+        dirs[:] = [d for d in dirs if not d.startswith('_')]   # '_tmp' y temporales no son el lote
         for f in fs:
             if f.lower().endswith(VIDEO):
                 archivos.append(os.path.join(base, f))

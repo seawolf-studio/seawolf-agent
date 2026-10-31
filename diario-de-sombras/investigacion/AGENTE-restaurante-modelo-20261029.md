@@ -109,9 +109,10 @@ El modelo ya está en el 1% de la factura: **no hay nada que rascar ahí.** Lo q
 ## 6. LA RUTA DE FALLO (no cuesta nada y hay que dejarla escrita)
 
 ```
-1º  DeepInfra (DeepSeek V4 Flash)      ← primario, retención cero
-2º  otro host que NO entrene           ← respaldo
-3º  el agente se calla y atiende el humano
+1º  DeepSeek V4 Flash @ DeepInfra    ← primario (retención cero, no entrena)
+2º  gpt-oss-120b @ DeepInfra         ← RESPALDO APROBADO (mismo host, aún más barato)
+3º  otro host que NO entrene         ← último respaldo
+4º  el agente se calla y atiende el humano
     → y ese pedido NO se cobra (la regla ya la tenemos)
 ```
 
@@ -133,7 +134,7 @@ El modelo ya está en el 1% de la factura: **no hay nada que rascar ahí.** Lo q
 
 ## 8. LO QUE LE PIDO DECIDIR
 
-1. **¿Aprobamos el motor del agente = DeepSeek V4 Flash en DeepInfra + faster-whisper local para la voz?** *(recomendado)*
+1. ✅ **APROBADO (29-oct-2026) por el Monarca:** motor = **DeepSeek V4 Flash en DeepInfra** + **faster-whisper local** para la voz, **con respaldo automático a `gpt-oss-120b` (DeepInfra)** por si las moscas. *(el respaldo vive en el MISMO host — así el cambio no toca ninguna política de datos)*
 2. **¿Regla de taller: "se contrata por HOST, nunca por nombre de modelo"**, y ningún tier gratuito en producto que se le cobra a un cliente? *(recomendado)*
 3. **¿Se prueba la foto de lista a mano antes de incluirla en la oferta?** *(Zavora ya la tiene; nosotros no la hemos medido)*
 

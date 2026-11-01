@@ -61,7 +61,7 @@ def probe(f, intentos=5):
     for i in range(intentos):
         try:
             r = subprocess.run([FFPROBE, '-v', 'error', '-show_entries',
-                'stream=index,codec_type,codec_name,width,height'
+                'stream=index,codec_type,codec_name,width,height,duration'
                 ':stream_tags=language,title:stream_disposition=forced,default',
                 '-show_entries', 'format=duration,size', '-of', 'json', f],
                 capture_output=True, text=True, encoding='utf-8', errors='replace')
@@ -135,30 +135,34 @@ def elegir(j):
         rs = 'sin pista forzada'
     return vid, aud, sub, ra, rs
 
-def primer_evento(ruta_srt):
-    """(inicio, fin) en segundos del primer evento del SRT, o None."""
+def eventos(ruta_srt, n=3):
+    """Hasta n (inicio, fin) del SRT, los MAS LARGOS primero.
+
+    Un evento largo trae mas texto y por tanto mas pixeles quemados. Muestrear solo el primero
+    es fragil: medido en S01E13, el primer evento dio 0.279% (justo bajo el umbral) con el
+    forzado SI quemado. Los 3 mas largos dan una muestra honesta."""
     try:
         t = open(ruta_srt, encoding='utf-8-sig', errors='replace').read()
     except OSError:
-        return None
-    m = re.search(r'(\d+):(\d\d):(\d\d)[,.](\d+)\s*-->\s*(\d+):(\d\d):(\d\d)[,.](\d+)', t)
-    if not m:
-        return None
-    ini = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3)) + int(m.group(4)) / 1000
-    fin = int(m.group(5)) * 3600 + int(m.group(6)) * 60 + int(m.group(7)) + int(m.group(8)) / 1000
-    return ini, fin
+        return []
+    out = []
+    for m in re.finditer(r'(\d+):(\d\d):(\d\d)[,.](\d+)\s*-->\s*(\d+):(\d\d):(\d\d)[,.](\d+)', t):
+        ini = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3)) + int(m.group(4)) / 1000
+        fin = int(m.group(5)) * 3600 + int(m.group(6)) * 60 + int(m.group(7)) + int(m.group(8)) / 1000
+        out.append((ini, fin))
+    return sorted(out, key=lambda e: e[1] - e[0], reverse=True)[:n]
 
-def evento_de(src, sub, tmp):
-    """(inicio,fin) del primer forzado del origen, SIN codificar."""
+def eventos_de(src, sub, tmp, n=3):
+    """Los n eventos mas largos de la pista forzada del origen, SIN codificar."""
     if sub is None:
-        return None
+        return []
     asf = os.path.join(tmp, 'subs_chk.srt')
     r = subprocess.run([FFMPEG, '-y', '-v', 'error', '-i', src, '-map', '0:%d' % sub,
                         '-c:s', 'srt', asf], capture_output=True, text=True,
                        encoding='utf-8', errors='replace')
     if r.returncode != 0 or not os.path.exists(asf):
-        return None
-    return primer_evento(asf)
+        return []
+    return eventos(asf, n)
 
 def _frame(video, t, png, cwd):
     if os.path.exists(png):
@@ -168,46 +172,67 @@ def _frame(video, t, png, cwd):
                        capture_output=True, text=True, encoding='utf-8', errors='replace')
     return r.returncode == 0 and os.path.exists(png)
 
-def verificar_quemado(src, dst, evento, tmp):
+def verificar_quemado(src, dst, eventos, tmp):
     """Numerico, no a ojo: el forzado tiene que aparecer ABAJO. Los Simpson tienen la piel
     amarilla, asi que el color solo no sirve: se compara contra el original y se exige que
-    los cambios caigan en la franja inferior."""
-    ini, fin = evento
-    t = ini + max(0.4, (fin - ini) * 0.4)
-    a, b = os.path.join(tmp, '_chk_o.png'), os.path.join(tmp, '_chk_r.png')
-    if not _frame(src, t, a, tmp) or not _frame(dst, t, b, tmp):
-        return False, 'no se pudo extraer el fotograma de control (t=%.1fs)' % t
+    los cambios caigan en la franja inferior.
+
+    Prueba los eventos candidatos y PASA si alguno muestra el quemado: un evento corto rinde
+    pocos pixeles y no significa que el quemado falte."""
+    if not eventos:
+        return True, 'sin forzados que verificar'
     try:
         import numpy as np
         from PIL import Image
     except ImportError:
         return True, 'quemado NO verificado (falta numpy/PIL)'
-    A = np.asarray(Image.open(a).convert('L')).astype(np.int16)
-    B = np.asarray(Image.open(b).convert('L')).astype(np.int16)
-    m = np.abs(A - B) > 40
-    frac = m.mean()
-    if frac < 0.003:
-        return False, 'el forzado NO quedo quemado (cambio %.3f%%)' % (frac * 100)
-    ys = np.where(m)[0]
-    abajo = (ys > A.shape[0] * 0.70).mean()
-    if abajo < 0.90:
-        return False, 'el quemado no esta abajo (%.0f%% en la franja inferior)' % (abajo * 100)
-    return True, 'quemado ok (%.2f%% px, %.0f%% abajo)' % (frac * 100, abajo * 100)
+    mejor = (0.0, 0.0)
+    a, b = os.path.join(tmp, '_chk_o.png'), os.path.join(tmp, '_chk_r.png')
+    for ini, fin in eventos:
+        t = ini + max(0.4, (fin - ini) * 0.4)
+        if not _frame(src, t, a, tmp) or not _frame(dst, t, b, tmp):
+            continue
+        A = np.asarray(Image.open(a).convert('L')).astype(np.int16)
+        B = np.asarray(Image.open(b).convert('L')).astype(np.int16)
+        m = np.abs(A - B) > 40
+        frac = m.mean()
+        ys = np.where(m)[0]
+        abajo = (ys > A.shape[0] * 0.70).mean() if len(ys) else 0.0
+        if frac >= 0.003 and abajo >= 0.90:
+            return True, 'quemado ok (%.2f%% px, %.0f%% abajo)' % (frac * 100, abajo * 100)
+        if frac > mejor[0]:
+            mejor = (frac, abajo)
+    return False, 'el forzado NO quedo quemado (mejor cambio %.3f%%, %.0f%% abajo)' % (
+        mejor[0] * 100, mejor[1] * 100)
 
-def verificar_salida(src, dst, evento, dur_src, tmp):
+def dur_referencia(j):
+    """(duracion de referencia, tolerancia) del ORIGEN.
+
+    El contenedor de un MKV puede durar MAS que el video: lo fijan los subtitulos o un audio
+    mas largo. Medido en S01E02: contenedor 1389.8 s pero el VIDEO real mide 1385.4 s, y los
+    subtitulos son los que marcan 1389.8. Comparar el mp4 contra el contenedor rechazaba un
+    archivo correcto. Si el video reporta su duracion -> tolerancia estricta (2 s). Si no la
+    reporta -> se compara contra el contenedor con tolerancia amplia: una truncacion de verdad
+    (minutos) se sigue cazando, pero un desfase de subtitulos no."""
+    for s in j.get('streams', []):
+        if s.get('codec_type') == 'video' and s.get('duration'):
+            return float(s['duration']), 2.0
+    return float(j['format'].get('duration') or 0), 15.0
+
+def verificar_salida(src, dst, eventos, dur_ref, tol, tmp):
     """PUERTA antes de tocar el original. (ok, motivo)."""
     j = probe(dst)
     if not j:
         return False, 'la salida no se puede leer (%s)' % (ULTIMO_ERROR or 'sin motivo')
     dur = float(j['format'].get('duration') or 0)
-    if dur_src and abs(dur - dur_src) > 2:
-        return False, 'duracion distinta (%.1f vs %.1f s)' % (dur, dur_src)
+    if dur_ref and dur + tol < dur_ref:
+        return False, 'la salida quedo mas corta (%.1f vs %.1f s, tolerancia %.0f)' % (dur, dur_ref, tol)
     au = [(s.get('tags') or {}).get('language', '').lower()
           for s in j['streams'] if s.get('codec_type') == 'audio']
     if not any(x.startswith(('spa', 'lat', 'es')) for x in au):
         return False, 'la salida no trae audio en espanol (%s)' % (au or 'ninguno')
-    if evento:
-        return verificar_quemado(src, dst, evento, tmp)
+    if eventos:
+        return verificar_quemado(src, dst, eventos, tmp)
     return True, 'sin forzados que verificar'
 
 def codificar(src, dst, vid, aud, sub, tmp):
@@ -262,6 +287,20 @@ def codificar(src, dst, vid, aud, sub, tmp):
 def dst_de(a, f):
     return os.path.join(a.salida, os.path.splitext(os.path.basename(f))[0] + '.mp4')
 
+def ya_reemplazado(a, f):
+    """En modo reemplazo: el original ya esta en el respaldo, asi que ese archivo YA se hizo.
+
+    No se puede deducir de _nuevos: al reemplazar, el mp4 SALE de _nuevos hacia su carpeta.
+    La verdad esta en J: -> si el original esta respaldado, el archivo ya se reemplazo."""
+    if not a.reemplazar or not os.path.isdir(a.respaldo_origen):
+        return False
+    rel = os.path.relpath(f, a.origen)
+    raiz = os.path.splitext(os.path.basename(rel))[0]
+    carpeta = os.path.dirname(os.path.join(a.respaldo_origen, rel))
+    if not os.path.isdir(carpeta):
+        return False
+    return any(os.path.splitext(x)[0] == raiz for x in os.listdir(carpeta))
+
 def tmp_de(a):
     t = os.path.join(a.salida, '_tmp'); os.makedirs(t, exist_ok=True); return t
 
@@ -279,9 +318,8 @@ def codificar_uno(a, f):
     dur_src = j['format'].get('duration') or '0'
     os.makedirs(a.salida, exist_ok=True)
     dst = dst_de(a, f)
-    # en modo reemplazo el resultado ES un mp4 en la carpeta de origen: si ya tiene su
-    # contraparte en _nuevos, ese archivo ya se reemplazo antes y NO se vuelve a tocar.
-    if a.reemplazar and nom.lower().endswith('.mp4') and os.path.exists(dst):
+    # en modo reemplazo: si el original ya esta en el respaldo, este archivo ya se hizo.
+    if ya_reemplazado(a, f):
         return 'YA EXISTE', 'ya reemplazado antes', '', '', ''
     if os.path.exists(dst) and not a.reemplazar:
         return 'YA EXISTE', nom, '', '', ''
@@ -299,12 +337,12 @@ def verificar_uno(a, f):
     if not j:
         return 'PUERTA FALLA', ULTIMO_ERROR or 'no se pudo leer el original', ''
     vid, aud, sub, ra, rs = elegir(j)
-    dur_src = float(j['format'].get('duration') or 0)
+    dur_ref, tol = dur_referencia(j)
     dst = dst_de(a, f)
     if not os.path.exists(dst):
         return 'PUERTA FALLA', 'no esta la salida', ''
-    evento = evento_de(f, sub, tmp_de(a)) if sub is not None else None
-    vok, vmsg = verificar_salida(f, dst, evento, dur_src, tmp_de(a))
+    evs = eventos_de(f, sub, tmp_de(a)) if sub is not None else []
+    vok, vmsg = verificar_salida(f, dst, evs, dur_ref, tol, tmp_de(a))
     if not vok:
         try:
             os.remove(dst)
@@ -334,6 +372,9 @@ def main():
                     help='donde se guardan los originales reemplazados')
     ap.add_argument('--simular', action='store_true',
                     help='mostrar el plan por archivo (que se queda y que se tira) SIN codificar')
+    ap.add_argument('--max-archivos', dest='max_archivos', type=int,
+                    help='procesar como maximo esta cantidad de archivos por corrida (para no agotar '
+                         'el arranque de procesos: se llama varias veces y continua solo)')
     ap.add_argument('--solo', help='procesar unicamente los que contengan este texto')
     ap.add_argument('--log', help='archivo de registro (por defecto <salida>/codificacion.log)')
     ap.add_argument('--un-archivo', dest='un_archivo', help='INTERNO: codifica este archivo y sale')
@@ -415,31 +456,42 @@ def main():
         sal = (r.stdout or '').strip().splitlines()
         return (sal[-1] if sal else '').split('\t')
 
+    hechos = 0
     for f in fuentes:
+        if a.max_archivos and hechos >= a.max_archivos:
+            print('  (tope de esta corrida alcanzado: volver a llamar continua donde quedo)')
+            break
+        dst = dst_de(a, f)
+        # ya reemplazado antes: el resultado mp4 YA esta en su lugar -> no se toca otra vez
+        if ya_reemplazado(a, f):
+            continue
+        # 1) PRIMERO verificar lo que ya esta codificado. Este supervisor todavia NO ha corrido
+        #    ningun codificador, asi que puede lanzar procesos sin problema. Verificar DESPUES
+        #    de codificar en el mismo proceso es justo lo que se cae.
+        if os.path.exists(dst):
+            q = corre(['--verificar', f])
+            e2 = q[0] if (q and q[0]) else 'SIN RESPUESTA'
+            d2 = q[2] if len(q) > 2 else ''
+            rs2 = q[3] if len(q) > 3 else ''
+            cuenta[e2] = cuenta.get(e2, 0) + 1
+            print('  %-46s %-15s %s' % (os.path.basename(f)[:46], e2, (rs2 + ' | ' + d2)[:52]))
+            lineas.append([os.path.basename(f), e2, rs2 + ' | ' + d2])
+            continue
+        # 2) y UNA sola codificacion por corrida: la verificacion de ESTA la hara la proxima
+        #    corrida (con un supervisor fresco), que es lo que evita el envenenamiento.
         p = corre(['--un-archivo', f])
         estado, nombre = (p[0], p[1]) if len(p) > 1 else ('SIN RESPUESTA', os.path.basename(f))
         detalle = p[2] if len(p) > 2 else ''
-        rs = p[4] if len(p) > 4 else ''
         if estado != 'CODIFICADO':
             cuenta[estado] = cuenta.get(estado, 0) + 1
             print('  %-46s %-15s %s' % (nombre[:46], estado, detalle[:52]))
             lineas.append([nombre, estado, detalle])
             continue
-        # la PUERTA va en OTRO proceso fresco: el que codifico esta envenenado
-        time.sleep(2.0)
-        q = corre(['--verificar', f])
-        # el hijo de verificar a veces no arranca justo despues del codificador: reintentar
-        for espera in (4, 10, 25):
-            if q and q[0]:
-                break
-            time.sleep(espera)
-            q = corre(['--verificar', f])
-        estado2 = q[0] if q else 'SIN RESPUESTA'
-        detalle2 = q[2] if len(q) > 2 else ''
-        rs2 = q[3] if len(q) > 3 else rs
-        cuenta[estado2] = cuenta.get(estado2, 0) + 1
-        print('  %-46s %-15s %s' % (nombre[:46], estado2, (rs2 + ' | ' + detalle2)[:52]))
-        lineas.append([nombre, estado2, rs2 + ' | ' + detalle2])
+        hechos += 1          # trabajo real: cuenta para el tope de esta corrida
+        cuenta['CODIFICADO'] = cuenta.get('CODIFICADO', 0) + 1
+        print('  %-46s %-15s %s' % (nombre[:46], 'CODIFICADO',
+                                    (detalle + ' (se verifica en la proxima corrida)')[:52]))
+        lineas.append([nombre, 'CODIFICADO', detalle])
 
     print('')
     print('  RESUMEN: ' + ' · '.join('%s %d' % (k, v) for k, v in sorted(cuenta.items())))

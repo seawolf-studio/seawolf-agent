@@ -145,7 +145,13 @@ def codificar(src, dst, vid, aud, sub, tmp):
             texto = re.sub(r'</?font[^>]*>', '', fh.read())
         with open(asf, 'w', encoding='utf-8') as fh:
             fh.write(texto)
-        vf.append('subtitles=subs.srt')       # sin ruta: se ejecuta con cwd=tmp (evita el escape de C:\)
+        # Estilo del forzado: el clasico que sobrevivio al paso del tiempo — abajo-centro,
+        # AMARILLO con borde negro. NO se toca fuente ni tamano: el default ya mide 105 px de
+        # alto en 1080 (medido) y forzar el nombre de la fuente falla en Windows sin fontsdir.
+        # Colores ASS en &HAABBGGRR (BGR, no RGB): amarillo = &H0000FFFF.
+        vf.append("subtitles=subs.srt:force_style='PrimaryColour=&H0000FFFF"
+                  ",OutlineColour=&H00000000,BackColour=&H80000000"
+                  ",BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV=28'")
     # escalar SOLO si supera 1080p (DownscaleOnly del preset)
     vf.append("scale=w='min(%d,iw)':h='min(%d,ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
               % (MAX_ANCHO, MAX_ALTO))

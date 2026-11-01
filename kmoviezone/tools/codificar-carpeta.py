@@ -5,18 +5,23 @@ CODIFICAR CARPETA  (Seawolf Studio · Bellion)
 
 Codifica una carpeta con los MISMOS ajustes del preset "seawolf 1080p"
 (x264 veryfast, main, level 4.0, CRF 24 · AAC 192 estéreo · MP4 con capítulos),
-pero eligiendo los detalles POR ARCHIVO, que es lo que el preset de VidCoder no puede hacer:
+eligiendo los detalles POR ARCHIVO, que es lo que el preset de VidCoder no puede hacer:
 
   1. AUDIO en ESPAÑOL (por idioma o por título). Si no hay -> SE SALTA en voz alta.
-     Nunca cae a inglés en silencio.
-  2. SUBTÍTULOS FORZADOS quemados, con el estilo clásico: abajo-centro, amarillo con borde
-     negro, ~105 px en 1080. Fuente Arvo si está disponible (si no, la de sistema).
+  2. SUBTÍTULOS FORZADOS quemados con el estilo clásico: abajo-centro, amarillo con borde
+     negro, ~105 px en 1080, fuente Arvo si está disponible.
+
+Cada archivo se procesa en un PROCESO PROPIO (ver --un-archivo). No es capricho: medido en
+este Windows, un proceso que corre un codificador pesado YA NO PUEDE lanzar ffprobe después
+(CreateProcess devuelve rc=3221225794 = 0xC0000142, fallo al iniciar DLL) y NO se recupera ni
+en 5 minutos. Un proceso nuevo, en cambio, funciona de inmediato. Por eso el supervisor solo
+reparte y cada archivo nace fresco.
 
 Uso normal (escribe aparte, NUNCA toca el original):
-    python codificar-carpeta.py "H:/caida/T01/Season 01" --salida "C:/.../prueba-T01"
+    python codificar-carpeta.py "H:/caida/T01/Season 01" --salida "C:/.../prueba"
     python codificar-carpeta.py "<carpeta>" --simular          # el plan, sin codificar
 
-Reemplazo en sitio (PISA el original; el original se guarda en --respaldo-origen):
+Reemplazo en sitio (PISA el original; el original va a --respaldo-origen):
     python codificar-carpeta.py "H:/caida/T01/Season 01" --reemplazar
 
 Antes de reemplazar, cada salida pasa una PUERTA: duración, audio en español y verificación
@@ -45,14 +50,12 @@ ESTILO = ("PrimaryColour=&H0000FFFF,OutlineColour=&H00000000,BackColour=&H800000
 
 ULTIMO_ERROR = ''
 
-def probe(f, intentos=8):
-    """JSON de ffprobe, o None. Reintenta CON ESPERA ESCALONADA: en este Windows, lanzar
-    ffprobe agota recursos y CreateProcess responde rc=3221225794 (0xC0000142, fallo al
-    iniciar DLL). Ocurre de forma acumulativa al lanzar muchos seguidos, y sobre todo JUSTO
-    DESPUES de un codificador pesado: ahi ffprobe no arranca por ~1-2 minutos. Los reintentos
-    cortos NO lo absorben; la escalera larga si. Medido: 5 intentos -> 19/26 archivos."""
+def probe(f, intentos=6):
+    """JSON de ffprobe, o None. Reintenta con espera escalonada: ffprobe falla de forma
+    acumulativa al lanzar muchos seguidos (rc=3221225794 = 0xC0000142). Dentro de un proceso
+    fresco se recupera; el caso irrecuperable es el descrito arriba (codificador pesado)."""
     global ULTIMO_ERROR
-    esperas = (1.0, 3.0, 8.0, 15.0, 25.0, 35.0, 40.0)
+    esperas = (0.5, 1.5, 3.0, 6.0, 10.0)
     for i in range(intentos):
         try:
             r = subprocess.run([FFPROBE, '-v', 'error', '-show_entries',
@@ -62,9 +65,9 @@ def probe(f, intentos=8):
                 capture_output=True, text=True, encoding='utf-8', errors='replace')
             if r.returncode == 0:
                 return json.loads(r.stdout)
-            ULTIMO_ERROR = (r.stderr or '').strip().replace('\n', ' ')[:170] or ('rc=%d sin mensaje' % r.returncode)
+            ULTIMO_ERROR = (r.stderr or '').strip().replace('\n', ' ')[:150] or ('rc=%d sin mensaje' % r.returncode)
         except Exception as e:
-            ULTIMO_ERROR = str(e)[:170]
+            ULTIMO_ERROR = str(e)[:150]
         if i < intentos - 1:
             time.sleep(esperas[min(i, len(esperas) - 1)])
     return None
@@ -144,8 +147,8 @@ def primer_evento(ruta_srt):
     return ini, fin
 
 def evento_de(src, sub, tmp):
-    """(inicio,fin) del primer forzado del origen, SIN codificar: sirve para
-    verificar un mp4 que ya estaba hecho (reanudar un reemplazo a medias)."""
+    """(inicio,fin) del primer forzado del origen, SIN codificar: para verificar un mp4
+    que ya estaba hecho (reanudar un reemplazo a medias)."""
     if sub is None:
         return None
     asf = os.path.join(tmp, 'subs.srt')
@@ -157,6 +160,8 @@ def evento_de(src, sub, tmp):
     return primer_evento(asf)
 
 def _frame(video, t, png, cwd):
+    if os.path.exists(png):
+        os.remove(png)
     r = subprocess.run([FFMPEG, '-y', '-v', 'error', '-ss', '%.2f' % t, '-i', video,
                         '-frames:v', '1', png], cwd=cwd,
                        capture_output=True, text=True, encoding='utf-8', errors='replace')
@@ -169,9 +174,6 @@ def verificar_quemado(src, dst, evento, tmp):
     ini, fin = evento
     t = ini + max(0.4, (fin - ini) * 0.4)
     a, b = os.path.join(tmp, '_chk_o.png'), os.path.join(tmp, '_chk_r.png')
-    for p in (a, b):
-        if os.path.exists(p):
-            os.remove(p)
     if not _frame(src, t, a, tmp) or not _frame(dst, t, b, tmp):
         return False, 'no se pudo extraer el fotograma de control (t=%.1fs)' % t
     try:
@@ -228,8 +230,7 @@ def codificar(src, dst, vid, aud, sub, tmp):
         with open(asf, 'w', encoding='utf-8') as fh:
             fh.write(texto)
         evento = primer_evento(asf)
-        # Fuente de marca si esta disponible; si no, la de sistema (el quemado sale igual).
-        fuente = ''
+        fuente = ''                                    # fuente de marca si esta disponible
         if os.path.exists(FUENTE):
             try:
                 shutil.copy(FUENTE, os.path.join(tmp, os.path.basename(FUENTE)))
@@ -241,7 +242,7 @@ def codificar(src, dst, vid, aud, sub, tmp):
     # escalar SOLO si supera 1080p (DownscaleOnly del preset)
     vf.append("scale=w='min(%d,iw)':h='min(%d,ih)':force_original_aspect_ratio=decrease:force_divisible_by=2"
               % (MAX_ANCHO, MAX_ALTO))
-    cmd = [FFMPEG, '-y', '-v', 'warning', '-stats', '-i', src,
+    cmd = [FFMPEG, '-y', '-v', 'warning', '-i', src,
            '-map', '0:%d' % vid, '-map', '0:%d' % aud, '-map_chapters', '0',
            '-c:v', 'libx264', '-preset', 'veryfast', '-profile:v', 'main',
            '-level', '4.0', '-crf', '24', '-pix_fmt', 'yuv420p',
@@ -258,6 +259,48 @@ def codificar(src, dst, vid, aud, sub, tmp):
     os.replace(parcial, dst)
     return True, 'ok en %.0fs' % (time.time() - t0), evento
 
+def procesar_uno(a, f):
+    """UN archivo, en ESTE proceso (que es fresco). Devuelve (estado, detalle) y el
+    codigo: 0 ok/ya-existe/saltado, 2 fallo, 3 ilegible."""
+    nom = os.path.basename(f)
+    j = probe(f)
+    if not j:
+        return 'ILEGIBLE', ULTIMO_ERROR or 'sin motivo', 3
+    vid, aud, sub, ra, rs = elegir(j)
+    dur_src = float(j['format'].get('duration') or 0)
+    if aud is None:
+        return 'SALTADO', ra, 0
+    os.makedirs(a.salida, exist_ok=True)
+    tmp = os.path.join(a.salida, '_tmp'); os.makedirs(tmp, exist_ok=True)
+    dst = os.path.join(a.salida, os.path.splitext(nom)[0] + '.mp4')
+    if os.path.exists(dst) and not a.reemplazar:
+        return 'YA EXISTE', nom, 0
+    if os.path.exists(dst):                 # reanudar: ya codificado, falta verificar y poner
+        evento = evento_de(f, sub, tmp); ok, msg = True, 'ya estaba codificado'
+    else:
+        ok, msg, evento = codificar(f, dst, vid, aud, sub, tmp)
+    if not ok:
+        return 'FALLA', msg, 2
+    vok, vmsg = verificar_salida(f, dst, evento, dur_src, tmp)
+    if not vok:
+        try:
+            os.remove(dst)
+        except OSError:
+            pass
+        return 'RECHAZADO', vmsg, 2
+    if a.reemplazar:
+        rel = os.path.relpath(f, a.origen)
+        resp = os.path.join(a.respaldo_origen, rel)
+        try:
+            os.makedirs(os.path.dirname(resp), exist_ok=True)
+            shutil.move(f, resp)                                 # el original queda a salvo
+            final = os.path.join(os.path.dirname(f), os.path.splitext(nom)[0] + '.mp4')
+            shutil.move(dst, final)
+        except OSError as e:
+            return 'FALLA al reemplazar', str(e)[:90], 2
+        return 'REEMPLAZADO', '%s | %s | %s' % (rs, vmsg, msg), 0
+    return 'OK', '%s | %s | %s' % (rs, vmsg, msg), 0
+
 def main():
     ap = argparse.ArgumentParser(description='Codifica una carpeta con los ajustes del preset seawolf 1080p')
     ap.add_argument('origen', help='carpeta con los archivos fuente (recursivo)')
@@ -265,11 +308,13 @@ def main():
     ap.add_argument('--reemplazar', action='store_true',
                     help='PISA el original: el original se mueve a --respaldo-origen antes de poner el nuevo')
     ap.add_argument('--respaldo-origen', default='J:/_origenes-reemplazados',
-                    help='donde se guardan los originales reemplazados (por defecto J:/_origenes-reemplazados)')
+                    help='donde se guardan los originales reemplazados')
     ap.add_argument('--simular', action='store_true',
                     help='mostrar el plan por archivo (que se queda y que se tira) SIN codificar')
     ap.add_argument('--solo', help='procesar unicamente los que contengan este texto')
     ap.add_argument('--log', help='archivo de registro (por defecto <salida>/codificacion.log)')
+    ap.add_argument('--un-archivo', dest='un_archivo',
+                    help='INTERNO: procesa este unico archivo en este proceso y sale')
     a = ap.parse_args()
 
     if not os.path.isdir(a.origen):
@@ -278,9 +323,16 @@ def main():
         if a.reemplazar:
             a.salida = os.path.join(a.origen, '_nuevos')
         elif a.simular:
-            a.salida = a.origen          # simulacion: no se escribe nada, solo se informa
+            a.salida = a.origen          # simulacion: no se escribe nada
         else:
             print('  ERROR: indica --salida (o usa --reemplazar para codificar en sitio)'); return 2
+
+    # ---- modo interno: UN archivo, en un proceso fresco ----
+    if a.un_archivo:
+        estado, detalle, rc = procesar_uno(a, a.un_archivo)
+        print('%s\t%s\t%s' % (estado, os.path.basename(a.un_archivo), detalle))
+        return rc
+
     tmp = os.path.join(a.salida, '_tmp')
     if not a.simular:
         os.makedirs(a.salida, exist_ok=True)
@@ -302,83 +354,52 @@ def main():
     print('  %d archivo(s) · salida: %s' % (len(fuentes), a.salida))
     if a.reemplazar:
         print('  MODO REEMPLAZO: los originales se guardan en ' + a.respaldo_origen)
-    print('  %-46s %-9s %-26s %s' % ('ARCHIVO', 'ESPANOL', 'FORZADO', 'ESTADO'))
+    print('  %-46s %-13s %s' % ('ARCHIVO', 'ESTADO', 'DETALLE'))
     print('  ' + '-' * 116)
-    lineas, ok_n, sal_n, err_n = [], 0, 0, 0
-    for f in fuentes:
-        time.sleep(0.15)   # pausa entre archivos: lanzar ffprobe en rafaga agota recursos (ver probe)
-        nom = os.path.basename(f)
-        j = probe(f)
-        if not j:
-            print('  %-46s %-9s %-26s %s' % (nom[:46], '?', '?', 'ILEGIBLE: ' + (ULTIMO_ERROR or 'sin detalle')))
-            lineas.append([nom, '?', 'ilegible: ' + ULTIMO_ERROR]); err_n += 1; continue
-        vid, aud, sub, ra, rs = elegir(j)
-        dur_src = float(j['format'].get('duration') or 0)
-        if a.simular:
+
+    # ---- modo simulacion: barato, cabe en un proceso ----
+    if a.simular:
+        for f in fuentes:
+            time.sleep(0.15)
+            j = probe(f)
+            nom = os.path.basename(f)
+            if not j:
+                print('  %-46s %-13s %s' % (nom[:46], 'ILEGIBLE', ULTIMO_ERROR)); continue
+            vid, aud, sub, ra, rs = elegir(j)
             vv = [s for s in j['streams'] if s['index'] == vid]
             vv = vv[0] if vv else {}
             w, h = vv.get('width') or 0, vv.get('height') or 0
             salida_v = '1080p' if h > MAX_ALTO else '%dx%d' % (w, h)
             na = len([s for s in j['streams'] if s['codec_type'] == 'audio'])
             ns = len([s for s in j['streams'] if s['codec_type'] == 'subtitle'])
-            print('  %-46s %s %dx%d->%-7s | de %d audio: %-24s | de %d subs: %s'
-                  % (nom[:46], vv.get('codec_name') or '?', w, h, salida_v, na, ra[:24], ns, rs))
-            lineas.append([nom, 'plan', 'audio %s | subs %s' % (ra, rs)])
-            continue
-        if aud is None:
-            print('  %-46s %-9s %-26s %s' % (nom[:46], 'NO', '-', 'SALTADO: ' + ra))
-            lineas.append([nom, 'no', 'sin audio usable - no se codifica']); sal_n += 1; continue
-        dst = os.path.join(a.salida, os.path.splitext(nom)[0] + '.mp4')
-        evento = None
-        if os.path.exists(dst) and not a.reemplazar:
-            print('  %-46s %-9s %-26s %s' % (nom[:46], 'si', rs[:26], 'YA EXISTE (se salta)'))
-            lineas.append([nom, 'si', 'ya existia']); continue
-        if os.path.exists(dst):
-            # en modo reemplazo un mp4 ya codificado NO se salta: falta reemplazar y verificar
-            evento = evento_de(f, sub, tmp)
-            ok, msg = True, 'ya estaba codificado'
-        else:
-            ok, msg, evento = codificar(f, dst, vid, aud, sub, tmp)
-        if not ok:
-            err_n += 1
-            print('  %-46s %-9s %-26s %s' % (nom[:46], 'si', rs[:26], 'FALLA: ' + msg))
-            lineas.append([nom, 'si', 'FALLA codificando: ' + msg]); continue
-        # ---- PUERTA: nada se reemplaza sin pasar esto ----
-        time.sleep(2.0)   # deja asentar ffmpeg: lanzarle ffprobe pegado falla con 0xC0000142
-        vok, vmsg = verificar_salida(f, dst, evento, dur_src, tmp)
-        if not vok:
-            os.remove(dst)
-            err_n += 1
-            print('  %-46s %-9s %-26s %s' % (nom[:46], 'si', rs[:26], 'RECHAZADO: ' + vmsg))
-            lineas.append([nom, 'si', 'RECHAZADO en la puerta: ' + vmsg]); continue
+            print('  %-46s %s %dx%d->%-7s | de %d audio: %-22s | de %d subs: %s'
+                  % (nom[:46], vv.get('codec_name') or '?', w, h, salida_v, na, ra[:22], ns, rs))
+        return 0
+
+    # ---- modo real: UN PROCESO POR ARCHIVO (el supervisor solo reparte) ----
+    script = os.path.abspath(__file__)
+    lineas, cuenta = [], {}
+    for f in fuentes:
+        cmd = [sys.executable, script, a.origen, '--un-archivo', f, '--salida', a.salida]
         if a.reemplazar:
-            rel = os.path.relpath(f, a.origen)
-            resp = os.path.join(a.respaldo_origen, rel)
-            try:
-                os.makedirs(os.path.dirname(resp), exist_ok=True)
-                shutil.move(f, resp)                       # el original queda a salvo
-                final = os.path.join(os.path.dirname(f), os.path.splitext(nom)[0] + '.mp4')
-                shutil.move(dst, final)
-            except OSError as e:
-                err_n += 1
-                print('  %-46s %-9s %-26s %s' % (nom[:46], 'si', rs[:26], 'FALLA al reemplazar: ' + str(e)[:60]))
-                lineas.append([nom, 'si', 'FALLA al reemplazar: ' + str(e)[:60]]); continue
-        ok_n += 1
-        print('  %-46s %-9s %-26s %s' % (nom[:46], 'si', rs[:26],
-              ('REEMPLAZADO · ' if a.reemplazar else '') + vmsg + ' · ' + msg))
-        lineas.append([nom, 'si', rs + ' · ' + vmsg + ' · ' + msg])
-    if os.path.isdir(tmp) and not os.listdir(tmp):
-        try:
-            os.rmdir(tmp)
-        except OSError:
-            pass
+            cmd += ['--reemplazar', '--respaldo-origen', a.respaldo_origen]
+        r = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
+        salida = (r.stdout or '').strip().splitlines()
+        partes = (salida[-1] if salida else '').split('\t')
+        if len(partes) >= 3:
+            estado, nombre, detalle = partes[0], partes[1], partes[2]
+        else:
+            estado, nombre, detalle = 'SIN RESPUESTA', os.path.basename(f), (r.stderr or '')[-90:].replace('\n', ' ')
+        cuenta[estado] = cuenta.get(estado, 0) + 1
+        print('  %-46s %-13s %s' % (nombre[:46], estado, detalle))
+        lineas.append([nombre, estado, detalle])
+
     print('')
-    print('  RESUMEN: %d codificados · %d saltados · %d con error' % (ok_n, sal_n, err_n))
-    if not a.simular:
-        with open(LOG, 'w', encoding='utf-8-sig') as fh:
-            fh.write('\n'.join('\t'.join(x) for x in lineas) + '\n')
-        print('  Registro: ' + LOG)
-    return 1 if err_n else 0
+    print('  RESUMEN: ' + ' · '.join('%s %d' % (k, v) for k, v in sorted(cuenta.items())))
+    with open(LOG, 'w', encoding='utf-8-sig') as fh:
+        fh.write('\n'.join('\t'.join(x) for x in lineas) + '\n')
+    print('  Registro: ' + LOG)
+    return 0 if not any(cuenta.get(k, 0) for k in ('FALLA', 'RECHAZADO', 'ILEGIBLE', 'SIN RESPUESTA', 'FALLA al reemplazar')) else 1
 
 if __name__ == '__main__':
     sys.exit(main())

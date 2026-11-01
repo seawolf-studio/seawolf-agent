@@ -31,44 +31,99 @@ FFPROBE = os.path.join(BIN, 'ffprobe.exe')
 EXT = ('.mkv', '.mp4', '.m4v', '.avi')
 MAX_ANCHO, MAX_ALTO = 1920, 1080
 PATRON_FORZADO = re.compile(r'forzad|forced', re.I)
+# El espanol NO siempre viene etiquetado: 'lat' es latinoamericano, y muchos archivos
+# solo traen el titulo ("Latino", "Espanol", "Castellano"). Ver los tres casos en elegir().
+PALABRA_ES = re.compile(r'latino|espa[nñ]ol|castellano|spanish', re.I)
 
-def probe(f):
-    r = subprocess.run([FFPROBE, '-v', 'error', '-show_entries',
-        'stream=index,codec_type,codec_name,width,height'
-        ':stream_tags=language,title:stream_disposition=forced,default',
-        '-show_entries', 'format=duration,size', '-of', 'json', f],
-        capture_output=True, text=True, encoding='utf-8', errors='replace')
-    if r.returncode != 0:
-        return None
-    return json.loads(r.stdout)
+ULTIMO_ERROR = ''
+
+def probe(f, intentos=8):
+    """JSON de ffprobe, o None. Reintenta CON ESPERA ESCALONADA: en este Windows, lanzar
+    muchos ffprobe seguidos agota recursos y CreateProcess responde rc=3221225794
+    (0xC0000142, fallo al iniciar DLL): los primeros pasan y luego fallan en cadena.
+    Los reintentos cortos (0,8 s) NO lo absorben; con espera creciente se recupera.
+    Medido: 5 intentos -> 19/26 archivos; por carpeta (73 archivos) pasa siempre.
+    Guarda el motivo en ULTIMO_ERROR para poder reportarlo."""
+    global ULTIMO_ERROR
+    import time
+    esperas = (0.5, 1.0, 2.0, 3.0, 5.0, 8.0, 13.0)
+    for i in range(intentos):
+        try:
+            r = subprocess.run([FFPROBE, '-v', 'error', '-show_entries',
+                'stream=index,codec_type,codec_name,width,height'
+                ':stream_tags=language,title:stream_disposition=forced,default',
+                '-show_entries', 'format=duration,size', '-of', 'json', f],
+                capture_output=True, text=True, encoding='utf-8', errors='replace')
+            if r.returncode == 0:
+                return json.loads(r.stdout)
+            ULTIMO_ERROR = (r.stderr or '').strip().replace('\n', ' ')[:170] or ('rc=%d sin mensaje' % r.returncode)
+        except Exception as e:
+            ULTIMO_ERROR = str(e)[:170]
+        if i < intentos - 1:
+            time.sleep(esperas[min(i, len(esperas) - 1)])
+    return None
 
 def elegir(j):
-    """Del JSON de ffprobe saca: indice de video, indice de audio en espanol, indice de subs forzados."""
-    vid = aud = sub = None
-    subs_es = []
+    """Elige video, audio en espanol y subtitulos FORZADOS.
+    Devuelve (vid, aud, sub, regla_audio, regla_sub); indices o None.
+
+    La biblioteca usa TRES convenciones de etiquetado y ninguna regla unica las cubre
+    (verificado sobre archivos reales):
+      1) sin etiqueta de idioma, solo titulo ("Latino"/"English")  -> Bond viejos
+      2) 'lat' = espanol latinoamericano, ademas de 'spa' y 'eng'  -> Bond nuevos
+      3) 'spa' + 'eng', forzados en una pista aparte por nombre     -> Los Simpson
+    Por eso: idioma en espanol O titulo en espanol, prefiriendo latino y la pista por defecto.
+    """
+    vid, aud, sub, ra, rs = None, None, None, '', ''
+    vs, au, su = [], [], []
     for s in j.get('streams', []):
-        t = s.get('codec_type')
-        tag = (s.get('tags') or {})
-        lang = (tag.get('language') or '').lower()
+        tag = s.get('tags') or {}
         disp = s.get('disposition') or {}
-        if t == 'video' and vid is None:
-            vid = s['index']
-        elif t == 'audio' and aud is None and lang.startswith('spa'):
-            aud = s['index']
-        elif t == 'subtitle' and lang.startswith('spa'):
-            subs_es.append((s['index'], tag.get('title') or '', int(disp.get('forced') or 0)))
-    # 1) por NOMBRE ("Forced") — el caso real de esta biblioteca
-    for i, titulo, _ in subs_es:
-        if PATRON_FORZADO.search(titulo):
-            sub = i
-            break
-    # 2) por BANDERA (comportamiento estandar)
-    if sub is None:
-        for i, _, forzado in subs_es:
-            if forzado:
-                sub = i
-                break
-    return vid, aud, sub, subs_es
+        it = {'idx': s['index'],
+              'lang': (tag.get('language') or '').lower(),
+              'titulo': tag.get('title') or '',
+              'forzado': int(disp.get('forced') or 0),
+              'def': int(disp.get('default') or 0),
+              'w': s.get('width') or 0, 'h': s.get('height') or 0,
+              'codec': s.get('codec_name') or '?'}
+        t = s.get('codec_type')
+        if t == 'video':
+            vs.append(it)
+        elif t == 'audio':
+            au.append(it)
+        elif t == 'subtitle':
+            su.append(it)
+    if vs:
+        vid = vs[0]['idx']
+
+    def es_espanol(x):
+        return x['lang'].startswith(('spa', 'lat', 'es')) or bool(PALABRA_ES.search(x['titulo']))
+
+    # ---- AUDIO: el espanol; latino > spa > es; empate -> la pista por defecto ----
+    cand = [x for x in au if es_espanol(x)]
+    if cand:
+        rango = {'lat': 0, 'spa': 1, 'es': 2}
+        a = min(cand, key=lambda x: (rango.get(x['lang'][:3], 3), 0 if x['def'] else 1, x['idx']))
+        aud = a['idx']
+        ra = (a['lang'] or ('titulo "%s"' % a['titulo']) or '?') + (' (default)' if a['def'] else '')
+    elif au:
+        a = min(au, key=lambda x: (0 if x['def'] else 1, x['idx']))
+        aud = a['idx']
+        ra = 'POR DEFECTO, sin marca de espanol (titulo "%s") - REVISAR' % (a['titulo'] or '?')
+    else:
+        ra = 'SIN PISTAS DE AUDIO'
+
+    # ---- SUBTITULOS: SOLO los forzados (por bandera o por nombre). Nunca el completo:
+    #      quemar el subtitulo completo le pondria subtitulos a toda la pelicula.
+    cands = [x for x in su if es_espanol(x) and (x['forzado'] or PATRON_FORZADO.search(x['titulo']))]
+    if cands:
+        s_ = min(cands, key=lambda x: (0 if x['forzado'] else 1, 0 if x['def'] else 1, x['idx']))
+        sub = s_['idx']
+        rs = 'idx %d (%s, %s)' % (s_['idx'], s_['lang'] or 'sin etiqueta',
+                                  'bandera forzado' if s_['forzado'] else 'titulo "%s"' % s_['titulo'])
+    else:
+        rs = 'sin pista forzada'
+    return vid, aud, sub, ra, rs
 
 def codificar(src, dst, vid, aud, sub, tmp):
     """Devuelve (ok, mensaje). Escribe a dst.partial y renombra al terminar."""
@@ -115,6 +170,8 @@ def main():
     ap = argparse.ArgumentParser(description='Codifica una carpeta con los ajustes del preset seawolf 1080p')
     ap.add_argument('origen', help='carpeta con los archivos fuente (recursivo)')
     ap.add_argument('--salida', required=True, help='carpeta de salida (NUNCA se toca el original)')
+    ap.add_argument('--simular', action='store_true',
+                    help='mostrar el plan por archivo (que se queda y que se tira) SIN codificar')
     ap.add_argument('--solo', help='procesar unicamente los que contengan este texto')
     ap.add_argument('--log', help='archivo de registro (por defecto <salida>/codificacion.log)')
     a = ap.parse_args()
@@ -141,21 +198,34 @@ def main():
     print('  ' + '-' * 116)
     lineas, ok_n, sal_n, err_n = [], 0, 0, 0
     for f in fuentes:
+        time.sleep(0.15)   # pausa entre archivos: lanzar ffprobe en rafaga agota recursos (ver probe)
         nom = os.path.basename(f)
         j = probe(f)
         if not j:
-            print('  %-46s %-9s %-6s %-9s %s' % (nom[:46], '?', '?', '?', 'ILEGIBLE'))
-            lineas.append([nom, '?', 'ilegible']); err_n += 1; continue
-        vid, aud, sub, subs_es = elegir(j)
+            print('  %-46s %-9s %-6s %-9s %s' % (nom[:46], '?', '?', '?', 'ILEGIBLE: ' + (ULTIMO_ERROR or 'sin detalle')))
+            lineas.append([nom, '?', 'ilegible: ' + ULTIMO_ERROR]); err_n += 1; continue
+        vid, aud, sub, ra, rs = elegir(j)
         peso = '%.1f MB' % (int(j['format'].get('size') or 0) / 1048576)
+        if a.simular:
+            # El PLAN, sin tocar nada: que se queda y que se tira.
+            vv = [s for s in j['streams'] if s['index'] == vid]
+            vv = vv[0] if vv else {}
+            w, h = vv.get('width') or 0, vv.get('height') or 0
+            salida_v = '1080p' if h > MAX_ALTO else '%dx%d' % (w, h)
+            na = len([s for s in j['streams'] if s['codec_type'] == 'audio'])
+            ns = len([s for s in j['streams'] if s['codec_type'] == 'subtitle'])
+            print('  %-46s %s %dx%d->%-7s | de %d audio: %-24s | de %d subs: %s'
+                  % (nom[:46], vv.get('codec_name') or '?', w, h, salida_v, na, ra[:24], ns, rs))
+            lineas.append([nom, 'plan', 'audio %s | subs %s' % (ra, rs)])
+            continue
         if aud is None:
-            print('  %-46s %-9s %-6s %-9s %s' % (nom[:46], 'NO', '-', peso, 'SALTADO: sin audio en espanol'))
-            lineas.append([nom, 'no', 'sin audio en espanol - no se codifica']); sal_n += 1; continue
+            print('  %-46s %-9s %-6s %-9s %s' % (nom[:46], 'NO', '-', peso, 'SALTADO: ' + ra))
+            lineas.append([nom, 'no', 'sin audio usable - no se codifica']); sal_n += 1; continue
         dst = os.path.join(a.salida, os.path.splitext(nom)[0] + '.mp4')
         if os.path.exists(dst):
             print('  %-46s %-9s %-6s %-9s %s' % (nom[:46], 'si', '-', peso, 'YA EXISTE (se salta)'))
             lineas.append([nom, 'si', 'ya existia']); continue
-        marca_sub = 'si(idx %d)' % sub if sub is not None else 'NO SE QUEMA'
+        marca_sub = rs
         ok, msg = codificar(f, dst, vid, aud, sub, tmp)
         if ok:
             ok_n += 1

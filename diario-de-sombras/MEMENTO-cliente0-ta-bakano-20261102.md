@@ -137,15 +137,42 @@ La ruta honesta son los iconos vectoriales.
 
 ---
 
+## 4-BIS. ACTUALIZACIÓN (2 nov, tras la revisión del Monarca)
+
+**El Monarca revisó el PDF y corrigió 4 cosas. TODAS aplicadas:**
+
+1. **LOGO EQUIVOCADO.** Yo usé `Desktop/seawolf studio/logo 2.jpeg` (preliminar viejo, azul).
+   **El correcto es `seawolf-agent/assets/seawolf-logo-full.png`**: lobo **de perfil**
+   hecho de **líneas de circuito** (traces + nodos), degradado **verde neón + cian**,
+   fondo `#121E1E`, texto `SEAWOLF STUDIO`. RGBA 2048x2048.
+   → **REGLA: NO volver a usar los `Desktop/seawolf studio/logo 1-6.jpeg`.**
+
+2. **ESTILO DE DOCUMENTOS — REGLA PERMANENTE DEL MONARCA:**
+   **fondo NEGRO · letras BLANCAS · separadores y ayudas visuales en AMARILLO o ROJO ·
+   tipografía ARVO siempre.**
+   CSS base: `intel/cliente-0-restaurante-20261102/propuesta-estilo.css`
+   Documentado en el skill: `seawolf-linea-de-montaje/references/estilo-documentos.md`
+
+3. **SMART SHOP ELIMINADO de la propuesta.** Es de TIENDAS, no aplica a restaurantes.
+
+4. **La propuesta quedó específica para Ta' Bakano** (arranca con lo que se observó de SU
+   negocio), no genérica. El Monarca la aprobó así.
+
+**PDF final:** `Propuesta-Seawolf-Ta-Bakano-v2.pdf` (396 KB, 5 páginas, logo nuevo dentro).
+Verificado: fondo `rgb(11,20,20)`, texto blanco, Arvo cargada, separadores amarillos,
+Smart Shop ausente.
+
+---
+
 ## 5. LO QUE QUEDÓ PENDIENTE (en rojo)
 
 | # | Pendiente | Nota |
 |---|---|---|
 | 1 | **Reiniciar el servidor de demo** | muere al cerrar la sesión; primer paso de mañana |
 | 2 | **Publicar `tabakano.sw-st.net`** | ✅ APROBADO por el Monarca |
-| 3 | **Insertar el logo en la web** | el Monarca ordenó usar el que subió **aunque tenga la marca de Canva** (los PNG recortados ya están listos) |
-| 4 | **El DISCURSO** (presentación del Estudio + modelo de negocio) | **sin escribir** |
-| 5 | **El PDF del discurso** | **sin hacer** |
+| 3 | ~~Insertar el logo en la web~~ | El logo del restaurante sigue sin archivo limpio (tiene marca de Canva) — **pendiente pedírselo al dueño** |
+| 4 | ~~El DISCURSO~~ | ✅ **HECHO**: `PROPUESTA-TA-BAKANO.md` + `Propuesta-Seawolf-Ta-Bakano-v2.pdf` (5 pág, estilo negro/Arvo) + `TEXTO-WHATSAPP-TA-BAKANO.md` |
+| 5 | ~~El PDF del discurso~~ | ✅ **HECHO** y verificado |
 | 6 | **Mandar el PDF al WhatsApp del Monarca** | ⚠️ ver §7 |
 | 7 | **La SmartWeb del gancho de 7 días sin dominio propio** | el Monarca pidió este gancho; parcialmente cubierto por el demo local |
 

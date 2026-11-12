@@ -1274,7 +1274,7 @@ function draw(){
       +'<span class="pill '+tcl+'">'+(d.temp!=null?d.temp+' °C':'temp —')+'</span> '
       +'<span class="pill '+dcl+'">'+(d.desgaste!=null?'desgaste '+d.desgaste+'%':'desgaste —')+'</span> '
       +'<span class="pill '+(d.salud==='PASSED'?'g':'r')+'">'+esc2(d.salud||'sin salud')+'</span>'
-      +'<div class="sub" style="margin-top:6px">'+(d.horas!=null?('<b>'+Math.round(d.horas))+' h</b> encendido (~'+Math.round(d.horas/24/365*10)/10+' años)'):'horas —')
+      +'<div class="sub" style="margin-top:6px">'+(d.horas!=null?('<b>'+Math.round(d.horas)+' h</b> encendido (~'+Math.round(d.horas/24/365*10)/10+' años)'):'horas —')
       +(d.escrito_tb!=null?(' · <b>'+d.escrito_tb+' TB</b> escritos'):'')
       +(d.apagados_inseguros?(' · ⚠️ <b>'+d.apagados_inseguros+'</b> apagados inseguros'):'')+'</div></div>';
     } else {
